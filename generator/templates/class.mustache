@@ -12,7 +12,7 @@ import { ApiBase, ApiOptions } from './lib/runtime'
       {{fullName}} (
     {{/isSingleton}}
     {{#pathParameters}}
-      {{name}}{{cardinality}}: any,
+      {{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}},
     {{/pathParameters}}
     {{#hasQueryParameters}}
       parameters: {
@@ -27,7 +27,7 @@ import { ApiBase, ApiOptions } from './lib/runtime'
     ): Promise<any> {
     let path = `{{{formatString}}}`
     return super.call('{{httpMethod}}', path, {{#hasQueryParameters}}parameters{{/hasQueryParameters}}{{^hasQueryParameters}}undefined{{/hasQueryParameters}})
-    }
+      }
   {{/methods}}
   }
 {{/apis}}

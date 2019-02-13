@@ -3,8 +3,11 @@ import { readFileSync } from 'fs';
 import { camelCase, capitalize, filter } from 'lodash';
 import * as mustache from 'mustache';
 import * as Swagger from 'swagger-tools';
+import { convertType } from './typescript'
+import { TypeSpec } from './typespec';
 
-function fetchSpec(): Promise<any> {
+
+async function fetchSpec(): Promise<any> {
   return axios({
     url: 'http://localhost:3100/api-docs'
   }).then(({ data }) => data)
@@ -60,7 +63,7 @@ interface Method {
 
 interface Parameter {
   name: string
-  type: Type
+  type: TypeSpec
   cardinality: string
 }
 
@@ -110,7 +113,7 @@ function buildParameters(parameters: any = []): { [type: string]: Parameter[] } 
   for (let o of parameters) {
     p[o['in']].push({
       name: o['name'],
-      type: buildType(o),
+      type: convertType(o, null),
       cardinality: o['required'] ? '' : '?'
     })
   }
@@ -161,10 +164,13 @@ function buildView(spec: any): Root {
 }
 
 function render(view: any): string {
-  // console.error(JSON.stringify(view, null, 2))
+  console.error(JSON.stringify(view, null, 2))
   return mustache.render(
     readFileSync('./generator/templates/class.mustache').toString(),
-    view
+    view,
+    {
+      type: readFileSync('./generator/templates/type.mustache').toString()
+    }
   )
 }
 

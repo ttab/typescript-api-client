@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "target": "es2015",
+    "lib": ["es2017", "es2015"],
+    "composite": true,
+    "declaration": true,
+    "module": "commonjs",
     "types": ["node"]
   }
 }
