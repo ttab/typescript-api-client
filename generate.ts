@@ -50,6 +50,7 @@ interface Method {
   pathParameters: Parameter[]
   queryParameters: Parameter[]
   bodyParameters: Parameter[]
+  hasQueryParameters: boolean
   isSingleton: boolean
 }
 
@@ -109,7 +110,7 @@ function buildView(spec: any): any {
     for (let [method, details] of Object.entries(obj)) {
       if (!method.startsWith('x-')) {
         let name = camelCase([httpMethods[method], ...e.nameParts].join(' '))
-        if (name === 'profile') {
+        if (name) {
           console.error('DETAILS', details)
           let parameters = buildParameters(details.parameters)
 
@@ -127,6 +128,7 @@ function buildView(spec: any): any {
             bodyParameters: parameters.body,
             formatString: e.formatString,
             httpMethod: method,
+            hasQueryParameters: parameters.query.length > 0,
             isSingleton: lookalikes.length == 0
           })
         }

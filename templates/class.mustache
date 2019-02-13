@@ -8,12 +8,22 @@
     {{^isSingleton}}
       {{fullName}}
     {{/isSingleton}}(
-    {{#queryParameters}}
+    {{#pathParameters}}
       {{name}}{{cardinality}}: any,
-    {{/queryParameters}}
+    {{/pathParameters}}
+    {{#hasQueryParameters}}
+      parameters: {
+      {{#queryParameters}}
+        {{name}}{{cardinality}}: any,
+      {{/queryParameters}}
+      },
+    {{/hasQueryParameters}}
+    {{#bodyParameters}}
+      {{name}}{{cardinality}}: any,
+    {{/bodyParameters}}
     ): Promise<any> {
-      return null
-      }
+    return null
+    }
   {{/methods}}
   }
 {{/apis}}
