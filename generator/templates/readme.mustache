@@ -1,0 +1,106 @@
+# @ttab/typescript-api-client
+
+Browser-friendly TypeScript client for TT Nyhetsbyrån public APIs. The
+client code (and this README file) has been automatically generated
+from the API definition located at [{{&host}}/docs]({{&host}}/docs).
+
+Instructions for building the client are [here](/BUILDING.md).
+
+* [Getting started](#getting-started)
+* [API Reference](#api-reference)
+{{#apis}}
+  + {{className}}
+{{#methods}}
+    - [{{&name}}](#{{&anchor}})
+{{/methods}}
+{{/apis}}
+  + [Exported types](#exported-types)
+{{#definitions}}
+    - [{{&name}}](#interface-{{&name}})
+{{/definitions}}
+# Getting started
+
+## Obtaining an OAuth2 token
+
+TBA
+
+## Anatomy of metadata items
+
+TBA
+
+## Searching
+
+Searching the database for matching items is a very common
+operation. You supply the `mediaType` (`image`, `text`, `video`, etc.)
+and an object with query parameters, and get a result object with an
+array of search `hits`.
+
+This is a basic query, looking for panda pictures:
+
+```typescript
+import { Api } from '@ttab/typescript-api-client'
+
+let api = new Api({ token: process.env.TOKEN || '' })
+
+api.content.search('image', { q: 'panda' })
+  .then((res) => {
+    console.log(res.hits[0].uri)
+  })
+```
+
+## Streaming data
+
+TBA
+
+[TTNinjs]:https://tt.se/spec/ttninjs/ttninjs-schema_1.0.json
+
+
+# API Reference
+
+{{#apis}}
+## {{className}}
+
+{{#methods}}
+### {{&name}}({{parameterNames}})
+
+{{&summary}}
+
+{{&description}}
+
+#### Arguments
+{{#pathParameters}}
+ * {{name}}{{cardinality}}: `{{#type}}{{> type}}{{/type}}` - {{&type.description}}
+{{/pathParameters}}
+{{#hasQueryParameters}}
+ * parameters:
+{{#queryParameters}}
+   - `{{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}}` - {{&type.description}}
+{{/queryParameters}}
+{{/hasQueryParameters}}
+{{#bodyParameters}}
+ * {{name}}{{cardinality}}: `{{#type}}{{> type}}{{/type}}`
+{{/bodyParameters}}
+
+#### Returns
+ * Promise&lt;{{#responseType}}{{> linkedtype}}{{/responseType}}&gt;
+
+#### Example
+```typescript
+api.{{api}}.{{name}}({{&examples}}).then((result) => {
+    // do something with result
+})
+```
+
+{{/methods}}
+
+{{/apis}}
+
+## Exported types
+
+{{#definitions}}
+
+### Interface {{&name}}
+```typescript
+interface {{&name}} {{#tsType}}{{> type}}{{/tsType}};
+```
+{{/definitions}}

@@ -1,0 +1,82 @@
+import { ApiBase, ApiOptions } from './lib/runtime'
+
+{{#definitions}}
+  export interface {{&name}} {{#tsType}}{{> type}}{{/tsType}};
+
+{{/definitions}}
+
+{{#apis}}
+  class {{className}} extends ApiBase {
+
+  {{#methods}}
+    /**
+    * {{&summary}}
+    *
+    * {{&description}}
+    *
+    * @method
+    * @name {{&className}}#{{&name}}
+    {{#pathParameters}}
+    * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
+    {{/pathParameters}}
+    {{#queryParameters}}
+    * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
+    {{/queryParameters}}
+    {{#bodyParameters}}
+    * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
+    {{/bodyParameters}}
+    */
+    {{&name}} (
+    {{#pathParameters}}
+      {{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}},
+    {{/pathParameters}}
+    {{#hasQueryParameters}}
+      parameters: {
+      {{#queryParameters}}
+        {{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}},
+      {{/queryParameters}}
+      },
+    {{/hasQueryParameters}}
+    {{#bodyParameters}}
+      {{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}},
+    {{/bodyParameters}}
+    ): Promise<
+    {{#responseType}}
+      {{> type}}
+    {{/responseType}}
+    > {
+    let path = `{{{formatString}}}`
+    return super.call('{{httpMethod}}', path,
+    {{#hasQueryParameters}}
+      parameters
+    {{/hasQueryParameters}}
+    {{^hasQueryParameters}}
+      undefined
+    {{/hasQueryParameters}},
+    {{#hasBodyParameters}}
+      {{#bodyParameters}}
+        {{name}}
+      {{/bodyParameters}}
+    {{/hasBodyParameters}}
+    {{^hasBodyParameters}}
+      undefined
+    {{/hasBodyParameters}}
+    )
+    }
+  {{/methods}}
+  }
+{{/apis}}
+
+export class Api {
+
+{{#apis}}
+  {{api}}: {{className}}
+{{/apis}}
+
+constructor(options: { token:string, host? :string }) {
+{{#apis}}
+  this.{{api}} = new {{className}}({ host: '{{&host}}', ...options })
+{{/apis}}
+}
+
+}
