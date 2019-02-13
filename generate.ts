@@ -68,7 +68,7 @@ function parsePath(path: string): Endpoint {
     className: capitalize(api) + capitalize(version),
     version,
     nameParts: tail,
-    formatString: path.replace(/{/g, '${parameters.')
+    formatString: path.replace(/{/g, '${')
   }
 }
 

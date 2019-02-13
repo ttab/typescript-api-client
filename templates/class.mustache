@@ -1,5 +1,8 @@
+import { ApiBase, ApiOptions } from './lib/runtime'
+
 {{#apis}}
-  class {{className}} {
+  class {{className}} extends ApiBase {
+
   {{#methods}}
     // {{method}} {{&formatString}}
     {{#isSingleton}}
@@ -22,7 +25,15 @@
       {{name}}{{cardinality}}: any,
     {{/bodyParameters}}
     ): Promise<any> {
-    return null
+    let path = `{{{formatString}}}`
+    return super.call('{{httpMethod}}', path,
+    {{#hasQueryParameters}}
+      parameters
+    {{/hasQueryParameters}}
+    {{^hasQueryParameters}}
+      undefined
+    {{/hasQueryParameters}}
+    )
     }
   {{/methods}}
   }
@@ -34,9 +45,9 @@ export class Api {
   {{api}}: {{className}}
 {{/apis}}
 
-constructor(args: { token: string, host?: string }) {
+constructor(options: ApiOptions) {
 {{#apis}}
-  this.{{api}} = new {{className}}()
+  this.{{api}} = new {{className}}(options)
 {{/apis}}
 }
 
