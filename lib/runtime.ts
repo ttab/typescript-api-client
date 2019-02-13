@@ -28,6 +28,23 @@ export class ApiBase {
       }
     }).then((res) => {
       return res.data
+    }).catch((err) => {
+      if (err.response) {
+        let e: Error
+        if (typeof err.response.data === 'object') {
+          e = new Error(err.response.data.message)
+          for (let prop of Object.entries(err.response.data)) {
+            if (prop[0] !== 'message') {
+              e[prop[0]] = prop[1]
+            }
+          }
+        } else {
+          e = new Error(err.response.data)
+        }
+        e['statusCode'] = err.response.status
+        throw e
+      }
+      throw err
     })
   }
 }
