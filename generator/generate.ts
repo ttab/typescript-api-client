@@ -36,6 +36,10 @@ interface Endpoint {
   formatString: string
 }
 
+interface Root {
+  apis: Api[]
+}
+
 interface Api {
   api: string
   className: string
@@ -56,8 +60,15 @@ interface Method {
 
 interface Parameter {
   name: string
-  type: string
+  type: Type
   cardinality: string
+}
+
+interface Type {
+  // isBasic: boolean
+  basicType: string
+  // isEnum: boolean
+  enumValues: string[]
 }
 
 function parsePath(path: string): Endpoint {
@@ -79,6 +90,17 @@ function fullName(name: string, pathParameters: Parameter[]): string {
   ].join('By')
 }
 
+function buildType(parameter: any): Type {
+  if (parameter['type'] === 'string') {
+    return {
+      basicType: 'string',
+      enumValues: parameter['enum']
+    }
+  } else {
+
+  }
+}
+
 function buildParameters(parameters: any = []): { [type: string]: Parameter[] } {
   let p: { [type: string]: Parameter[] } = {
     body: [],
@@ -88,14 +110,14 @@ function buildParameters(parameters: any = []): { [type: string]: Parameter[] } 
   for (let o of parameters) {
     p[o['in']].push({
       name: o['name'],
-      type: o['type'],
+      type: buildType(o),
       cardinality: o['required'] ? '' : '?'
     })
   }
   return p
 }
 
-function buildView(spec: any): any {
+function buildView(spec: any): Root {
   let apis: { [key: string]: Api } = {}
   for (let [path, obj] of Object.entries(spec.paths)) {
     let e = parsePath(path)
@@ -139,20 +161,17 @@ function buildView(spec: any): any {
 }
 
 function render(view: any): string {
-  console.error(JSON.stringify(view, null, 2))
+  // console.error(JSON.stringify(view, null, 2))
   return mustache.render(
-    readFileSync('./templates/class.mustache').toString(),
+    readFileSync('./generator/templates/class.mustache').toString(),
     view
   )
 }
 
-
+// do the thing
 fetchSpec()
   .then(resolveSpec)
   .then(buildView)
   .then(render)
   .then(console.log)
-  // .then((s) => {
-  //   console.log(JSON.stringify(s, null, 2))
-  // })
   .catch(console.error)
