@@ -2,13 +2,18 @@
   class {{className}} {
   {{#methods}}
     // {{method}} {{&formatString}}
-    {{name}}(
+    {{#isSingleton}}
+      {{shortName}}
+    {{/isSingleton}}
+    {{^isSingleton}}
+      {{fullName}}
+    {{/isSingleton}}(
     {{#queryParameters}}
-      {{name}}: any,
+      {{name}}{{cardinality}}: any,
     {{/queryParameters}}
     ): Promise<any> {
-    return null
-    }
+      return null
+      }
   {{/methods}}
   }
 {{/apis}}

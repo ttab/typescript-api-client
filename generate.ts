@@ -1,8 +1,8 @@
-import { readFileSync, writeFileSync } from 'fs'
-import axios from 'axios'
-import * as Swagger from 'swagger-tools'
-import { camelCase, capitalize } from 'lodash'
-import * as mustache from 'mustache'
+import axios from 'axios';
+import { readFileSync } from 'fs';
+import { camelCase, capitalize, filter } from 'lodash';
+import * as mustache from 'mustache';
+import * as Swagger from 'swagger-tools';
 
 function fetchSpec(): Promise<any> {
   return axios({
@@ -50,6 +50,7 @@ interface Method {
   pathParameters: Parameter[]
   queryParameters: Parameter[]
   bodyParameters: Parameter[]
+  isSingleton: boolean
 }
 
 interface Parameter {
@@ -70,6 +71,29 @@ function parsePath(path: string): Endpoint {
   }
 }
 
+function fullName(name: string, pathParameters: Parameter[]): string {
+  return [
+    name,
+    ...pathParameters.map((p) => { return capitalize(p.name) })
+  ].join('By')
+}
+
+function buildParameters(parameters: any = []): { [type: string]: Parameter[] } {
+  let p: { [type: string]: Parameter[] } = {
+    body: [],
+    query: [],
+    path: []
+  }
+  for (let o of parameters) {
+    p[o['in']].push({
+      name: o['name'],
+      type: o['type'],
+      cardinality: o['required'] ? '' : '?'
+    })
+  }
+  return p
+}
+
 function buildView(spec: any): any {
   let apis: { [key: string]: Api } = {}
   for (let [path, obj] of Object.entries(spec.paths)) {
@@ -87,14 +111,23 @@ function buildView(spec: any): any {
         let name = camelCase([httpMethods[method], ...e.nameParts].join(' '))
         if (name === 'profile') {
           console.error('DETAILS', details)
+          let parameters = buildParameters(details.parameters)
+
+          // check if there are other methods with the same shortName
+          let lookalikes = filter(api.methods, { shortName: name })
+          for (let m of lookalikes) {
+            m.isSingleton = false
+          }
+
           api.methods.push({
             shortName: name,
-            fullName: name,
-            pathParameters: [],
-            queryParameters: details.parameters,
-            bodyParameters: [],
+            fullName: fullName(name, parameters.path),
+            pathParameters: parameters.path,
+            queryParameters: parameters.query,
+            bodyParameters: parameters.body,
             formatString: e.formatString,
-            httpMethod: method
+            httpMethod: method,
+            isSingleton: lookalikes.length == 0
           })
         }
       }
