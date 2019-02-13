@@ -1,0 +1,28 @@
+{{#apis}}
+  class {{className}} {
+  {{#methods}}
+    // {{method}} {{&formatString}}
+    {{name}}(
+    {{#queryParameters}}
+      {{name}}: any,
+    {{/queryParameters}}
+    ): Promise<any> {
+    return null
+    }
+  {{/methods}}
+  }
+{{/apis}}
+
+export class Api {
+
+{{#apis}}
+  {{api}}: {{className}}
+{{/apis}}
+
+constructor(args: { token: string, host?: string }) {
+{{#apis}}
+  this.{{api}} = new {{className}}()
+{{/apis}}
+}
+
+}
