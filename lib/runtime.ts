@@ -14,7 +14,7 @@ export class ApiBase {
     this.host = options.host || 'http://api.tt.se'
   }
 
-  call(
+  async call(
     httpMethod: string,
     path: string,
     query?: { [key: string]: string },
@@ -23,6 +23,8 @@ export class ApiBase {
     return axios({
       method: httpMethod,
       url: this.host + path,
+      params: query,
+      data: body,
       headers: {
         'Authorization': `Bearer ${this.token}`
       }

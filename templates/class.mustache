@@ -6,11 +6,11 @@ import { ApiBase, ApiOptions } from './lib/runtime'
   {{#methods}}
     // {{method}} {{&formatString}}
     {{#isSingleton}}
-      {{shortName}}
+      {{shortName}} (
     {{/isSingleton}}
     {{^isSingleton}}
-      {{fullName}}
-    {{/isSingleton}}(
+      {{fullName}} (
+    {{/isSingleton}}
     {{#pathParameters}}
       {{name}}{{cardinality}}: any,
     {{/pathParameters}}
