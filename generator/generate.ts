@@ -5,12 +5,11 @@ import { readFileSync } from 'fs';
 import { camelCase, capitalize, filter, map } from 'lodash';
 import * as mustache from 'mustache';
 import * as SwaggerTools from 'swagger-tools';
-import { convertType } from 'swagger-typescript-codegen/lib/typescript'
-import { makeDefinitionsFromSwaggerDefinitions, Definition } from 'swagger-typescript-codegen/lib/view-data/definition'
-import { getParametersForMethod } from 'swagger-typescript-codegen/lib/view-data/parameter'
-import { getSuccessfulResponseType } from 'swagger-typescript-codegen/lib/view-data/responseType'
+import { Swagger, SwaggerType } from 'swagger-typescript-codegen/lib/swagger/Swagger';
+import { convertType } from 'swagger-typescript-codegen/lib/typescript';
 import { TypeSpec } from 'swagger-typescript-codegen/lib/typespec';
-import { Swagger, SwaggerType } from 'swagger-typescript-codegen/lib/swagger/Swagger'
+import { Definition, makeDefinitionsFromSwaggerDefinitions } from 'swagger-typescript-codegen/lib/view-data/definition';
+import { getParametersForMethod } from 'swagger-typescript-codegen/lib/view-data/parameter';
 
 async function fetchSpec(): Promise<Swagger> {
   return axios({
@@ -18,8 +17,21 @@ async function fetchSpec(): Promise<Swagger> {
   }).then(({ data }) => data)
 }
 
-function resolveExternalRefs(spec: Swagger): Promise<Swagger> {
+/**
+ * Let swagger-tools resolve any external references in the spec.
+ */
+function resolveSpec(json: any): Promise<Swagger> {
+  return new Promise((rs, rj) => {
+    SwaggerTools.specs.v2.resolve(json, (err, result) => {
+      if (err) {
+        return rj(err)
+      }
+      rs(result)
+    })
+  })
+}
 
+function resolveExternalRefs(spec: Swagger): Promise<Swagger> {
   return Promise.all(map(spec.definitions, (def, name) => {
     if (def.$ref && (def.$ref.startsWith('http://') || def.$ref.startsWith('https://'))) {
       return axios.get(def.$ref).then((res) => {
@@ -35,7 +47,6 @@ function resolveExternalRefs(spec: Swagger): Promise<Swagger> {
     for (let t of deflist) {
       definitions[t[0]] = t[1]
     }
-    console.error(definitions)
     return {
       ...spec,
       definitions
@@ -43,16 +54,36 @@ function resolveExternalRefs(spec: Swagger): Promise<Swagger> {
   })
 }
 
-// function resolveSpec(json: any): Promise<Swagger> {
-//   return new Promise((rs, rj) => {
-//     SwaggerTools.specs.v2.resolve(json, (err, result) => {
-//       if (err) {
-//         return rj(err)
-//       }
-//       rs(result)
-//     })
-//   })
-// }
+/**
+ * swagger-codegen treats all objects with additionalProperties: false
+ * as if they were true, so we have to manually correct that.
+ */
+function fixAdditionalProperties(spec: Swagger): Swagger {
+
+  function fixProperties(properties: { [index: string]: SwaggerType }) {
+    for (let p in properties) {
+      fixDefinition(properties[p])
+    }
+  }
+
+  function fixDefinition(d: SwaggerType) {
+    if (d.type == 'object' && d.hasOwnProperty('additionalProperties') && d['additionalProperties'] === false) {
+      delete d['additionalProperties']
+    }
+    if (d.properties) {
+      fixProperties(d.properties)
+    }
+    if (d['patternProperties']) {
+      fixProperties(d['patternProperties'])
+    }
+  }
+
+  for (let d in spec.definitions) {
+    fixDefinition(spec.definitions[d])
+  }
+
+  return spec
+}
 
 let httpMethods: { [key: string]: string } = {
   'get': '',
@@ -120,16 +151,11 @@ function fullName(name: string, pathParameters: Parameter[]): string {
 }
 
 function buildParameters(parameters: any = [], spec: Swagger): { [type: string]: Parameter[] } {
-
-
   let p: { [type: string]: Parameter[] } = {
     body: [],
     query: [],
     path: []
   }
-
-  // console.error(getParametersForMethod([], parameters, spec))
-
   for (let o of getParametersForMethod([], parameters, spec)) {
     p[o.in].push({
       name: o.name,
@@ -144,7 +170,6 @@ function buildDefinitions(spec: Swagger): Definition[] {
   let defs = makeDefinitionsFromSwaggerDefinitions(spec.definitions, spec)
   return defs.map((def) => {
     return {
-      // name: capitalize(camelCase(def.name)),
       name: def.name,
       description: def.description,
       tsType: def.tsType
@@ -167,7 +192,6 @@ function buildView(spec: Swagger): Root {
 
     for (let method in obj) {
       let details = obj[method]
-      // for (let [method, details] of Object.entries(obj)) {
       if (!method.startsWith('x-')) {
 
         let name = camelCase([httpMethods[method], ...e.nameParts].join(' '))
@@ -204,7 +228,7 @@ function buildView(spec: Swagger): Root {
 }
 
 function render(view: any): string {
-  console.error(JSON.stringify(view, null, 2))
+  // console.error(JSON.stringify(view, null, 2))
   return mustache.render(
     readFileSync('./generator/templates/class.mustache').toString(),
     view,
@@ -216,8 +240,8 @@ function render(view: any): string {
 
 // do the thing
 fetchSpec()
-  // .then(resolveSpec)
   .then(resolveExternalRefs)
+  .then(fixAdditionalProperties)
   .then(buildView)
   .then(render)
   .then(console.log)
