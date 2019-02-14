@@ -1,11 +1,17 @@
 {
+  "name": "@ttab/typescript-api-client",
+  "version": "0.0.1",
+  "description": "Browser-friendly TypeScript client for TT Nyhetsbyrån public APIs.",
   "scripts": {
     "generate": "ts-node generator/generate.ts > api.ts && prettier --write api.ts"
   },
+  "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0"
+  },
+  "devDependencies": {
     "@types/lodash": "^4.14.120",
     "@types/mustache": "^0.8.32",
-    "axios": "^0.18.0",
     "lodash": "^4.17.11",
     "mustache": "^3.0.1",
     "prettier": "^1.16.4",
@@ -14,6 +20,5 @@
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3",
     "typescript-formatter": "^7.2.2"
-  },
-  "devDependencies": {}
+  }
 }
