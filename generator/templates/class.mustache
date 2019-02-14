@@ -17,12 +17,12 @@ import { ApiBase, ApiOptions } from './lib/runtime'
     {{#hasQueryParameters}}
       parameters: {
       {{#queryParameters}}
-        {{name}}{{cardinality}}: any,
+        {{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}},
       {{/queryParameters}}
       },
     {{/hasQueryParameters}}
     {{#bodyParameters}}
-      {{name}}{{cardinality}}: any,
+      {{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}},
     {{/bodyParameters}}
     ): Promise<any> {
     let path = `{{{formatString}}}`

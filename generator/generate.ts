@@ -1,11 +1,13 @@
+/// <reference path="global.d.ts"/>
+
 import axios from 'axios';
 import { readFileSync } from 'fs';
 import { camelCase, capitalize, filter } from 'lodash';
 import * as mustache from 'mustache';
-import * as Swagger from 'swagger-tools';
-import { convertType } from './typescript'
-import { TypeSpec } from './typespec';
-
+import * as SwaggerTools from 'swagger-tools';
+import { convertType } from 'swagger-typescript-codegen/lib/typescript'
+import { TypeSpec } from 'swagger-typescript-codegen/lib/typespec';
+import { Swagger } from 'swagger-typescript-codegen/lib/swagger/Swagger'
 
 async function fetchSpec(): Promise<any> {
   return axios({
@@ -13,9 +15,9 @@ async function fetchSpec(): Promise<any> {
   }).then(({ data }) => data)
 }
 
-function resolveSpec(json: any): Promise<any> {
+function resolveSpec(json: any): Promise<Swagger> {
   return new Promise((rs, rj) => {
-    Swagger.specs.v2.resolve(json, (err: Error, result: any) => {
+    SwaggerTools.specs.v2.resolve(json, (err, result) => {
       if (err) {
         return rj(err)
       }
@@ -24,7 +26,7 @@ function resolveSpec(json: any): Promise<any> {
   })
 }
 
-let httpMethods = {
+let httpMethods: { [key: string]: string } = {
   'get': '',
   'put': 'update',
   'post': 'add',
@@ -67,13 +69,6 @@ interface Parameter {
   cardinality: string
 }
 
-interface Type {
-  // isBasic: boolean
-  basicType: string
-  // isEnum: boolean
-  enumValues: string[]
-}
-
 function parsePath(path: string): Endpoint {
   let [, api, version, ...tail] = path.split('/')
   tail = tail.filter((t) => { return !t.startsWith('{') })
@@ -93,18 +88,7 @@ function fullName(name: string, pathParameters: Parameter[]): string {
   ].join('By')
 }
 
-function buildType(parameter: any): Type {
-  if (parameter['type'] === 'string') {
-    return {
-      basicType: 'string',
-      enumValues: parameter['enum']
-    }
-  } else {
-
-  }
-}
-
-function buildParameters(parameters: any = []): { [type: string]: Parameter[] } {
+function buildParameters(parameters: any = [], spec: Swagger): { [type: string]: Parameter[] } {
   let p: { [type: string]: Parameter[] } = {
     body: [],
     query: [],
@@ -113,14 +97,14 @@ function buildParameters(parameters: any = []): { [type: string]: Parameter[] } 
   for (let o of parameters) {
     p[o['in']].push({
       name: o['name'],
-      type: convertType(o, null),
+      type: convertType(o, spec),
       cardinality: o['required'] ? '' : '?'
     })
   }
   return p
 }
 
-function buildView(spec: any): Root {
+function buildView(spec: Swagger): Root {
   let apis: { [key: string]: Api } = {}
   for (let [path, obj] of Object.entries(spec.paths)) {
     let e = parsePath(path)
@@ -137,7 +121,7 @@ function buildView(spec: any): Root {
         let name = camelCase([httpMethods[method], ...e.nameParts].join(' '))
         if (name) {
           console.error('DETAILS', details)
-          let parameters = buildParameters(details.parameters)
+          let parameters = buildParameters(details.parameters, spec)
 
           // check if there are other methods with the same shortName
           let lookalikes = filter(api.methods, { shortName: name })

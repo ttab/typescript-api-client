@@ -5,6 +5,10 @@ export interface ApiOptions {
   host?: string
 }
 
+class ApiError extends Error {
+  statusCode: number = 0
+}
+
 export class ApiBase {
   token: string
   host: string
@@ -17,8 +21,8 @@ export class ApiBase {
   async call(
     httpMethod: string,
     path: string,
-    query?: { [key: string]: string },
-    body?: { [key: string]: string }
+    query?: {},
+    body?: {}
   ) {
     return axios({
       method: httpMethod,
@@ -28,22 +32,22 @@ export class ApiBase {
       headers: {
         'Authorization': `Bearer ${this.token}`
       }
-    }).then((res) => {
+    }).then((res: any) => {
       return res.data
-    }).catch((err) => {
+    }).catch((err: any) => {
       if (err.response) {
-        let e: Error
+        let e: ApiError
         if (typeof err.response.data === 'object') {
-          e = new Error(err.response.data.message)
-          for (let prop of Object.entries(err.response.data)) {
-            if (prop[0] !== 'message') {
-              e[prop[0]] = prop[1]
-            }
-          }
+          e = new ApiError(err.response.data.message)
+          // for (let prop of Object.entries(err.response.data)) {
+          //   if (prop[0] !== 'message') {
+          //     e[prop[0]] = prop[1]
+          //   }
+          // }
         } else {
-          e = new Error(err.response.data)
+          e = new ApiError(err.response.data)
         }
-        e['statusCode'] = err.response.status
+        e.statusCode = err.response.status
         throw e
       }
       throw err
