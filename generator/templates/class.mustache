@@ -26,8 +26,23 @@ import { ApiBase, ApiOptions } from './lib/runtime'
     {{/bodyParameters}}
     ): Promise<any> {
     let path = `{{{formatString}}}`
-    return super.call('{{httpMethod}}', path, {{#hasQueryParameters}}parameters{{/hasQueryParameters}}{{^hasQueryParameters}}undefined{{/hasQueryParameters}})
-      }
+    return super.call('{{httpMethod}}', path,
+    {{#hasQueryParameters}}
+      parameters
+    {{/hasQueryParameters}}
+    {{^hasQueryParameters}}
+      undefined
+    {{/hasQueryParameters}},
+    {{#hasBodyParameters}}
+      {{#bodyParameters}}
+        {{name}}
+      {{/bodyParameters}}
+    {{/hasBodyParameters}}
+    {{^hasBodyParameters}}
+      undefined
+    {{/hasBodyParameters}}
+    )
+    }
   {{/methods}}
   }
 {{/apis}}

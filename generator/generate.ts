@@ -60,6 +60,7 @@ interface Method {
   queryParameters: Parameter[]
   bodyParameters: Parameter[]
   hasQueryParameters: boolean
+  hasBodyParameters: boolean
   isSingleton: boolean
 }
 
@@ -120,7 +121,6 @@ function buildView(spec: Swagger): Root {
       if (!method.startsWith('x-')) {
         let name = camelCase([httpMethods[method], ...e.nameParts].join(' '))
         if (name) {
-          console.error('DETAILS', details)
           let parameters = buildParameters(details.parameters, spec)
 
           // check if there are other methods with the same shortName
@@ -138,6 +138,7 @@ function buildView(spec: Swagger): Root {
             formatString: e.formatString,
             httpMethod: method,
             hasQueryParameters: parameters.query.length > 0,
+            hasBodyParameters: parameters.body.length > 0,
             isSingleton: lookalikes.length == 0
           })
         }
