@@ -1,5 +1,10 @@
 import { ApiBase, ApiOptions } from './lib/runtime'
 
+{{#definitions}}
+  export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
+
+{{/definitions}}
+
 {{#apis}}
   class {{className}} extends ApiBase {
 
@@ -24,7 +29,11 @@ import { ApiBase, ApiOptions } from './lib/runtime'
     {{#bodyParameters}}
       {{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}},
     {{/bodyParameters}}
-    ): Promise<any> {
+    ): Promise<
+    {{#responseType}}
+      {{> type}}
+    {{/responseType}}
+    > {
     let path = `{{{formatString}}}`
     return super.call('{{httpMethod}}', path,
     {{#hasQueryParameters}}
