@@ -9,7 +9,23 @@ import { ApiBase, ApiOptions } from './lib/runtime'
   class {{className}} extends ApiBase {
 
   {{#methods}}
-    // {{method}} {{&formatString}}
+    /**
+    * {{&summary}}
+    *
+    * {{&description}}
+    *
+    * @method
+    * @name {{&className}}#{{#isSingleton}}{{shortName}}{{/isSingleton}}{{^isSingleton}}{{fullName}}{{/isSingleton}}
+    {{#pathParameters}}
+    * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
+    {{/pathParameters}}
+    {{#queryParameters}}
+    * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
+    {{/queryParameters}}
+    {{#bodyParameters}}
+    * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
+    {{/bodyParameters}}
+    */
     {{#isSingleton}}
       {{shortName}} (
     {{/isSingleton}}

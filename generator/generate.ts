@@ -123,11 +123,14 @@ interface Method {
   hasBodyParameters: boolean
   isSingleton: boolean
   responseType: TypeSpec
+  summary: string
+  description: string
 }
 
 interface Parameter {
   name: string
   type: TypeSpec
+  typeName: string
   cardinality: string
 }
 
@@ -160,6 +163,7 @@ function buildParameters(parameters: any = [], spec: Swagger): { [type: string]:
     p[o.in].push({
       name: o.name,
       type: o.tsType,
+      typeName: o.type,
       cardinality: o.cardinality
     })
   }
@@ -206,6 +210,8 @@ function buildView(spec: Swagger): Root {
 
           api.methods.push({
             shortName: name,
+            summary: details.summary,
+            description: details.description,
             fullName: fullName(name, parameters.path),
             pathParameters: parameters.path,
             queryParameters: parameters.query,
