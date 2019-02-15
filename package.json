@@ -13,7 +13,8 @@
   ],
   "scripts": {
     "generate": "ts-node generator/generate.ts -p tsconfig.json > api.ts && prettier --write api.ts",
-    "dist": "npm run generate && tsc -p tsconfig-dist.json"
+    "dist": "npm run generate && tsc -p tsconfig-dist.json",
+    "prepublishOnly": "npm run dist"
   },
   "main": "./dist/api.js",
   "files": [
@@ -21,9 +22,11 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "debug": "^4.1.1"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.1",
     "@types/lodash": "^4.14.120",
     "@types/mustache": "^0.8.32",
     "lodash": "^4.17.11",

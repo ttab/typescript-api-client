@@ -1,4 +1,7 @@
 import axios from 'axios'
+import debug from 'debug'
+
+let log = debug('tt:api')
 
 export interface ApiOptions {
   token: string
@@ -24,9 +27,11 @@ export class ApiBase {
     query?: {},
     body?: {}
   ) {
+    let url = this.host + path
+    log(httpMethod, url, query, body)
     return axios({
       method: httpMethod,
-      url: this.host + path,
+      url: url,
       params: query,
       data: body,
       headers: {
