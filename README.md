@@ -12,3 +12,7 @@ To generate a client for a specific host:
 To generate a client and compile typescript to javascript:
 
     npm run dist
+
+To test:
+
+    TOKEN=<OAuth2 token> npm test
