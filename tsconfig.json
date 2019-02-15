@@ -5,6 +5,6 @@
     "strict": true,
     "declaration": true,
     "module": "commonjs",
-    "types": ["node"]
+    "types": ["node", "jest"]
   }
 }
