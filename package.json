@@ -2,9 +2,23 @@
   "name": "@ttab/typescript-api-client",
   "version": "0.0.1",
   "description": "Browser-friendly TypeScript client for TT Nyhetsbyrån public APIs.",
+  "keywords": [
+    "api",
+    "client",
+    "browser",
+    "news",
+    "content",
+    "tt",
+    "tt nyhetsbyrån"
+  ],
   "scripts": {
-    "generate": "ts-node generator/generate.ts > api.ts && prettier --write api.ts"
+    "generate": "ts-node generator/generate.ts -p tsconfig.json > api.ts && prettier --write api.ts",
+    "dist": "npm run generate && tsc -p tsconfig-dist.json"
   },
+  "main": "./dist/api.js",
+  "files": [
+    "dist/*"
+  ],
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0"
@@ -15,10 +29,8 @@
     "lodash": "^4.17.11",
     "mustache": "^3.0.1",
     "prettier": "^1.16.4",
-    "swagger-tools": "^0.10.4",
     "swagger-typescript-codegen": "^1.9.2",
     "ts-node": "^8.0.2",
-    "typescript": "^3.3.3",
-    "typescript-formatter": "^7.2.2"
+    "typescript": "^3.3.3"
   }
 }

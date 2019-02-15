@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "lib": ["es2017", "es2015"],
+    "strict": true,
+    "declaration": true,
+    "module": "commonjs",
+    "outDir": "./dist"
+  },
+  "files": [
+    "api.ts",
+    "./lib/runtime.ts"
+  ]
+}
