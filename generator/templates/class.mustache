@@ -78,9 +78,9 @@ export class Api {
   {{api}}: {{className}}
 {{/apis}}
 
-constructor(options: ApiOptions) {
+constructor(options: { token:string, host? :string }) {
 {{#apis}}
-  this.{{api}} = new {{className}}(options)
+  this.{{api}} = new {{className}}({ host: '{{&host}}', ...options })
 {{/apis}}
 }
 

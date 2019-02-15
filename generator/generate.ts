@@ -10,9 +10,13 @@ import { TypeSpec } from 'swagger-typescript-codegen/lib/typespec';
 import { Definition, makeDefinitionsFromSwaggerDefinitions } from 'swagger-typescript-codegen/lib/view-data/definition';
 import { getParametersForMethod } from 'swagger-typescript-codegen/lib/view-data/parameter';
 
+// this is the host we will generate api.ts for (and which will also
+// be the default host in the generated api)
+let apiHost = process.env.API_HOST || 'https://api.tt.se'
+
 async function fetchSpec(): Promise<Swagger> {
   return axios({
-    url: 'http://localhost:3100/api-docs'
+    url: `${apiHost}/api-docs`
   }).then(({ data }) => data)
 }
 
@@ -86,7 +90,8 @@ interface Endpoint {
   formatString: string
 }
 
-interface Root {
+interface View {
+  host: string
   apis: Api[]
   definitions: Definition[]
 }
@@ -167,7 +172,7 @@ function buildDefinitions(spec: Swagger): Definition[] {
   })
 }
 
-function buildView(spec: Swagger): Root {
+function buildView(spec: Swagger): View {
   let apis: { [key: string]: Api } = {}
   for (let [path, obj] of Object.entries(spec.paths)) {
     let e = parsePath(path)
@@ -209,6 +214,7 @@ function buildView(spec: Swagger): Root {
     }
   }
   return {
+    host: apiHost,
     apis: Object.values(apis),
     definitions: buildDefinitions(spec)
   }

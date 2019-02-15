@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export interface ApiOptions {
   token: string
-  host?: string
+  host: string
 }
 
 class ApiError extends Error {
@@ -15,7 +15,7 @@ export class ApiBase {
 
   constructor(options: ApiOptions) {
     this.token = options.token
-    this.host = options.host || 'http://api.tt.se'
+    this.host = options.host
   }
 
   async call(
