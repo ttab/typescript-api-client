@@ -4,7 +4,6 @@ import axios from 'axios';
 import { readFileSync } from 'fs';
 import { camelCase, capitalize, filter, map } from 'lodash';
 import * as mustache from 'mustache';
-import * as SwaggerTools from 'swagger-tools';
 import { Swagger, SwaggerType } from 'swagger-typescript-codegen/lib/swagger/Swagger';
 import { convertType } from 'swagger-typescript-codegen/lib/typescript';
 import { TypeSpec } from 'swagger-typescript-codegen/lib/typespec';
@@ -17,35 +16,21 @@ async function fetchSpec(): Promise<Swagger> {
   }).then(({ data }) => data)
 }
 
-/**
- * Let swagger-tools resolve any external references in the spec.
- */
-function resolveSpec(json: any): Promise<Swagger> {
-  return new Promise((rs, rj) => {
-    SwaggerTools.specs.v2.resolve(json, (err, result) => {
-      if (err) {
-        return rj(err)
-      }
-      rs(result)
-    })
-  })
-}
-
-function resolveExternalRefs(spec: Swagger): Promise<Swagger> {
-  return Promise.all(map(spec.definitions, (def, name) => {
+async function resolveExternalRefs(spec: Swagger): Promise<Swagger> {
+  return Promise.all(map(spec.definitions, async (def, name) => {
     if (def.$ref && (def.$ref.startsWith('http://') || def.$ref.startsWith('https://'))) {
-      return axios.get(def.$ref).then((res) => {
-        delete res.data.additionalProperties
-        return [name, res.data]
+      return axios.get<SwaggerType>(def.$ref).then((res) => {
+        let def: any = res.data
+        delete def['additionalProperties']
+        return { name, def }
       })
+    } else {
+      return Promise.resolve({ name, def })
     }
-    else {
-      return Promise.resolve([name, def])
-    }
-  })).then((deflist: [string, SwaggerType][]) => {
+  })).then((deflist) => {
     let definitions: { [key: string]: SwaggerType } = {}
     for (let t of deflist) {
-      definitions[t[0]] = t[1]
+      definitions[t.name] = t.def
     }
     return {
       ...spec,
@@ -66,7 +51,8 @@ function fixAdditionalProperties(spec: Swagger): Swagger {
     }
   }
 
-  function fixDefinition(d: SwaggerType) {
+  function fixDefinition(def: SwaggerType) {
+    let d: any = def
     if (d.type == 'object' && d.hasOwnProperty('additionalProperties') && d['additionalProperties'] === false) {
       delete d['additionalProperties']
     }
@@ -193,37 +179,32 @@ function buildView(spec: Swagger): Root {
       }
     }
     let api: Api = apis[e.api]
+    for (let [httpMethod, method] of Object.entries(obj)) {
+      if (!httpMethod.startsWith('x-')) {
+        let name = camelCase([httpMethods[httpMethod], ...e.nameParts].join(' '))
+        let parameters = buildParameters(method.parameters, spec)
 
-    for (let method in obj) {
-      let details = obj[method]
-      if (!method.startsWith('x-')) {
-
-        let name = camelCase([httpMethods[method], ...e.nameParts].join(' '))
-        if (name) {
-          let parameters = buildParameters(details.parameters, spec)
-
-          // check if there are other methods with the same shortName
-          let lookalikes = filter(api.methods, { shortName: name })
-          for (let m of lookalikes) {
-            m.isSingleton = false
-          }
-
-          api.methods.push({
-            shortName: name,
-            summary: details.summary,
-            description: details.description,
-            fullName: fullName(name, parameters.path),
-            pathParameters: parameters.path,
-            queryParameters: parameters.query,
-            bodyParameters: parameters.body,
-            formatString: e.formatString,
-            httpMethod: method,
-            hasQueryParameters: parameters.query.length > 0,
-            hasBodyParameters: parameters.body.length > 0,
-            isSingleton: lookalikes.length == 0,
-            responseType: convertType(details.responses['200'], spec)
-          })
+        // check if there are other methods with the same shortName
+        let lookalikes = filter(api.methods, { shortName: name })
+        for (let m of lookalikes) {
+          m.isSingleton = false
         }
+
+        api.methods.push({
+          shortName: name,
+          summary: method.summary,
+          description: method.description,
+          fullName: fullName(name, parameters.path),
+          pathParameters: parameters.path,
+          queryParameters: parameters.query,
+          bodyParameters: parameters.body,
+          formatString: e.formatString,
+          httpMethod: httpMethod,
+          hasQueryParameters: parameters.query.length > 0,
+          hasBodyParameters: parameters.body.length > 0,
+          isSingleton: lookalikes.length == 0,
+          responseType: convertType(method.responses['200'], spec)
+        })
       }
     }
   }
