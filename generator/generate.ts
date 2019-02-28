@@ -221,14 +221,20 @@ function buildView(spec: Swagger): View {
 }
 
 function render(view: any): void {
-  writeFileSync('./api.ts',
-    mustache.render(
-      readFileSync('./generator/templates/class.mustache').toString(),
-      view,
-      {
-        type: readFileSync('./generator/templates/type.mustache').toString()
-      }
-    ))
+  writeFileSync('./api.ts', mustache.render(
+    readFileSync('./generator/templates/class.mustache').toString(),
+    view,
+    {
+      type: readFileSync('./generator/templates/type.mustache').toString()
+    }
+  ))
+  writeFileSync('./README.md', mustache.render(
+    readFileSync('./generator/templates/readme.mustache').toString(),
+    view,
+    {
+      type: readFileSync('./generator/templates/type.mustache').toString()
+    }
+  ))
 }
 
 // do the thing

@@ -1,6 +1,5 @@
-{{#tsType}}
 {{! must use different delimiters to avoid ambiguities when delimiters directly follow a literal brace {. }}
-{{=<% %>=}}<%!
+{{#tsType}}{{=<% %>=}}<%!
 
 %><%#isRef%><%target%><%/isRef%><%!
 
@@ -13,5 +12,4 @@
 
 %><%#isDictionary%>{[key: string]: <%#elementType%><%>type%><%/elementType%>}<%/isDictionary%><%!
 
-%><%={{ }}=%>
-{{/tsType}}
+%><%={{ }}=%>{{/tsType}}

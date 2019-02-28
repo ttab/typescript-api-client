@@ -1,0 +1,38 @@
+# tt-api-client
+{:.no_toc}
+
+* TOC
+{:toc}
+
+{{#apis}}
+## {{className}}
+
+{{#methods}}
+### {{#isSingleton}}{{shortName}}{{/isSingleton}}{{^isSingleton}}{{fullName}}{{/isSingleton}}({{#pathParameters}}{{name}}{{#hasQueryParameters}}, {{/hasQueryParameters}}{{^hasQueryParameters}}{{#hasBodyParameters}}, {{/hasBodyParameters}}{{/hasQueryParameters}}{{/pathParameters}}{{#hasQueryParameters}}parameters{{#hasBodyParameters}}, {{/hasBodyParameters}}{{/hasQueryParameters}}{{#bodyParameters}}{{name}}{{/bodyParameters}})
+
+{{&summary}}
+
+{{&description}}
+
+#### Arguments
+{:.no_toc}
+{{#pathParameters}}
+ * {{name}}{{cardinality}}: `{{#type}}{{> type}}{{/type}}`
+{{/pathParameters}}
+{{#hasQueryParameters}}
+ * parameters:
+{{#queryParameters}}
+   - `{{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}}` - {{&type.description}}
+{{/queryParameters}}
+{{/hasQueryParameters}}
+{{#bodyParameters}}
+ * {{name}}{{cardinality}}: `{{#type}}{{> type}}{{/type}}`
+{{/bodyParameters}}
+
+#### Returns
+{:.no_toc}
+ * `Promise<{{#responseType}}{{> type}}{{/responseType}}>`
+
+{{/methods}}
+
+{{/apis}}
