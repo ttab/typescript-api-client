@@ -3,7 +3,7 @@
 {{#apis}}
 * {{className}}
 {{#methods}}
-  - [{{&name}}][#{{&anchor}}]
+  - [{{&name}}](#{{&anchor}})
 {{/methods}}
 {{/apis}}
 
@@ -19,7 +19,6 @@
 {{&description}}
 
 #### Arguments
-{:.no_toc}
 {{#pathParameters}}
  * {{name}}{{cardinality}}: `{{#type}}{{> type}}{{/type}}`
 {{/pathParameters}}
@@ -34,7 +33,6 @@
 {{/bodyParameters}}
 
 #### Returns
-{:.no_toc}
  * `Promise<{{#responseType}}{{> type}}{{/responseType}}>`
 
 {{/methods}}
