@@ -1,7 +1,7 @@
 /// <reference path="global.d.ts"/>
 
 import axios from 'axios';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { camelCase, capitalize, filter, map } from 'lodash';
 import * as mustache from 'mustache';
 import { Swagger, SwaggerType } from 'swagger-typescript-codegen/lib/swagger/Swagger';
@@ -220,15 +220,15 @@ function buildView(spec: Swagger): View {
   }
 }
 
-function render(view: any): string {
-  // console.error(JSON.stringify(view, null, 2))
-  return mustache.render(
-    readFileSync('./generator/templates/class.mustache').toString(),
-    view,
-    {
-      type: readFileSync('./generator/templates/type.mustache').toString()
-    }
-  )
+function render(view: any): void {
+  writeFileSync('./api.ts',
+    mustache.render(
+      readFileSync('./generator/templates/class.mustache').toString(),
+      view,
+      {
+        type: readFileSync('./generator/templates/type.mustache').toString()
+      }
+    ))
 }
 
 // do the thing
@@ -237,5 +237,4 @@ fetchSpec()
   .then(fixAdditionalProperties)
   .then(buildView)
   .then(render)
-  .then(console.log)
   .catch(console.error)
