@@ -1,29 +1,51 @@
-# tt-api-client
+# @ttab/typescript-api-client
 
-* ContentV1
-  - [search](#searchmediatype-parameters)
-  - [stream](#streammediatype-parameters)
-  - [notification](#notificationmediatype)
-  - [addNotificationMobile](#addnotificationmobilemediatype-parameters)
-  - [addNotificationEmail](#addnotificationemailmediatype-parameters)
-  - [removeNotification](#removenotificationmediatype-id)
-* UserV1
-  - [agreement](#agreement)
-  - [profile](#profile)
-  - [updateProfile](#updateprofileprofile)
-  - [profileByProperty](#profilebypropertyproperty)
-  - [updateProfileByProperty](#updateprofilebypropertyproperty-profile)
-  - [updateDevice](#updatedevicetoken-parameters)
-  - [removeDevice](#removedevicetoken)
-* CollectionV1
-  - [collection](#collection)
-  - [addCollection](#addcollectioncollection)
-  - [collectionById](#collectionbyidid)
-  - [updateCollection](#updatecollectionid-collection)
-  - [removeCollection](#removecollectionid)
-  - [addCollectionItems](#addcollectionitemsid-items)
-  - [removeCollectionItems](#removecollectionitemsid-items)
+Browser-friendly TypeScript client for TT Nyhetsbyrån public APIs. The
+client code (and this README file) has been automatically generated
+from the API definition located at [https://api.tt.se/docs](https://api.tt.se/docs).
 
+* [Getting started](#getting-started)
+* [API Reference](#api-reference)
+* [Building](#building)
+  + ContentV1
+    - [search](#searchmediatype-parameters)
+    - [stream](#streammediatype-parameters)
+    - [notification](#notificationmediatype)
+    - [addNotificationMobile](#addnotificationmobilemediatype-parameters)
+    - [addNotificationEmail](#addnotificationemailmediatype-parameters)
+    - [removeNotification](#removenotificationmediatype-id)
+  + UserV1
+    - [agreement](#agreement)
+    - [profile](#profile)
+    - [updateProfile](#updateprofileprofile)
+    - [profileByProperty](#profilebypropertyproperty)
+    - [updateProfileByProperty](#updateprofilebypropertyproperty-profile)
+    - [updateDevice](#updatedevicetoken-parameters)
+    - [removeDevice](#removedevicetoken)
+  + CollectionV1
+    - [collection](#collection)
+    - [addCollection](#addcollectioncollection)
+    - [collectionById](#collectionbyidid)
+    - [updateCollection](#updatecollectionid-collection)
+    - [removeCollection](#removecollectionid)
+    - [addCollectionItems](#addcollectionitemsid-items)
+    - [removeCollectionItems](#removecollectionitemsid-items)
+
+# Getting started
+
+## Obtaining an OAuth2 token
+
+## Searching
+
+```typescript
+api.contentV1.search('image', { q: 'panda' })
+```
+
+## Streaming data
+
+# Building
+
+# API Reference
 
 ## ContentV1
 

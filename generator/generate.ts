@@ -249,10 +249,10 @@ function render(view: any): void {
     }
   ))
   writeFileSync('./README.md', mustache.render(
-    readFileSync('./generator/templates/readme.mustache').toString(),
+    readFileSync('./generator/templates/readme.mustache', 'utf-8').toString(),
     view,
     {
-      type: readFileSync('./generator/templates/type.mustache').toString()
+      type: readFileSync('./generator/templates/type.mustache', 'utf-8').toString()
     }
   ))
 }
