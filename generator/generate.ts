@@ -103,8 +103,10 @@ interface Api {
 }
 
 interface Method {
+  name: () => string
   shortName: string
   fullName: string
+  isSingleton: boolean
   httpMethod: string
   formatString: string
   pathParameters: Parameter[]
@@ -112,10 +114,11 @@ interface Method {
   bodyParameters: Parameter[]
   hasQueryParameters: boolean
   hasBodyParameters: boolean
-  isSingleton: boolean
   responseType: TypeSpec
   summary: string
   description: string
+  parameterNames: string
+  anchor: () => string
 }
 
 interface Parameter {
@@ -142,6 +145,10 @@ function fullName(name: string, pathParameters: Parameter[]): string {
     name,
     ...pathParameters.map((p) => { return capitalize(p.name) })
   ].join('By')
+}
+
+function anchor(name: string, parameterNames: string[]): string {
+  return `${name}${parameterNames.join('-')}`.toLowerCase()
 }
 
 function buildParameters(parameters: any = [], spec: Swagger): { [type: string]: Parameter[] } {
@@ -195,9 +202,19 @@ function buildView(spec: Swagger): View {
           m.isSingleton = false
         }
 
+        let parameterNames = [
+          ...parameters.path.map(p => p.name),
+          parameters.query.length > 0 ? 'parameters' : null,
+          ...parameters.body.map(p => p.name)
+        ].filter(n => n)
+
         api.methods.push({
+          name: function() {
+            return this.isSingleton ? this.shortName : this.fullName
+          },
           shortName: name,
           summary: method.summary,
+          isSingleton: lookalikes.length === 0,
           description: method.description,
           fullName: fullName(name, parameters.path),
           pathParameters: parameters.path,
@@ -207,8 +224,11 @@ function buildView(spec: Swagger): View {
           httpMethod: httpMethod,
           hasQueryParameters: parameters.query.length > 0,
           hasBodyParameters: parameters.body.length > 0,
-          isSingleton: lookalikes.length == 0,
-          responseType: convertType(method.responses['200'], spec)
+          responseType: convertType(method.responses['200'], spec),
+          parameterNames: parameterNames.join(', '),
+          anchor: function() {
+            return `${this.name()}${parameterNames.join('-')}`.toLowerCase()
+          }
         })
       }
     }

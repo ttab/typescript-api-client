@@ -15,7 +15,7 @@ import { ApiBase, ApiOptions } from './lib/runtime'
     * {{&description}}
     *
     * @method
-    * @name {{&className}}#{{#isSingleton}}{{shortName}}{{/isSingleton}}{{^isSingleton}}{{fullName}}{{/isSingleton}}
+    * @name {{&className}}#{{&name}}
     {{#pathParameters}}
     * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
     {{/pathParameters}}
@@ -26,12 +26,7 @@ import { ApiBase, ApiOptions } from './lib/runtime'
     * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
     {{/bodyParameters}}
     */
-    {{#isSingleton}}
-      {{shortName}} (
-    {{/isSingleton}}
-    {{^isSingleton}}
-      {{fullName}} (
-    {{/isSingleton}}
+    {{&name}} (
     {{#pathParameters}}
       {{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}},
     {{/pathParameters}}

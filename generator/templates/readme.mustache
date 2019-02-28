@@ -1,14 +1,18 @@
 # tt-api-client
-{:.no_toc}
 
-* TOC
-{:toc}
+{{#apis}}
+* {{className}}
+{{#methods}}
+  - [{{&name}}][#{{&anchor}}]
+{{/methods}}
+{{/apis}}
+
 
 {{#apis}}
 ## {{className}}
 
 {{#methods}}
-### {{#isSingleton}}{{shortName}}{{/isSingleton}}{{^isSingleton}}{{fullName}}{{/isSingleton}}({{#pathParameters}}{{name}}{{#hasQueryParameters}}, {{/hasQueryParameters}}{{^hasQueryParameters}}{{#hasBodyParameters}}, {{/hasBodyParameters}}{{/hasQueryParameters}}{{/pathParameters}}{{#hasQueryParameters}}parameters{{#hasBodyParameters}}, {{/hasBodyParameters}}{{/hasQueryParameters}}{{#bodyParameters}}{{name}}{{/bodyParameters}})
+### {{&name}}({{parameterNames}})
 
 {{&summary}}
 

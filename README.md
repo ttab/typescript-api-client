@@ -1,8 +1,29 @@
 # tt-api-client
-{:.no_toc}
 
-* TOC
-{:toc}
+* ContentV1
+  - [search][#searchmediatype-parameters]
+  - [stream][#streammediatype-parameters]
+  - [notification][#notificationmediatype]
+  - [addNotificationMobile][#addnotificationmobilemediatype-parameters]
+  - [addNotificationEmail][#addnotificationemailmediatype-parameters]
+  - [removeNotification][#removenotificationmediatype-id]
+* UserV1
+  - [agreement][#agreement]
+  - [profile][#profile]
+  - [updateProfile][#updateprofileprofile]
+  - [profileByProperty][#profilebypropertyproperty]
+  - [updateProfileByProperty][#updateprofilebypropertyproperty-profile]
+  - [updateDevice][#updatedevicetoken-parameters]
+  - [removeDevice][#removedevicetoken]
+* CollectionV1
+  - [collection][#collection]
+  - [addCollection][#addcollectioncollection]
+  - [collectionById][#collectionbyidid]
+  - [updateCollection][#updatecollectionid-collection]
+  - [removeCollection][#removecollectionid]
+  - [addCollectionItems][#addcollectionitemsid-items]
+  - [removeCollectionItems][#removecollectionitemsid-items]
+
 
 ## ContentV1
 
@@ -105,7 +126,7 @@ Create a new email notification
 {:.no_toc}
  * `Promise<notification>`
 
-### removeNotification(mediaTypeid)
+### removeNotification(mediaType, id)
 
 Remove an existing notification
 
