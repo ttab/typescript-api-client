@@ -1,6 +1,6 @@
 import axios from 'axios'
 import debug from 'debug'
-import { EventEmitter } from 'events'
+import * as EventEmitter from 'eventemitter3'
 import StrictEventEmitter from 'strict-event-emitter-types'
 
 import { Api, ttninjs } from '../api'
