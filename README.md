@@ -31,6 +31,13 @@ Instructions for building the client are [here](/BUILDING.md).
     - [removeCollection](#removecollectionid)
     - [addCollectionItems](#addcollectionitemsid-items)
     - [removeCollectionItems](#removecollectionitemsid-items)
+  - [Exported types](#exported-types)
+    - [ttninjs](#interface-ttninjs)
+    - [agreement](#interface-agreement)
+    - [collection](#interface-collection)
+    - [collectionItem](#interface-collectionItem)
+    - [product](#interface-product)
+    - [notification](#interface-notification)
 
 # Getting started
 
@@ -96,7 +103,7 @@ Searching the TT archives.
 
 #### Returns
 
-- `Promise<{ 'hits': Array<ttninjs>;}>`
+- Promise&lt;{ 'hits': Array<[ttninjs](#interface-ttninjs)>;}&gt;
 
 #### Example
 
@@ -141,7 +148,7 @@ sense in this context (we will always return the most recent item).
 
 #### Returns
 
-- `Promise<{ 'hits': Array<ttninjs>;}>`
+- Promise&lt;{ 'hits': Array<[ttninjs](#interface-ttninjs)>;}&gt;
 
 #### Example
 
@@ -169,7 +176,7 @@ List all notifications
 
 #### Returns
 
-- `Promise<Array<notification>>`
+- Promise&lt;Array<[notification](#interface-notification)>&gt;
 
 #### Example
 
@@ -200,7 +207,7 @@ Create a new mobile notification
 
 #### Returns
 
-- `Promise<notification>`
+- Promise&lt;[notification](#interface-notification)&gt;
 
 #### Example
 
@@ -239,7 +246,7 @@ Create a new email notification
 
 #### Returns
 
-- `Promise<notification>`
+- Promise&lt;[notification](#interface-notification)&gt;
 
 #### Example
 
@@ -270,7 +277,7 @@ Remove an existing notification
 
 #### Returns
 
-- `Promise<string>`
+- Promise&lt;string&gt;
 
 #### Example
 
@@ -292,7 +299,7 @@ Return a list of applicable customer agreements for the current user.
 
 #### Returns
 
-- `Promise<Array<agreement>>`
+- Promise&lt;Array<[agreement](#interface-agreement)>&gt;
 
 #### Example
 
@@ -314,7 +321,7 @@ information as they see fit.
 
 #### Returns
 
-- `Promise<{ }>`
+- Promise&lt;{ }&gt;
 
 #### Example
 
@@ -339,7 +346,7 @@ For more controlled updates of the user profile, use the
 
 #### Returns
 
-- `Promise<string>`
+- Promise&lt;string&gt;
 
 #### Example
 
@@ -364,7 +371,7 @@ user profile. This endpoint returns only selected properties.
 
 #### Returns
 
-- `Promise<{ }>`
+- Promise&lt;{ }&gt;
 
 #### Example
 
@@ -402,7 +409,7 @@ not be overwritten with `null`.
 
 #### Returns
 
-- `Promise<string>`
+- Promise&lt;string&gt;
 
 #### Example
 
@@ -433,7 +440,7 @@ Register a new mobile device.
 
 #### Returns
 
-- `Promise<string>`
+- Promise&lt;string&gt;
 
 #### Example
 
@@ -458,7 +465,7 @@ Unregister a mobile device.
 
 #### Returns
 
-- `Promise<string>`
+- Promise&lt;string&gt;
 
 #### Example
 
@@ -484,7 +491,7 @@ Returns a list of all collections belonging to the current user.
 
 #### Returns
 
-- `Promise<Array<collection>>`
+- Promise&lt;Array<[collection](#interface-collection)>&gt;
 
 #### Example
 
@@ -508,7 +515,7 @@ asynchronous, and there may be a delay before the change is visible using the
 
 #### Returns
 
-- `Promise<collection>`
+- Promise&lt;[collection](#interface-collection)&gt;
 
 #### Example
 
@@ -530,7 +537,7 @@ Returns all properties and contents of a single collection.
 
 #### Returns
 
-- `Promise<collectionItem>`
+- Promise&lt;[collectionItem](#interface-collectionItem)&gt;
 
 #### Example
 
@@ -555,7 +562,7 @@ asynchronous, and there may be a delay before the change is visible using the
 
 #### Returns
 
-- `Promise<collection>`
+- Promise&lt;[collection](#interface-collection)&gt;
 
 #### Example
 
@@ -581,7 +588,7 @@ asynchronous, and there may be a delay before the change is visible using the
 
 #### Returns
 
-- `Promise<string>`
+- Promise&lt;string&gt;
 
 #### Example
 
@@ -608,7 +615,7 @@ changes are visible using the `GET /collection/v1/collection/{id}` endpoint.
 
 #### Returns
 
-- `Promise<string>`
+- Promise&lt;string&gt;
 
 #### Example
 
@@ -637,7 +644,7 @@ is asynchronous, and there may be a delay before changes are visible using the
 
 #### Returns
 
-- `Promise<string>`
+- Promise&lt;string&gt;
 
 #### Example
 
@@ -649,4 +656,190 @@ api.collection
   .then(result => {
     // do something with result
   });
+```
+
+## Exported types
+
+### Interface ttninjs
+
+```typescript
+interface ttninjs {
+  uri: string;
+  type?:
+    | "text"
+    | "audio"
+    | "video"
+    | "picture"
+    | "graphic"
+    | "composite"
+    | "planning"
+    | "component"
+    | "event";
+  mimetype?: string;
+  representationtype?: "complete" | "incomplete" | "associated";
+  profile?: "PUBL" | "DATA" | "INFO" | "RAW";
+  version?: string;
+  versioncreated?: string;
+  versionstored?: string;
+  embargoed?: string;
+  date?: string;
+  datetime?: string;
+  enddate?: string;
+  enddatetime?: string;
+  embargoedreason?: string;
+  job?: string;
+  pubstatus?: "usable" | "withheld" | "canceled" | "replaced" | "commissioned";
+  copyrightholder?: string;
+  copyrightnotice?: string;
+  language?: string;
+  week?: number;
+  urgency?: number;
+  webprio?: number;
+  source?: string;
+  commissioncode?: string;
+  description_text?: string;
+  description_usage?: string;
+  usageterms?: string;
+  body_text?: string;
+  body_html5?: string;
+  body_event?: {
+    arena?: string;
+    city?: string;
+    address?: string;
+    country?: string;
+    eventurl?: string;
+    eventphone?: string;
+    eventweb?: string;
+    organizer?: string;
+    organizerurl?: string;
+    organizerphone?: string;
+    organizermail?: string;
+    eventstatus?: string;
+    eventstatus_text?: string;
+    region?: string;
+    region_text?: string;
+    municipality?: string;
+    municipality_text?: string;
+    eventtags?: string;
+    eventtype?: string;
+    eventtype_text?: string;
+    note_extra?: string;
+    note_pm?: string;
+    accreditation?: string;
+    extraurl?: string;
+    createddate?: string;
+    createdby?: string;
+    changeddate?: string;
+    changedby?: string;
+    courtcasenumber?: string;
+  };
+  body_sportsml?: string;
+  body_pages?: {};
+  commissionedby?: Array<string>;
+  charcount?: number;
+  originaltransmissionreference?: string;
+  signals?: {
+    pageproduct?: string;
+    multipagecount?: number;
+    paginae?: Array<string>;
+    pagecode?: string;
+    pagevariant?: string;
+  };
+  product?: Array<{ [key: string]: {} }>;
+  person?: Array<{ [key: string]: {} }>;
+  organisation?: Array<{ [key: string]: {} }>;
+  place?: Array<{ [key: string]: {} }>;
+  subject?: Array<{ [key: string]: {} }>;
+  event?: Array<{ [key: string]: {} }>;
+  object?: Array<{ [key: string]: {} }>;
+  byline?: string;
+  bylines?: Array<{
+    byline?: string;
+    firstname?: string;
+    lastname?: string;
+    role?: string;
+    email?: string;
+    jobtitle?: string;
+    internal?: string;
+    phone?: string;
+    initials?: string;
+    affiliation?: string;
+  }>;
+  headline?: string;
+  slug?: string;
+  located?: string;
+  renditions?: {};
+  replacing?: Array<string>;
+  replacedby?: string;
+  associations?: {};
+  revisions?: Array<{ [key: string]: {} }>;
+  sector?: "INR" | "UTR" | "EKO" | "KLT" | "SPT" | "PRM";
+}
+```
+
+### Interface agreement
+
+```typescript
+interface agreement {
+  id?: number;
+  description?: {};
+  type?: "Subscription" | "Direct" | "Normal" | "Sketch";
+  products?: Array<product>;
+}
+```
+
+### Interface collection
+
+```typescript
+interface collection {
+  id: string;
+  owner: string;
+  name: string;
+  colldate: string;
+}
+```
+
+### Interface collectionItem
+
+```typescript
+interface collectionItem {
+  id: string;
+  owner: string;
+  name: string;
+  colldate: string;
+  items: Array<ttninjs>;
+}
+```
+
+### Interface product
+
+```typescript
+interface product {
+  name?: string;
+  description?: {};
+  code?: string;
+}
+```
+
+### Interface notification
+
+```typescript
+interface notification {
+  id: string;
+  title: string;
+  type: "mobile" | "email";
+  mediaType:
+    | "_all"
+    | "image"
+    | "video"
+    | "graphic"
+    | "text"
+    | "feature"
+    | "page"
+    | "planning"
+    | "calendar";
+  q?: string;
+  p?: Array<string>;
+  agr?: Array<number>;
+}
 ```

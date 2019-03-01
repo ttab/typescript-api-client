@@ -14,7 +14,10 @@ Instructions for building the client are [here](/BUILDING.md).
     - [{{&name}}](#{{&anchor}})
 {{/methods}}
 {{/apis}}
-
+  + [Exported types](#exported-types)
+{{#definitions}}
+    - [{{&name}}](#interface-{{&name}})
+{{/definitions}}
 # Getting started
 
 ## Obtaining an OAuth2 token
@@ -79,7 +82,7 @@ TBA
 {{/bodyParameters}}
 
 #### Returns
- * `Promise<{{#responseType}}{{> type}}{{/responseType}}>`
+ * Promise&lt;{{#responseType}}{{> linkedtype}}{{/responseType}}&gt;
 
 #### Example
 ```typescript
@@ -91,3 +94,13 @@ api.{{api}}.{{name}}({{&examples}}).then((result) => {
 {{/methods}}
 
 {{/apis}}
+
+## Exported types
+
+{{#definitions}}
+
+### Interface {{&name}}
+```typescript
+interface {{&name}} {{#tsType}}{{> type}}{{/tsType}};
+```
+{{/definitions}}

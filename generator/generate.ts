@@ -267,7 +267,8 @@ function render(view: any): void {
     readFileSync('./generator/templates/readme.mustache', 'utf-8').toString(),
     view,
     {
-      type: readFileSync('./generator/templates/type.mustache', 'utf-8').toString()
+      type: readFileSync('./generator/templates/type.mustache', 'utf-8').toString(),
+      linkedtype: readFileSync('./generator/templates/linkedtype.mustache', 'utf-8').toString()
     }
   ))
 }

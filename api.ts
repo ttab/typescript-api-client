@@ -1,6 +1,6 @@
 import { ApiBase, ApiOptions } from "./lib/runtime";
 
-export type ttninjs = {
+export interface ttninjs {
   uri: string;
   type?:
     | "text"
@@ -111,37 +111,37 @@ export type ttninjs = {
   associations?: {};
   revisions?: Array<{ [key: string]: {} }>;
   sector?: "INR" | "UTR" | "EKO" | "KLT" | "SPT" | "PRM";
-};
+}
 
-export type agreement = {
+export interface agreement {
   id?: number;
   description?: {};
   type?: "Subscription" | "Direct" | "Normal" | "Sketch";
   products?: Array<product>;
-};
+}
 
-export type collection = {
+export interface collection {
   id: string;
   owner: string;
   name: string;
   colldate: string;
-};
+}
 
-export type collectionItem = {
+export interface collectionItem {
   id: string;
   owner: string;
   name: string;
   colldate: string;
   items: Array<ttninjs>;
-};
+}
 
-export type product = {
+export interface product {
   name?: string;
   description?: {};
   code?: string;
-};
+}
 
-export type notification = {
+export interface notification {
   id: string;
   title: string;
   type: "mobile" | "email";
@@ -158,7 +158,7 @@ export type notification = {
   q?: string;
   p?: Array<string>;
   agr?: Array<number>;
-};
+}
 
 class ContentV1 extends ApiBase {
   /**

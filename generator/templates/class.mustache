@@ -1,7 +1,7 @@
 import { ApiBase, ApiOptions } from './lib/runtime'
 
 {{#definitions}}
-  export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}};
+  export interface {{&name}} {{#tsType}}{{> type}}{{/tsType}};
 
 {{/definitions}}
 
