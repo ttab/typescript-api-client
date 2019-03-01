@@ -1,4 +1,5 @@
 import { ApiBase, ApiOptions } from "./lib/runtime";
+export { ContentStream } from "./lib/runtime";
 
 export interface ttninjs {
   uri: string;
