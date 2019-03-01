@@ -1,5 +1,9 @@
 import axios from 'axios'
 import debug from 'debug'
+import * as EventEmitter from 'eventemitter3'
+import StrictEventEmitter from 'strict-event-emitter-types'
+
+import { Api, ttninjs } from '../api'
 
 let log = debug('tt:api')
 
@@ -59,4 +63,63 @@ export class ApiBase {
       throw err
     })
   }
+}
+
+interface ContentStreamEvents {
+  data: (hit: ttninjs) => void
+  error: (error: ApiError) => void
+  close: void
+}
+
+export class ContentStream extends (EventEmitter as { new(): StrictEventEmitter<EventEmitter, ContentStreamEvents> })
+{
+  running: boolean = true
+
+  constructor(
+    api: Api,
+    mediaType:
+      | "_all"
+      | "image"
+      | "video"
+      | "graphic"
+      | "text"
+      | "feature"
+      | "page"
+      | "planning"
+      | "calendar",
+    parameters: {
+      q?: string;
+      p?: Array<string>;
+      agr?: Array<number>;
+      last?: string;
+      wait?: number;
+    }) {
+    super()
+
+    let last: string | undefined = undefined
+    this.run = () => {
+      api.content.stream(mediaType, { ...parameters, last }).then(res => {
+        res.hits.forEach(hit => {
+          this.emit('data', hit)
+          last = hit.uri
+        })
+      }).catch(err => {
+        this.emit('error', err)
+      }).then(() => {
+        if (this.running) {
+          this.run()
+        } else {
+          this.emit('close')
+        }
+      })
+    }
+    this.run()
+  }
+
+  run: () => void
+
+  close() {
+    this.running = false
+  }
+
 }
