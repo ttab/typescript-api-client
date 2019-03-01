@@ -118,7 +118,7 @@ export class ContentStream extends (EventEmitter as { new(): StrictEventEmitter<
 
   run: () => void
 
-  close() {
+  stop() {
     this.running = false
   }
 

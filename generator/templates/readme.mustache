@@ -1,12 +1,21 @@
-# @ttab/typescript-api-client
+# @ttab/api-client
 
 Browser-friendly TypeScript client for TT Nyhetsbyrån public APIs. The
 client code (and this README file) has been automatically generated
 from the API definition located at [{{&host}}/docs]({{&host}}/docs).
 
+![Version](http://img.shields.io/npm/v/@ttab/api-client.svg) &nbsp;
+![License](http://img.shields.io/npm/l/@ttab/api-client.svg) &nbsp;
+![Monthly downloads](http://img.shields.io/npm/dm/@ttab/api-client.svg) &nbsp;
+
 Instructions for building the client are [here](/BUILDING.md).
 
 * [Getting started](#getting-started)
+  + [Prerequisites](#prerequisites)
+  + [Obtaining an OAuth2 token](#obtaining-an-oauth2-token)
+  + [Searching](#searching)
+  + [Streaming data](#streaming-data)
+    - [The ContentStream class](#the-contentstream-class)
 * [API Reference](#api-reference)
 {{#apis}}
   + {{className}}
@@ -18,42 +27,188 @@ Instructions for building the client are [here](/BUILDING.md).
 {{#definitions}}
     - [{{&name}}](#interface-{{&name}})
 {{/definitions}}
+
 # Getting started
+
+## Prerequisites
+
+To access the APIs you need to have a registered user account at [TT
+Nyhetsbyrån](https://tt.se).
+
+The API uses OAuth2 token authentication. To be able to generate an
+OAuth2 token you will need a OAuth2 client registered with TT
+Nyhetsbyrån. If you don't have one, please contact
+[support@tt.se](mailto:support@tt.se).
 
 ## Obtaining an OAuth2 token
 
-TBA
+The OAuth2 endpoints are documented
+[here](http://spec.tt.se/api.html#authentication). In short, to obtain
+a token you call the `https://tt.se/o/oauth2/token` endpoint like this:
 
-## Anatomy of metadata items
+```sh
+curl -XPOST -d username="<USERNAME>" \
+  -d password="<PASSWORD>" \
+  -d grant_type=password \
+  -d scope="roles" \
+  -d client_id="<CLIENT_ID>" \
+  -d client_secret="<CLIENT_SECRET>" \
+  https://tt.se/o/oauth2/token
+```
 
-TBA
+You will get a JSON payload back. One of the properties is called
+`access_token` and contains the the OAuth2 token you need to connect
+to the API. To run the examples below it is handy to have this token
+exported as an environment variable:
+
+```sh
+export TOKEN="a.DV_8caPCk7CVQs_jr4_MpqZSxj4e25N3GbTEGXk2w4MUwzB..."
+```
 
 ## Searching
 
-Searching the database for matching items is a very common
-operation. You supply the `mediaType` (`image`, `text`, `video`, etc.)
-and an object with query parameters, and get a result object with an
-array of search `hits`.
+Searching the database for matching items is a common operation. You
+supply the `mediaType` (`image`, `text`, `video`, etc.)  and an object
+with query parameters, and get a result object with an array of search
+`hits`.
 
 This is a basic query, looking for panda pictures:
 
 ```typescript
-import { Api } from '@ttab/typescript-api-client'
+import { Api } from '@ttab/api-client'
 
 let api = new Api({ token: process.env.TOKEN || '' })
 
 api.content.search('image', { q: 'panda' })
   .then((res) => {
-    console.log(res.hits[0].uri)
+    res.hits.forEach(hit => {
+      console.log(hit.uri, hit.product)
+    })
+  })
+```
+
+The search result is restricted to only match items allowed by the
+customer agreements linked to your user account. If you wish to
+further restrict the search result to match a given agreement you can
+use the `agr` parameter:
+
+```typescript
+api.content.search('image', { q: 'panda', agr: [20031] })
+  .then((res) => {
+    res.hits.forEach(hit => {
+      console.log(hit.uri, hit.product)
+    })
+  })
+```
+
+You can also restrict the search result to only contain items matching
+one or more [product codes](https://tt.se/spec/product/1.0):
+
+```typescript
+api.content.search('image', { q: 'panda', p: ["FOGNRE", "FOGNREEJ"] })
+  .then((res) => {
+    res.hits.forEach(hit => {
+      console.log(hit.uri, hit.product)
+    })
   })
 ```
 
 ## Streaming data
 
-TBA
+While the [api.content.search()](#searchmediatype-parameters) method
+only returns items that are already present in the database,
+[api.content.stream()](#streammediatype-parameters) provides a way to
+get a near real-time stream of new items as they are being indexed.
 
-[TTNinjs]:https://tt.se/spec/ttninjs/ttninjs-schema_1.0.json
+The [api.content.stream()](#streammediatype-parameters) method accepts
+roughly the same arguments as
+[api.content.search()](#searchmediatype-parameters), with the
+exception of arguments that affect time ranges and result
+pagination. They don't make any sense while streaming data, as we will
+always return the latest items added.
 
+[api.content.stream()](#streammediatype-parameters) also accepts two
+additional parameters. `wait` is the maximum time (in seconds) to wait
+for new items before the call returns with an empty result. `last` is
+the `uri` of the last item that the client received. The idea is that
+if items has been added to the database since the client received the
+last result, the call will return immediately with those new items.
+
+Utilizing the `last` parameter you can write a simple loop like this,
+that prints the uri, source and headline for each new image as it is
+added to the database:
+
+```typescript
+import { Api } from '@ttab/api-client'
+
+let api = new Api({ token: process.env.TOKEN || '' })
+
+function loop(last?: string) {
+  return api.content.stream('image', { last: last }).then(result => {
+    let _last = null
+    result.hits.forEach(hit => {
+      console.log(hit.uri, hit.source, hit.headline)
+      _last = hit.uri
+    })
+    return loop(_last)
+  })
+}
+
+loop().catch(err => {
+  console.error(err)
+})
+```
+
+### The ContentStream class
+
+While you can handle stream loops yourself, the API client supplies a
+utility class to make content streaming easier.
+
+#### Methods
+
+ * `constructor(api, mediaType, parameters)` -
+    + `api` - an `Api` instance
+    + `mediaType` and `parameters` - the same arguments
+       accepted by [api.content.stream()](#streammediatype-parameters)
+ * `stop()` - request that the content stream be stopped. When the
+    stream has closed down and no more `data` events can be expected
+    a final `close` event will be emitted.
+
+#### Events
+
+ * `data` - emitted once for every hit.
+ * `error` - emitted on error. It is up to the user to
+   decide how to handle this error and if/when to close
+   the content stream.
+ * `close` - emitted when the content stream is closed. No more
+   `data` events will be emitted.
+
+#### Example
+
+The following code is equivalent to the loop in the previous
+section. It prints the `uri`, `source` and `headline` for each new
+image as it is added to the database. It handles errors by printing a
+stack trace and closing down the stream.
+
+```typescript
+import { Api, ContentStream } from '@ttab/api-client'
+
+let api = new Api({ token: process.env.TOKEN || '' })
+let stream = new ContentStream(api, 'image', {})
+
+stream.on('data', (hit) => {
+  console.log(hit.uri, hit.source, hit.headline)
+})
+
+stream.on('error', (err) => {
+  console.log('err', err)
+  stream.close()
+})
+
+stream.on('close', () => {
+  console.log('closed')
+})
+```
 
 # API Reference
 

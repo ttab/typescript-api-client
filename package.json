@@ -1,5 +1,5 @@
 {
-  "name": "@ttab/typescript-api-client",
+  "name": "@ttab/api-client",
   "version": "0.0.1",
   "description": "Browser-friendly TypeScript client for TT Nyhetsbyrån public APIs.",
   "keywords": [
