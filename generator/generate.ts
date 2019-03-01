@@ -119,6 +119,7 @@ interface Method {
   description: string
   parameterNames: string
   anchor: () => string
+  examples: string
 }
 
 interface Parameter {
@@ -126,6 +127,7 @@ interface Parameter {
   type: TypeSpec
   typeName: string
   cardinality: string
+  example: any
 }
 
 function parsePath(path: string): Endpoint {
@@ -147,10 +149,6 @@ function fullName(name: string, pathParameters: Parameter[]): string {
   ].join('By')
 }
 
-function anchor(name: string, parameterNames: string[]): string {
-  return `${name}${parameterNames.join('-')}`.toLowerCase()
-}
-
 function buildParameters(parameters: any = [], spec: Swagger): { [type: string]: Parameter[] } {
   let p: { [type: string]: Parameter[] } = {
     body: [],
@@ -158,11 +156,21 @@ function buildParameters(parameters: any = [], spec: Swagger): { [type: string]:
     path: []
   }
   for (let o of getParametersForMethod([], parameters, spec)) {
+    let example: any
+
+    let a: any = o
+    if (a['x-example']) {
+      example = JSON.stringify(a['x-example'])
+    } else if (a.schema && a.schema.example) {
+      example = JSON.stringify(a.schema.example)
+    }
+
     p[o.in].push({
       name: o.name,
       type: o.tsType,
       typeName: o.type,
-      cardinality: o.cardinality
+      cardinality: o.cardinality,
+      example: example
     })
   }
   return p
@@ -208,6 +216,12 @@ function buildView(spec: Swagger): View {
           ...parameters.body.map(p => p.name)
         ].filter(n => n)
 
+        let examples = [
+          ...parameters.path.map(p => p.example),
+          parameters.query.length > 0 ? `{${map(parameters.query, (p) => p.example ? `${p.name}: ${p.example}` : null).filter((e) => e).join(', ')}}` : null,
+          ...parameters.body.map(p => p.example)
+        ].filter(n => n)
+
         api.methods.push({
           name: function() {
             return this.isSingleton ? this.shortName : this.fullName
@@ -228,7 +242,8 @@ function buildView(spec: Swagger): View {
           parameterNames: parameterNames.join(', '),
           anchor: function() {
             return `${this.name()}${parameterNames.join('-')}`.toLowerCase()
-          }
+          },
+          examples: examples.join(', ')
         })
       }
     }
