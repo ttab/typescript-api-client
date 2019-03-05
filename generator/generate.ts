@@ -75,11 +75,18 @@ function fixAdditionalProperties(spec: Swagger): Swagger {
   return spec
 }
 
-let httpMethods: { [key: string]: string } = {
-  'get': '',
+// how we map our http methods to method name prefixes
+const methodPrefix: { [key: string]: string } = {
+  'get': 'get',
   'put': 'update',
   'post': 'add',
   'delete': 'remove'
+}
+
+// some methods have hard-coded names
+const methodNames: { [key: string]: string } = {
+  'search': 'search',
+  'stream': 'stream'
 }
 
 interface Endpoint {
@@ -142,6 +149,15 @@ function parsePath(path: string): Endpoint {
   }
 }
 
+function shortName(httpMethod: string, endpoint: Endpoint, responseType: TypeSpec): string {
+  let name: string = methodNames[endpoint.nameParts.join('')]
+  if (!name) {
+    name = camelCase([methodPrefix[httpMethod], ...endpoint.nameParts].join(' '))
+      + (responseType.isArray ? 's' : '')
+  }
+  return name
+}
+
 function fullName(name: string, pathParameters: Parameter[]): string {
   return [
     name,
@@ -201,8 +217,9 @@ function buildView(spec: Swagger): View {
     let api: Api = apis[e.api]
     for (let [httpMethod, method] of Object.entries(obj)) {
       if (!httpMethod.startsWith('x-')) {
-        let name = camelCase([httpMethods[httpMethod], ...e.nameParts].join(' '))
         let parameters = buildParameters(method.parameters, spec)
+        let responseType = convertType(method.responses['200'], spec)
+        let name = shortName(httpMethod, e, responseType)
 
         // check if there are other methods with the same shortName
         let lookalikes = filter(api.methods, { shortName: name })
@@ -235,10 +252,10 @@ function buildView(spec: Swagger): View {
           queryParameters: parameters.query,
           bodyParameters: parameters.body,
           formatString: e.formatString,
-          httpMethod: httpMethod,
+          httpMethod,
           hasQueryParameters: parameters.query.length > 0,
           hasBodyParameters: parameters.body.length > 0,
-          responseType: convertType(method.responses['200'], spec),
+          responseType,
           parameterNames: parameterNames.join(', '),
           anchor: function() {
             return `${this.name()}${parameterNames.join('-')}`.toLowerCase()

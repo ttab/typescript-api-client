@@ -1,7 +1,7 @@
 {
   "name": "@ttab/api-client",
   "version": "0.0.1",
-  "description": "Browser-friendly TypeScript client for TT Nyhetsbyrån public APIs.",
+  "description": "Browser-friendly TypeScript/JavaScript client for TT Nyhetsbyrån public APIs.",
   "keywords": [
     "api",
     "client",
@@ -17,7 +17,7 @@
     "prepublishOnly": "npm run dist",
     "test": "jest"
   },
-  "main": "./dist/api.js",
+  "main": "./dist/index.js",
   "files": [
     "dist/*"
   ],

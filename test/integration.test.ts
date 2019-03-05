@@ -1,60 +1,46 @@
-import { Api } from '../api'
-import { setTimeout } from 'timers';
+import { Api } from '../dist/index'
 
 let api = new Api({ token: process.env.TOKEN || '' })
 
 describe('content', () => {
 
   describe('search', () => {
-    it('executes a content search', () => {
-      return api.content.search('text', { q: 'stockholm' })
-        .then((res) => {
-          expect(res.hits.length).toBeCloseTo(20)
-        })
+    it('executes a content search', async () => {
+      let res = await api.content.search('text', { q: 'stockholm' })
+      expect(res.hits.length).toBeCloseTo(20)
     })
 
-    it('accepts the _all mediaType', () => {
-      return api.content.search('_all', { q: 'stockholm' })
-        .then((res) => {
-          expect(res.hits.length).toBeCloseTo(20)
-        })
+    it('accepts the _all mediaType', async () => {
+      let res = await api.content.search('_all', { q: 'stockholm' })
+      expect(res.hits.length).toBeCloseTo(20)
     })
   })
 
   describe('notification', () => {
-    it('can be created, listed, and deleted', () => {
-      return api.content.addNotificationMobile('text', {
+    it('can be created, listed, and deleted', async () => {
+      let res = await api.content.addNotificationMobile('text', {
         q: 'panda',
         title: '__all the pandas__'
-      }).then((res) => {
-        expect(res.title).toEqual('__all the pandas__')
-        expect(res.mediaType).toEqual('text')
-        expect(res.type).toEqual('mobile')
-        expect(res.q).toEqual('panda')
-      }).then(() => {
-        return api.content.notification('text')
-          .then((res) => {
-            return res.filter((n) => {
-              return n.title === '__all the pandas__'
-            })
-          })
-      }).then((found) => {
-        expect(found.length).toBeGreaterThanOrEqual(1)
-        return found.reduce((p, n) => {
-          return p.then(() => {
-            return api.content.removeNotification(n.mediaType, n.id)
-          })
-        }, Promise.resolve(''))
-      }).then(() => {
-        return api.content.notification('text')
-          .then((res) => {
-            return res.filter((n) => {
-              return n.title === '__all the pandas__'
-            })
-          })
-      }).then((found) => {
-        expect(found.length).toEqual(0)
       })
+      expect(res.title).toEqual('__all the pandas__')
+      expect(res.mediaType).toEqual('text')
+      expect(res.type).toEqual('mobile')
+      expect(res.q).toEqual('panda')
+
+      let found = (await api.content.getNotifications('text')).filter((n) => {
+        return n.title === '__all the pandas__'
+      })
+      expect(found.length).toBeGreaterThanOrEqual(1)
+
+      await found.reduce(async (p, n) => {
+        await p
+        return api.content.removeNotification(n.mediaType, n.id)
+      }, Promise.resolve(''))
+
+      found = (await api.content.getNotifications('text')).filter((n) => {
+        return n.title === '__all the pandas__'
+      })
+      expect(found.length).toEqual(0)
     })
   })
 
@@ -63,52 +49,51 @@ describe('content', () => {
 describe('user', () => {
 
   describe('agreement', () => {
-    it('can get agreements', () => {
-      return api.user.agreement()
+    it('can get agreements', async () => {
+      await api.user.getAgreements()
     })
   })
 
   describe('device', () => {
-    it('can register and unregister devices', () => {
+    it('can register and unregister devices', async () => {
       var token = 'abcd-1234-PANDA'
-      return api.user.updateDevice(token, {
+      await api.user.updateDevice(token, {
         type: 'ios-sandbox',
         model: 'iPhone X'
-      }).then(res => {
-        return api.user.removeDevice(token)
       })
+      await api.user.removeDevice(token)
     })
   })
 
   describe('profile', () => {
-    it('can get the user profile', () => {
-      return api.user.profile().then(profile => {
-        expect(profile).toHaveProperty('user')
-      })
+    it('can get the user profile', async () => {
+      let profile = await api.user.getProfile()
+      expect(profile).toHaveProperty('user')
     })
 
-    it('can get selected properties of the user profile', () => {
-      return api.user.profileByProperty(['user']).then(profile => {
-        expect(profile).toHaveProperty('user')
-      })
+    it('can get selected properties of the user profile', async () => {
+      let profile = await api.user.getProfileByProperty(['user'])
+      expect(profile).toHaveProperty('user')
     })
 
-    it('can update the user profile', () => {
-      return api.user.updateProfile({ panda: true })
-        .then(() => {
-          return api.user.profile()
-        }).then(profile => {
-          expect(profile).toHaveProperty('panda', true)
-        })
-        .then(() => {
-          return api.user.updateProfile({ panda: false })
-        })
-        .then(() => {
-          return api.user.profile()
-        }).then(profile => {
-          expect(profile).toHaveProperty('panda', false)
-        })
+    it('can update the user profile', async () => {
+      await api.user.updateProfile({ panda: true })
+      let profile = await api.user.getProfile()
+      expect(profile).toHaveProperty('panda', true)
+
+      await api.user.updateProfile({ panda: false })
+      profile = await api.user.getProfile()
+      expect(profile).toHaveProperty('panda', false)
     })
+  })
+
+})
+
+describe('collection', () => {
+
+  it('can get a list of collections', async () => {
+    let colls = await api.collection.getCollections()
+    expect(colls).toBeInstanceOf(Array)
   })
 
 })

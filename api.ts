@@ -1,5 +1,4 @@
-import { ApiBase, ApiOptions } from "./lib/runtime";
-export { ContentStream } from "./lib/runtime";
+import { ApiBase } from "./runtime";
 
 export interface ttninjs {
   uri: string;
@@ -250,10 +249,10 @@ class ContentV1 extends ApiBase {
    *
    *
    * @method
-   * @name ContentV1#notification
+   * @name ContentV1#getNotifications
    * @param {string} mediaType - Only return items of this media type.
    */
-  notification(
+  getNotifications(
     mediaType:
       | "_all"
       | "image"
@@ -372,9 +371,9 @@ class UserV1 extends ApiBase {
    * Return a list of applicable customer agreements for the current user.
    *
    * @method
-   * @name UserV1#agreement
+   * @name UserV1#getAgreements
    */
-  agreement(): Promise<Array<agreement>> {
+  getAgreements(): Promise<Array<agreement>> {
     let path = `/user/v1/agreement`;
     return super.call("get", path, undefined, undefined);
   }
@@ -384,9 +383,9 @@ class UserV1 extends ApiBase {
    * The user profile is an unstructured JSON object containing non-secret application data (settings and such). Web applications are free to access this information as they see fit.
    *
    * @method
-   * @name UserV1#profile
+   * @name UserV1#getProfile
    */
-  profile(): Promise<{}> {
+  getProfile(): Promise<{}> {
     let path = `/user/v1/profile`;
     return super.call("get", path, undefined, undefined);
   }
@@ -412,10 +411,10 @@ For more controlled updates of the user profile, use the `PUT /user/v1/profile/{
 Often, applications are not interested in the whole user profile. This endpoint returns only selected properties.
     *
     * @method
-    * @name UserV1#profileByProperty
+    * @name UserV1#getProfileByProperty
     * @param {array} property - A list of property names.
     */
-  profileByProperty(property: Array<string>): Promise<{}> {
+  getProfileByProperty(property: Array<string>): Promise<{}> {
     let path = `/user/v1/profile/${property}`;
     return super.call("get", path, undefined, undefined);
   }
@@ -494,9 +493,9 @@ class CollectionV1 extends ApiBase {
    * Returns a list of all collections belonging to the current user.
    *
    * @method
-   * @name CollectionV1#collection
+   * @name CollectionV1#getCollections
    */
-  collection(): Promise<Array<collection>> {
+  getCollections(): Promise<Array<collection>> {
     let path = `/collection/v1/collection`;
     return super.call("get", path, undefined, undefined);
   }
@@ -519,10 +518,10 @@ class CollectionV1 extends ApiBase {
    * Returns all properties and contents of a single collection.
    *
    * @method
-   * @name CollectionV1#collectionById
+   * @name CollectionV1#getCollection
    * @param {string} id - ID of a collection.
    */
-  collectionById(id: string): Promise<collectionItem> {
+  getCollection(id: string): Promise<collectionItem> {
     let path = `/collection/v1/collection/${id}`;
     return super.call("get", path, undefined, undefined);
   }

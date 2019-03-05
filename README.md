@@ -20,22 +20,22 @@ Instructions for building the client are [here](/BUILDING.md).
   - ContentV1
     - [search](#searchmediatype-parameters)
     - [stream](#streammediatype-parameters)
-    - [notification](#notificationmediatype)
+    - [getNotifications](#getnotificationsmediatype)
     - [addNotificationMobile](#addnotificationmobilemediatype-parameters)
     - [addNotificationEmail](#addnotificationemailmediatype-parameters)
     - [removeNotification](#removenotificationmediatype-id)
   - UserV1
-    - [agreement](#agreement)
-    - [profile](#profile)
+    - [getAgreements](#getagreements)
+    - [getProfile](#getprofile)
     - [updateProfile](#updateprofileprofile)
-    - [profileByProperty](#profilebypropertyproperty)
+    - [getProfileByProperty](#getprofilebypropertyproperty)
     - [updateProfileByProperty](#updateprofilebypropertyproperty-profile)
     - [updateDevice](#updatedevicetoken-parameters)
     - [removeDevice](#removedevicetoken)
   - CollectionV1
-    - [collection](#collection)
+    - [getCollections](#getcollections)
     - [addCollection](#addcollectioncollection)
-    - [collectionById](#collectionbyidid)
+    - [getCollection](#getcollectionid)
     - [updateCollection](#updatecollectionid-collection)
     - [removeCollection](#removecollectionid)
     - [addCollectionItems](#addcollectionitemsid-items)
@@ -315,7 +315,7 @@ api.content
   });
 ```
 
-### notification(mediaType)
+### getNotifications(mediaType)
 
 List all notifications
 
@@ -332,7 +332,7 @@ List all notifications
 #### Example
 
 ```typescript
-api.content.notification("image").then(result => {
+api.content.getNotifications("image").then(result => {
   // do something with result
 });
 ```
@@ -440,7 +440,7 @@ api.content.removeNotification("image", "123").then(result => {
 
 ## UserV1
 
-### agreement()
+### getAgreements()
 
 Get the current customer agreements.
 
@@ -455,12 +455,12 @@ Return a list of applicable customer agreements for the current user.
 #### Example
 
 ```typescript
-api.user.agreement().then(result => {
+api.user.getAgreements().then(result => {
   // do something with result
 });
 ```
 
-### profile()
+### getProfile()
 
 Get the profile for the current user.
 
@@ -477,7 +477,7 @@ information as they see fit.
 #### Example
 
 ```typescript
-api.user.profile().then(result => {
+api.user.getProfile().then(result => {
   // do something with result
 });
 ```
@@ -507,7 +507,7 @@ api.user.updateProfile({ property1: "customValue" }).then(result => {
 });
 ```
 
-### profileByProperty(property)
+### getProfileByProperty(property)
 
 Get selected properties of the profile for the current user.
 
@@ -527,7 +527,7 @@ user profile. This endpoint returns only selected properties.
 #### Example
 
 ```typescript
-api.user.profileByProperty(["property1", "property2"]).then(result => {
+api.user.getProfileByProperty(["property1", "property2"]).then(result => {
   // do something with result
 });
 ```
@@ -632,7 +632,7 @@ api.user
 
 ## CollectionV1
 
-### collection()
+### getCollections()
 
 List all collections
 
@@ -647,7 +647,7 @@ Returns a list of all collections belonging to the current user.
 #### Example
 
 ```typescript
-api.collection.collection().then(result => {
+api.collection.getCollections().then(result => {
   // do something with result
 });
 ```
@@ -676,7 +676,7 @@ api.collection.addCollection({ name: "my collection" }).then(result => {
 });
 ```
 
-### collectionById(id)
+### getCollection(id)
 
 Get collection properties and contents
 
@@ -693,7 +693,7 @@ Returns all properties and contents of a single collection.
 #### Example
 
 ```typescript
-api.collection.collectionById("123").then(result => {
+api.collection.getCollection("123").then(result => {
   // do something with result
 });
 ```
