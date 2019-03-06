@@ -2,6 +2,14 @@
   "name": "@ttab/api-client",
   "version": "2.0.0-rc.0",
   "description": "Browser-friendly TypeScript/JavaScript client for TT Nyhetsbyrån public APIs.",
+  "homepage": "https://github.com/ttab/typescript-api-client/",
+  "bugs": {
+    "url": "https://github.com/ttab/typescript-api-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github:ttab/typescript-api-client"
+  },
   "keywords": [
     "api",
     "client",
