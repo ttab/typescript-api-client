@@ -176,7 +176,7 @@ class ContentV1 extends ApiBase {
    * @param {string} trs - Start date
    * @param {string} tre - End date
    * @param {integer} s - Size of search result.
-   * @param {integer} fr - Index into the search result. Used for pagination.
+   * @param {integer} fr - Index into the search result. Used for pagination. It is recommended to make this value a multiple of the search result size (`s`), as some media types do not support arbitrary values here.
    */
   search(
     mediaType:
@@ -188,7 +188,8 @@ class ContentV1 extends ApiBase {
       | "feature"
       | "page"
       | "planning"
-      | "calendar",
+      | "calendar"
+      | "stockfoto",
     parameters: {
       q?: string;
       p?: Array<string>;

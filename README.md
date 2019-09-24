@@ -235,7 +235,7 @@ Searching the TT archives.
 #### Arguments
 
 - mediaType:
-  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
+  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar" | "stockfoto"` -
   Only return items of this media type.
 - parameters:
   - `q?: string` - A query string used for free text searching.
@@ -250,7 +250,9 @@ Searching the TT archives.
   - `trs?: string` - Start date
   - `tre?: string` - End date
   - `s?: number` - Size of search result.
-  - `fr?: number` - Index into the search result. Used for pagination.
+  - `fr?: number` - Index into the search result. Used for pagination. It is
+    recommended to make this value a multiple of the search result size (`s`),
+    as some media types do not support arbitrary values here.
 
 #### Returns
 
