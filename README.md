@@ -23,6 +23,7 @@ Instructions for building the client are [here](/BUILDING.md).
     - [getNotifications](#getnotificationsmediatype)
     - [addNotificationMobile](#addnotificationmobilemediatype-parameters)
     - [addNotificationEmail](#addnotificationemailmediatype-parameters)
+    - [addNotificationScheduledEmail](#addnotificationscheduledemailmediatype-parameters)
     - [removeNotification](#removenotificationmediatype-id)
   - UserV1
     - [getAgreements](#getagreements)
@@ -93,15 +94,15 @@ parameters, and get a result object with an array of search `hits`.
 This is a basic query, looking for panda pictures:
 
 ```typescript
-import { Api } from "@ttab/api-client";
+import { Api } from '@ttab/api-client'
 
-let api = new Api({ token: process.env.TOKEN || "" });
+let api = new Api({ token: process.env.TOKEN || '' })
 
-api.content.search("image", { q: "panda" }).then(res => {
+api.content.search('image', { q: 'panda' }).then(res => {
   res.hits.forEach(hit => {
-    console.log(hit.uri, hit.product);
-  });
-});
+    console.log(hit.uri, hit.product)
+  })
+})
 ```
 
 The search result is restricted to only match items allowed by the customer
@@ -109,11 +110,11 @@ agreements linked to your user account. If you wish to further restrict the
 search result to match a given agreement you can use the `agr` parameter:
 
 ```typescript
-api.content.search("image", { q: "panda", agr: [20031] }).then(res => {
+api.content.search('image', { q: 'panda', agr: [20031] }).then(res => {
   res.hits.forEach(hit => {
-    console.log(hit.uri, hit.product);
-  });
-});
+    console.log(hit.uri, hit.product)
+  })
+})
 ```
 
 You can also restrict the search result to only contain items matching one or
@@ -121,12 +122,12 @@ more [product codes](https://tt.se/spec/product/1.0):
 
 ```typescript
 api.content
-  .search("image", { q: "panda", p: ["FOGNRE", "FOGNREEJ"] })
+  .search('image', { q: 'panda', p: ['FOGNRE', 'FOGNREEJ'] })
   .then(res => {
     res.hits.forEach(hit => {
-      console.log(hit.uri, hit.product);
-    });
-  });
+      console.log(hit.uri, hit.product)
+    })
+  })
 ```
 
 ## Streaming data
@@ -154,24 +155,24 @@ prints the uri, source and headline for each new image as it is added to the
 database:
 
 ```typescript
-import { Api } from "@ttab/api-client";
+import { Api } from '@ttab/api-client'
 
-let api = new Api({ token: process.env.TOKEN || "" });
+let api = new Api({ token: process.env.TOKEN || '' })
 
 function loop(last?: string) {
-  return api.content.stream("image", { last: last }).then(result => {
-    let _last = null;
+  return api.content.stream('image', { last: last }).then(result => {
+    let _last = null
     result.hits.forEach(hit => {
-      console.log(hit.uri, hit.source, hit.headline);
-      _last = hit.uri;
-    });
-    return loop(_last);
-  });
+      console.log(hit.uri, hit.source, hit.headline)
+      _last = hit.uri
+    })
+    return loop(_last)
+  })
 }
 
 loop().catch(err => {
-  console.error(err);
-});
+  console.error(err)
+})
 ```
 
 ### The ContentStream class
@@ -205,23 +206,23 @@ database. It handles errors by printing a stack trace and closing down the
 stream.
 
 ```typescript
-import { Api, ContentStream } from "@ttab/api-client";
+import { Api, ContentStream } from '@ttab/api-client'
 
-let api = new Api({ token: process.env.TOKEN || "" });
-let stream = new ContentStream(api, "image", {});
+let api = new Api({ token: process.env.TOKEN || '' })
+let stream = new ContentStream(api, 'image', {})
 
-stream.on("data", hit => {
-  console.log(hit.uri, hit.source, hit.headline);
-});
+stream.on('data', hit => {
+  console.log(hit.uri, hit.source, hit.headline)
+})
 
-stream.on("error", err => {
-  console.log("err", err);
-  stream.close();
-});
+stream.on('error', err => {
+  console.log('err', err)
+  stream.close()
+})
 
-stream.on("close", () => {
-  console.log("closed");
-});
+stream.on('close', () => {
+  console.log('closed')
+})
 ```
 
 # API Reference
@@ -253,6 +254,18 @@ Searching the TT archives.
   - `fr?: number` - Index into the search result. Used for pagination. It is
     recommended to make this value a multiple of the search result size (`s`),
     as some media types do not support arbitrary values here.
+  - `sort?: "default:desc" | "default:asc" | "date:desc" | "date:asc" | "versioncreated:desc" | "versioncreated:asc" | "versionstored:desc" | "versionstored:asc" | "relevance"` -
+    Sort order for the result. Documentation on various date fields can be found
+    [here](http://spec.tt.se/dates).
+- default:desc / default:asc - Sort on the internal field '\_tstamp' in
+  descending or ascending order respectively.
+- date:desc / date:asc - Sort on the field 'date' in descending or ascending
+  order respectively.
+- versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated'
+  in descending or ascending order respectively.
+- versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in
+  descending or ascending order respectively.
+- relevance - Sort on relevance. The most relevant matches first.
 
 #### Returns
 
@@ -262,15 +275,16 @@ Searching the TT archives.
 
 ```typescript
 api.content
-  .search("image", {
-    q: "panda",
-    p: ["FOGNRE", "FOGNREEJ"],
+  .search('image', {
+    q: 'panda',
+    p: ['FOGNRE', 'FOGNREEJ'],
     agr: [20031, 20035],
-    tr: "w"
+    tr: 'w',
+    sort: 'date:asc'
   })
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ### stream(mediaType, parameters)
@@ -295,9 +309,22 @@ sense in this context (we will always return the most recent item).
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
-  - `last?: string` - The uri of the last item received.
-  - `wait?: number` - The time (in seconds) to wait for updates before returning
-    an empty result.
+  - `sort?: "default:desc" | "default:asc" | "date:desc" | "date:asc" | "versioncreated:desc" | "versioncreated:asc" | "versionstored:desc" | "versionstored:asc" | "relevance"` -
+    Sort order for the result. Documentation on various date fields can be found
+    [here](http://spec.tt.se/dates).
+- default:desc / default:asc - Sort on the internal field '\_tstamp' in
+  descending or ascending order respectively.
+- date:desc / date:asc - Sort on the field 'date' in descending or ascending
+  order respectively.
+- versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated'
+  in descending or ascending order respectively.
+- versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in
+  descending or ascending order respectively.
+- relevance - Sort on relevance. The most relevant matches first.
+
+* `last?: string` - The uri of the last item received.
+* `wait?: number` - The time (in seconds) to wait for updates before returning
+  an empty result.
 
 #### Returns
 
@@ -307,14 +334,15 @@ sense in this context (we will always return the most recent item).
 
 ```typescript
 api.content
-  .stream("image", {
-    q: "panda",
-    p: ["FOGNRE", "FOGNREEJ"],
-    agr: [20031, 20035]
+  .stream('image', {
+    q: 'panda',
+    p: ['FOGNRE', 'FOGNREEJ'],
+    agr: [20031, 20035],
+    sort: 'date:asc'
   })
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ### getNotifications(mediaType)
@@ -334,9 +362,9 @@ List all notifications
 #### Example
 
 ```typescript
-api.content.getNotifications("image").then(result => {
+api.content.getNotifications('image').then(result => {
   // do something with result
-});
+})
 ```
 
 ### addNotificationMobile(mediaType, parameters)
@@ -366,15 +394,15 @@ Create a new mobile notification
 
 ```typescript
 api.content
-  .addNotificationMobile("image", {
-    q: "panda",
-    p: ["FOGNRE", "FOGNREEJ"],
+  .addNotificationMobile('image', {
+    q: 'panda',
+    p: ['FOGNRE', 'FOGNREEJ'],
     agr: [20031, 20035],
-    title: "my mobile notification"
+    title: 'my mobile notification'
   })
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ### addNotificationEmail(mediaType, parameters)
@@ -405,16 +433,61 @@ Create a new email notification
 
 ```typescript
 api.content
-  .addNotificationEmail("image", {
-    q: "panda",
-    p: ["FOGNRE", "FOGNREEJ"],
+  .addNotificationEmail('image', {
+    q: 'panda',
+    p: ['FOGNRE', 'FOGNREEJ'],
     agr: [20031, 20035],
-    title: "my email notification",
-    email: "my.email@address.com"
+    title: 'my email notification',
+    email: 'my.email@address.com'
   })
   .then(result => {
     // do something with result
-  });
+  })
+```
+
+### addNotificationScheduledEmail(mediaType, parameters)
+
+Create a new scheduled email notification
+
+#### Arguments
+
+- mediaType:
+  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
+  Only return items of this media type.
+- parameters:
+  - `q?: string` - A query string used for free text searching.
+  - `p?: Array<string>` - A list of product codes. Only items matching at least
+    one of these codes will be returned. The list of current product codes is
+    [here](https://tt.se/spec/product/1.0).
+  - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
+    current user. Only items covered by at least one of there agreements will be
+    returned.
+  - `tr?: "h" | "d" | "w" | "m" | "y"` - Time range: last hour, day, week,
+    month, or year.
+  - `title: string` -
+  - `email: string` - The email address to send emails to.
+  - `schedule: string` - A cron expression.
+
+#### Returns
+
+- Promise&lt;[notification](#interface-notification)&gt;
+
+#### Example
+
+```typescript
+api.content
+  .addNotificationScheduledEmail('image', {
+    q: 'panda',
+    p: ['FOGNRE', 'FOGNREEJ'],
+    agr: [20031, 20035],
+    tr: 'w',
+    title: 'my scheduled email notification',
+    email: 'my.email@address.com',
+    schedule: '0 0 12 * * MON-FRI'
+  })
+  .then(result => {
+    // do something with result
+  })
 ```
 
 ### removeNotification(mediaType, id)
@@ -435,9 +508,9 @@ Remove an existing notification
 #### Example
 
 ```typescript
-api.content.removeNotification("image", "123").then(result => {
+api.content.removeNotification('image', '123').then(result => {
   // do something with result
-});
+})
 ```
 
 ## UserV1
@@ -459,7 +532,7 @@ Return a list of applicable customer agreements for the current user.
 ```typescript
 api.user.getAgreements().then(result => {
   // do something with result
-});
+})
 ```
 
 ### getProfile()
@@ -481,7 +554,7 @@ information as they see fit.
 ```typescript
 api.user.getProfile().then(result => {
   // do something with result
-});
+})
 ```
 
 ### updateProfile(profile)
@@ -504,9 +577,9 @@ For more controlled updates of the user profile, use the
 #### Example
 
 ```typescript
-api.user.updateProfile({ property1: "customValue" }).then(result => {
+api.user.updateProfile({ property1: 'customValue' }).then(result => {
   // do something with result
-});
+})
 ```
 
 ### getProfileByProperty(property)
@@ -529,9 +602,9 @@ user profile. This endpoint returns only selected properties.
 #### Example
 
 ```typescript
-api.user.getProfileByProperty(["property1", "property2"]).then(result => {
+api.user.getProfileByProperty(['property1', 'property2']).then(result => {
   // do something with result
-});
+})
 ```
 
 ### updateProfileByProperty(property, profile)
@@ -568,12 +641,12 @@ not be overwritten with `null`.
 
 ```typescript
 api.user
-  .updateProfileByProperty(["property1", "property2"], {
-    property1: "customValue"
+  .updateProfileByProperty(['property1', 'property2'], {
+    property1: 'customValue'
   })
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ### updateDevice(token, parameters)
@@ -600,12 +673,12 @@ Register a new mobile device.
 ```typescript
 api.user
   .updateDevice(
-    "5a21a38a24857b344c66aadade0abf2a748fcacf2ddf466e83e4fcd1cefab66a",
-    { type: "ios", name: "my iPhone", model: "iPhone 8" }
+    '5a21a38a24857b344c66aadade0abf2a748fcacf2ddf466e83e4fcd1cefab66a',
+    { type: 'ios', name: 'my iPhone', model: 'iPhone 8' }
   )
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ### removeDevice(token)
@@ -625,11 +698,11 @@ Unregister a mobile device.
 ```typescript
 api.user
   .removeDevice(
-    "5a21a38a24857b344c66aadade0abf2a748fcacf2ddf466e83e4fcd1cefab66a"
+    '5a21a38a24857b344c66aadade0abf2a748fcacf2ddf466e83e4fcd1cefab66a'
   )
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ## CollectionV1
@@ -651,7 +724,7 @@ Returns a list of all collections belonging to the current user.
 ```typescript
 api.collection.getCollections().then(result => {
   // do something with result
-});
+})
 ```
 
 ### addCollection(collection)
@@ -673,9 +746,9 @@ asynchronous, and there may be a delay before the change is visible using the
 #### Example
 
 ```typescript
-api.collection.addCollection({ name: "my collection" }).then(result => {
+api.collection.addCollection({ name: 'my collection' }).then(result => {
   // do something with result
-});
+})
 ```
 
 ### getCollection(id)
@@ -695,9 +768,9 @@ Returns all properties and contents of a single collection.
 #### Example
 
 ```typescript
-api.collection.getCollection("123").then(result => {
+api.collection.getCollection('123').then(result => {
   // do something with result
-});
+})
 ```
 
 ### updateCollection(id, collection)
@@ -721,10 +794,10 @@ asynchronous, and there may be a delay before the change is visible using the
 
 ```typescript
 api.collection
-  .updateCollection("123", { name: "my collection" })
+  .updateCollection('123', { name: 'my collection' })
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ### removeCollection(id)
@@ -746,9 +819,9 @@ asynchronous, and there may be a delay before the change is visible using the
 #### Example
 
 ```typescript
-api.collection.removeCollection("123").then(result => {
+api.collection.removeCollection('123').then(result => {
   // do something with result
-});
+})
 ```
 
 ### addCollectionItems(id, items)
@@ -774,10 +847,10 @@ changes are visible using the `GET /collection/v1/collection/{id}` endpoint.
 
 ```typescript
 api.collection
-  .addCollectionItems("123", [{ uri: "http://tt.se/media/image/sdltd8f4d87" }])
+  .addCollectionItems('123', [{ uri: 'http://tt.se/media/image/sdltd8f4d87' }])
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ### removeCollectionItems(id, items)
@@ -803,12 +876,12 @@ is asynchronous, and there may be a delay before changes are visible using the
 
 ```typescript
 api.collection
-  .removeCollectionItems("123", [
-    { uri: "http://tt.se/media/image/sdltd8f4d87" }
+  .removeCollectionItems('123', [
+    { uri: 'http://tt.se/media/image/sdltd8f4d87' }
   ])
   .then(result => {
     // do something with result
-  });
+  })
 ```
 
 ## Exported types
@@ -817,116 +890,173 @@ api.collection
 
 ```typescript
 interface ttninjs {
-  uri: string;
+  uri: string
   type?:
-    | "text"
-    | "audio"
-    | "video"
-    | "picture"
-    | "graphic"
-    | "composite"
-    | "planning"
-    | "component"
-    | "event";
-  mimetype?: string;
-  representationtype?: "complete" | "incomplete" | "associated";
-  profile?: "PUBL" | "DATA" | "INFO" | "RAW";
-  version?: string;
-  versioncreated?: string;
-  versionstored?: string;
-  embargoed?: string;
-  date?: string;
-  datetime?: string;
-  enddate?: string;
-  enddatetime?: string;
-  embargoedreason?: string;
-  job?: string;
-  pubstatus?: "usable" | "withheld" | "canceled" | "replaced" | "commissioned";
-  copyrightholder?: string;
-  copyrightnotice?: string;
-  language?: string;
-  week?: number;
-  urgency?: number;
-  webprio?: number;
-  source?: string;
-  commissioncode?: string;
-  description_text?: string;
-  description_usage?: string;
-  usageterms?: string;
-  body_text?: string;
-  body_html5?: string;
+    | 'text'
+    | 'audio'
+    | 'video'
+    | 'picture'
+    | 'graphic'
+    | 'composite'
+    | 'planning'
+    | 'component'
+    | 'event'
+  mimetype?: string
+  representationtype?: 'complete' | 'incomplete' | 'associated'
+  profile?: 'PUBL' | 'DATA' | 'INFO' | 'RAW'
+  version?: string
+  versioncreated?: string
+  versionstored?: string
+  embargoed?: string
+  embargoedreason?: string
+  date?: string
+  datetime?: string
+  enddate?: string
+  enddatetime?: string
+  job?: string
+  pubstatus?: 'usable' | 'withheld' | 'canceled' | 'replaced' | 'commissioned'
+  copyrightholder?: string
+  copyrightnotice?: string
+  language?: string
+  week?: number
+  urgency?: number
+  webprio?: number
+  source?: string
+  commissioncode?: string
+  description_text?: string
+  description_usage?: string
+  usageterms?: string
+  body_text?: string
+  body_html5?: string
+  body_richhtml5?: string
   body_event?: {
-    arena?: string;
-    city?: string;
-    address?: string;
-    country?: string;
-    eventurl?: string;
-    eventphone?: string;
-    eventweb?: string;
-    organizer?: string;
-    organizerurl?: string;
-    organizerphone?: string;
-    organizermail?: string;
-    eventstatus?: string;
-    eventstatus_text?: string;
-    region?: string;
-    region_text?: string;
-    municipality?: string;
-    municipality_text?: string;
-    eventtags?: string;
-    eventtype?: string;
-    eventtype_text?: string;
-    note_extra?: string;
-    note_pm?: string;
-    accreditation?: string;
-    extraurl?: string;
-    createddate?: string;
-    createdby?: string;
-    changeddate?: string;
-    changedby?: string;
-    courtcasenumber?: string;
-  };
-  body_sportsml?: string;
-  body_pages?: {};
-  commissionedby?: Array<string>;
-  charcount?: number;
-  originaltransmissionreference?: string;
+    arena?: string
+    city?: string
+    address?: string
+    country?: string
+    eventurl?: string
+    eventphone?: string
+    eventweb?: string
+    organizer?: string
+    organizerurl?: string
+    organizerphone?: string
+    organizermail?: string
+    eventstatus?: string
+    eventstatus_text?: string
+    region?: string
+    region_text?: string
+    municipality?: string
+    municipality_text?: string
+    eventtags?: string
+    eventtype?: string
+    eventtype_text?: string
+    note_extra?: string
+    note_pm?: string
+    accreditation?: string
+    extraurl?: string
+    createddate?: string
+    createdby?: string
+    changeddate?: string
+    changedby?: string
+    courtcasenumber?: string
+  }
+  body_sportsml?: string
+  body_pages?: {}
+  commissionedby?: Array<string>
+  charcount?: number
+  originaltransmissionreference?: string
   signals?: {
-    pageproduct?: string;
-    multipagecount?: number;
-    paginae?: Array<string>;
-    pagecode?: string;
-    pagevariant?: string;
-  };
-  product?: Array<{ [key: string]: {} }>;
-  person?: Array<{ [key: string]: {} }>;
-  organisation?: Array<{ [key: string]: {} }>;
-  place?: Array<{ [key: string]: {} }>;
-  subject?: Array<{ [key: string]: {} }>;
-  event?: Array<{ [key: string]: {} }>;
-  object?: Array<{ [key: string]: {} }>;
-  byline?: string;
+    pageproduct?: string
+    multipagecount?: number
+    paginae?: Array<string>
+    pagecode?: string
+    pagevariant?: string
+  }
+  product?: Array<{
+    name?: string
+    scheme?: string
+    code?: string
+  }>
+  person?: Array<{
+    name?: string
+    rel?: string
+    scheme?: string
+    code?: string
+  }>
+  organisation?: Array<{
+    name?: string
+    rel?: string
+    scheme?: string
+    code?: string
+    symbols?: Array<{
+      ticker?: string
+      exchange?: string
+    }>
+  }>
+  place?: Array<{
+    name?: string
+    rel?: string
+    scheme?: string
+    code?: string
+    geometry_geojson?: {}
+  }>
+  subject?: Array<{
+    name?: string
+    rel?: string
+    scheme?: string
+    code?: string
+  }>
+  event?: Array<{
+    name?: string
+    rel?: string
+    scheme?: string
+    code?: string
+  }>
+  object?: Array<{
+    name?: string
+    rel?: string
+    scheme?: string
+    code?: string
+  }>
+  byline?: string
   bylines?: Array<{
-    byline?: string;
-    firstname?: string;
-    lastname?: string;
-    role?: string;
-    email?: string;
-    jobtitle?: string;
-    internal?: string;
-    phone?: string;
-    initials?: string;
-    affiliation?: string;
-  }>;
-  headline?: string;
-  slug?: string;
-  located?: string;
-  renditions?: {};
-  replacing?: Array<string>;
-  replacedby?: string;
-  associations?: {};
-  revisions?: Array<{ [key: string]: {} }>;
-  sector?: "INR" | "UTR" | "EKO" | "KLT" | "SPT" | "PRM";
+    byline?: string
+    firstname?: string
+    lastname?: string
+    role?: string
+    email?: string
+    jobtitle?: string
+    internal?: string
+    phone?: string
+    initials?: string
+    affiliation?: string
+  }>
+  headline?: string
+  slug?: string
+  located?: string
+  renditions?: {}
+  replacing?: Array<string>
+  replacedby?: string
+  associations?: {}
+  assignments?: {}
+  revisions?: Array<{
+    uri: string
+    slug?: string
+    replacing?: Array<string>
+  }>
+  sector?: 'INR' | 'UTR' | 'EKO' | 'KLT' | 'SPT' | 'PRM'
+  fixture?: Array<{
+    name?: string
+    rel?: string
+    scheme?: string
+    code?: string
+  }>
+  advice?: {
+    lifetime?: {
+      period?: string
+      enddatetime?: string
+    }
+  }
 }
 ```
 
@@ -934,10 +1064,10 @@ interface ttninjs {
 
 ```typescript
 interface agreement {
-  id?: number;
-  description?: {};
-  type?: "Subscription" | "Direct" | "Normal" | "Sketch";
-  products?: Array<product>;
+  id?: number
+  description?: {}
+  type?: 'Subscription' | 'Direct' | 'Normal' | 'Sketch'
+  products?: Array<product>
 }
 ```
 
@@ -945,10 +1075,10 @@ interface agreement {
 
 ```typescript
 interface collection {
-  id: string;
-  owner: string;
-  name: string;
-  colldate: string;
+  id: string
+  owner: string
+  name: string
+  colldate: string
 }
 ```
 
@@ -956,11 +1086,11 @@ interface collection {
 
 ```typescript
 interface collectionItem {
-  id: string;
-  owner: string;
-  name: string;
-  colldate: string;
-  items: Array<ttninjs>;
+  id: string
+  owner: string
+  name: string
+  colldate: string
+  items: Array<ttninjs>
 }
 ```
 
@@ -968,9 +1098,9 @@ interface collectionItem {
 
 ```typescript
 interface product {
-  name?: string;
-  description?: {};
-  code?: string;
+  name?: string
+  description?: {}
+  code?: string
 }
 ```
 
@@ -978,21 +1108,22 @@ interface product {
 
 ```typescript
 interface notification {
-  id: string;
-  title: string;
-  type: "mobile" | "email";
+  id: string
+  title: string
+  type: 'mobile' | 'email' | 'scheduled-email'
   mediaType:
-    | "_all"
-    | "image"
-    | "video"
-    | "graphic"
-    | "text"
-    | "feature"
-    | "page"
-    | "planning"
-    | "calendar";
-  q?: string;
-  p?: Array<string>;
-  agr?: Array<number>;
+    | '_all'
+    | 'image'
+    | 'video'
+    | 'graphic'
+    | 'text'
+    | 'feature'
+    | 'page'
+    | 'planning'
+    | 'calendar'
+  q?: string
+  p?: Array<string>
+  agr?: Array<number>
+  schedule?: string
 }
 ```

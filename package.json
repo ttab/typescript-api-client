@@ -41,11 +41,12 @@
     "@types/jest": "^24.0.5",
     "@types/lodash": "^4.14.120",
     "@types/mustache": "^0.8.32",
+    "@types/node": "^12.12.14",
     "jest": "^23.6.0",
     "lodash": "^4.17.11",
     "mustache": "^3.0.1",
     "prettier": "^1.16.4",
-    "swagger-typescript-codegen": "^1.9.2",
+    "swagger-typescript-codegen": "^1.11.0",
     "ts-jest": "^23.10.5",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.3"
