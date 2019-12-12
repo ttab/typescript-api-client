@@ -229,7 +229,7 @@ stream.on('close', () => {
 {{#hasQueryParameters}}
  * parameters:
 {{#queryParameters}}
-   - `{{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}}` - {{&type.description}}
+   - `{{name}}{{cardinality}}: {{#type}}{{> type}}{{/type}}` - {{#indented}}{{&type.description}}{{/indented}}
 {{/queryParameters}}
 {{/hasQueryParameters}}
 {{#bodyParameters}}

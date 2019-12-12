@@ -280,6 +280,11 @@ function render(view: any): void {
       type: readFileSync('./generator/templates/type.mustache').toString()
     }
   ))
+  view.indented = function () {
+    return function (text:string, render:(s:string) => string) {
+      return render(text).replace(/^\s*/gm, '      ').replace(/^\s+/, '').replace(/\s+$/, '')
+    }
+  }
   writeFileSync('./README.md', mustache.render(
     readFileSync('./generator/templates/readme.mustache', 'utf-8').toString(),
     view,

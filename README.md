@@ -257,15 +257,15 @@ Searching the TT archives.
   - `sort?: "default:desc" | "default:asc" | "date:desc" | "date:asc" | "versioncreated:desc" | "versioncreated:asc" | "versionstored:desc" | "versionstored:asc" | "relevance"` -
     Sort order for the result. Documentation on various date fields can be found
     [here](http://spec.tt.se/dates).
-- default:desc / default:asc - Sort on the internal field '\_tstamp' in
-  descending or ascending order respectively.
-- date:desc / date:asc - Sort on the field 'date' in descending or ascending
-  order respectively.
-- versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated'
-  in descending or ascending order respectively.
-- versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in
-  descending or ascending order respectively.
-- relevance - Sort on relevance. The most relevant matches first.
+    - default:desc / default:asc - Sort on the internal field '\_tstamp' in
+      descending or ascending order respectively.
+    - date:desc / date:asc - Sort on the field 'date' in descending or ascending
+      order respectively.
+    - versioncreated:desc / versioncreated:asc - Sort on the field
+      'versioncreated' in descending or ascending order respectively.
+    - versionstored:desc / versionstored:asc - Sort on the field 'versionstored'
+      in descending or ascending order respectively.
+    - relevance - Sort on relevance. The most relevant matches first.
 
 #### Returns
 
@@ -312,19 +312,18 @@ sense in this context (we will always return the most recent item).
   - `sort?: "default:desc" | "default:asc" | "date:desc" | "date:asc" | "versioncreated:desc" | "versioncreated:asc" | "versionstored:desc" | "versionstored:asc" | "relevance"` -
     Sort order for the result. Documentation on various date fields can be found
     [here](http://spec.tt.se/dates).
-- default:desc / default:asc - Sort on the internal field '\_tstamp' in
-  descending or ascending order respectively.
-- date:desc / date:asc - Sort on the field 'date' in descending or ascending
-  order respectively.
-- versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated'
-  in descending or ascending order respectively.
-- versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in
-  descending or ascending order respectively.
-- relevance - Sort on relevance. The most relevant matches first.
-
-* `last?: string` - The uri of the last item received.
-* `wait?: number` - The time (in seconds) to wait for updates before returning
-  an empty result.
+    - default:desc / default:asc - Sort on the internal field '\_tstamp' in
+      descending or ascending order respectively.
+    - date:desc / date:asc - Sort on the field 'date' in descending or ascending
+      order respectively.
+    - versioncreated:desc / versioncreated:asc - Sort on the field
+      'versioncreated' in descending or ascending order respectively.
+    - versionstored:desc / versionstored:asc - Sort on the field 'versionstored'
+      in descending or ascending order respectively.
+    - relevance - Sort on relevance. The most relevant matches first.
+  - `last?: string` - The uri of the last item received.
+  - `wait?: number` - The time (in seconds) to wait for updates before returning
+    an empty result.
 
 #### Returns
 
