@@ -49,11 +49,6 @@ export class ApiBase {
         let e: ApiError
         if (typeof err.response.data === 'object') {
           e = new ApiError(err.response.data.message)
-          // for (let prop of Object.entries(err.response.data)) {
-          //   if (prop[0] !== 'message') {
-          //     e[prop[0]] = prop[1]
-          //   }
-          // }
         } else {
           e = new ApiError(err.response.data)
         }
@@ -96,7 +91,7 @@ export class ContentStream extends (EventEmitter as { new(): StrictEventEmitter<
     }) {
     super()
 
-    let last: string | undefined = undefined
+    let last: string | undefined = parameters.last
     this.run = () => {
       api.content.stream(mediaType, { ...parameters, last }).then(res => {
         res.hits.forEach(hit => {
