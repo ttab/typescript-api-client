@@ -1,2 +1,2 @@
-export { ApiOptions, ContentStream } from './runtime'
+export { ApiOptions, ApiError, ContentStream } from './runtime'
 export * from './api'

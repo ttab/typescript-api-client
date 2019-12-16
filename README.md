@@ -225,6 +225,11 @@ stream.on('close', () => {
 })
 ```
 
+## Errors
+
+Errors reported by the API or caused by the HTTP connection have the type
+`ApiError`.
+
 # API Reference
 
 ## ContentV1

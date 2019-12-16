@@ -12,7 +12,7 @@ export interface ApiOptions {
   host: string
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
   statusCode: number = 0
 }
 
