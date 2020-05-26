@@ -1,8 +1,7 @@
 import { ApiBase } from './runtime'
 
 {{#definitions}}
-  export interface {{&name}} {{#tsType}}{{> type}}{{/tsType}};
-
+  {{#tsType}}{{#isArray}}export type {{/isArray}}{{^isArray}}export interface {{/isArray}}{{/tsType}}{{&name}}{{#tsType}}{{#isArray}}= {{> type}}{{/isArray}}{{^isArray}}{{> type}}{{/isArray}}{{/tsType}};
 {{/definitions}}
 
 {{#apis}}
