@@ -25,10 +25,8 @@
     "prepublishOnly": "npm run dist",
     "test": "jest"
   },
-  "main": "./dist/index.js",
-  "files": [
-    "dist/*"
-  ],
+  "files": [ "api.ts", "index.ts", "runtime.ts" ],
+  "main": "./index.ts",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
