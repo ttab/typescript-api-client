@@ -13,6 +13,7 @@ import { getParametersForMethod } from 'swagger-typescript-codegen/lib/view-data
 // this is the host we will generate api.ts for (and which will also
 // be the default host in the generated api)
 let apiHost = process.env.API_HOST || 'https://api.tt.se'
+let visibleHost = process.env.PRERELEASE ? 'https://api.tt.se' : apiHost
 
 async function fetchSpec(): Promise<Swagger> {
   return axios({
@@ -266,7 +267,7 @@ function buildView(spec: Swagger): View {
     }
   }
   return {
-    host: apiHost,
+    host: visibleHost,
     apis: Object.values(apis),
     definitions: buildDefinitions(spec)
   }

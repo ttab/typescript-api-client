@@ -18,6 +18,13 @@ from. This is really only applicable for internal development use.
 
     > API_HOST=<host> npm run generate
 
+The `PRERELEASE` flag tells the script to use the `API_HOST` when generating the
+client, but still use https://api.tt.se as the default host. This is _really_
+only applicable for internal use, when we need to create a prerelease version
+with features that are not yet publicly available.
+
+    > API_HOST=<host> PRERELESE=true npm run generate
+
 To generate a client and compile typescript to javascript:
 
     > npm run dist
