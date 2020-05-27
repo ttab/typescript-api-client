@@ -169,35 +169,30 @@ export interface ttninjs {
     }
   }
 }
-
 export interface agreement {
   id?: number
   description?: {}
   type?: 'Subscription' | 'Direct' | 'Normal' | 'Sketch'
   products?: Array<product>
 }
-
 export interface collection {
   id: string
   owner: string
   name: string
-  colldate: string
+  collDate: string
 }
-
 export interface collectionItem {
   id: string
   owner: string
   name: string
-  colldate: string
+  collDate: string
   items: Array<ttninjs>
 }
-
 export interface product {
   name?: string
   description?: {}
   code?: string
 }
-
 export interface notification {
   id: string
   title: string
@@ -216,6 +211,11 @@ export interface notification {
   p?: Array<string>
   agr?: Array<number>
   schedule?: string
+  email?: string
+}
+export interface facet {
+  key?: string
+  count?: number
 }
 
 class ContentV1 extends ApiBase {
@@ -241,6 +241,7 @@ class ContentV1 extends ApiBase {
    * versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated' in descending or ascending order respectively.
    * versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in descending or ascending order respectively.
    * relevance - Sort on relevance. The most relevant matches first.
+   * @param {array} facets - Enable search facets; in addition to the regular search result the API will also return one or more additional facets which contain information about how many search results can be expected if the current query is narrowed down using popular subject codes, product codes, etc.
    */
   search(
     mediaType:
@@ -273,9 +274,15 @@ class ContentV1 extends ApiBase {
         | 'versionstored:desc'
         | 'versionstored:asc'
         | 'relevance'
+      facets?: Array<'subject.code' | 'product.code'>
     }
   ): Promise<{
     hits: Array<ttninjs>
+    total: number
+    facets?: {
+      'subject.code'?: Array<facet>
+      'product.code'?: Array<facet>
+    }
   }> {
     let path = `/content/v1/${mediaType}/search`
     return super.call('get', path, parameters, undefined)
@@ -736,10 +743,13 @@ export class Api {
   collection: CollectionV1
 
   constructor(options: { token: string; host?: string }) {
-    this.content = new ContentV1({ host: 'https://api.tt.se', ...options })
-    this.user = new UserV1({ host: 'https://api.tt.se', ...options })
+    this.content = new ContentV1({
+      host: 'https://stage01.a.tt.se',
+      ...options
+    })
+    this.user = new UserV1({ host: 'https://stage01.a.tt.se', ...options })
     this.collection = new CollectionV1({
-      host: 'https://api.tt.se',
+      host: 'https://stage01.a.tt.se',
       ...options
     })
   }

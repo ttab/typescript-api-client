@@ -2,7 +2,8 @@
 
 Browser-friendly TypeScript client for TT Nyhetsbyrån public APIs. The client
 code (and this README file) has been automatically generated from the API
-definition located at [https://api.tt.se/docs](https://api.tt.se/docs).
+definition located at
+[https://stage01.a.tt.se/docs](https://stage01.a.tt.se/docs).
 
 ![Version](http://img.shields.io/npm/v/@ttab/api-client.svg) &nbsp;
 ![License](http://img.shields.io/npm/l/@ttab/api-client.svg) &nbsp;
@@ -48,6 +49,7 @@ Instructions for building the client are [here](/BUILDING.md).
     - [collectionItem](#interface-collectionItem)
     - [product](#interface-product)
     - [notification](#interface-notification)
+    - [facet](#interface-facet)
 
 # Getting started
 
@@ -225,11 +227,6 @@ stream.on('close', () => {
 })
 ```
 
-## Errors
-
-Errors reported by the API or caused by the HTTP connection have the type
-`ApiError`.
-
 # API Reference
 
 ## ContentV1
@@ -271,10 +268,17 @@ Searching the TT archives.
     - versionstored:desc / versionstored:asc - Sort on the field 'versionstored'
       in descending or ascending order respectively.
     - relevance - Sort on relevance. The most relevant matches first.
+  - `facets?: Array<"subject.code" | "product.code">` - Enable search facets; in
+    addition to the regular search result the API will also return one or more
+    additional facets which contain information about how many search results
+    can be expected if the current query is narrowed down using popular subject
+    codes, product codes, etc.
 
 #### Returns
 
-- Promise&lt;{ 'hits': Array<[ttninjs](#interface-ttninjs)>;}&gt;
+- Promise&lt;{ 'hits': Array<[ttninjs](#interface-ttninjs)>; 'total': number;
+  'facets'?: { 'subject.code'?: Array<[facet](#interface-facet)>;
+  'product.code'?: Array<[facet](#interface-facet)>;};}&gt;
 
 #### Example
 
@@ -1082,7 +1086,7 @@ interface collection {
   id: string
   owner: string
   name: string
-  colldate: string
+  collDate: string
 }
 ```
 
@@ -1093,7 +1097,7 @@ interface collectionItem {
   id: string
   owner: string
   name: string
-  colldate: string
+  collDate: string
   items: Array<ttninjs>
 }
 ```
@@ -1129,5 +1133,15 @@ interface notification {
   p?: Array<string>
   agr?: Array<number>
   schedule?: string
+  email?: string
+}
+```
+
+### Interface facet
+
+```typescript
+interface facet {
+  key?: string
+  count?: number
 }
 ```
