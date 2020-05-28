@@ -285,7 +285,7 @@ class ContentV1 extends ApiBase {
     }
   }> {
     let path = `/content/v1/${mediaType}/search`
-    return super.call('get', path, parameters, undefined)
+    return super.call('get', path, parameters, undefined, {})
   }
   /**
    * Realtime delivery of content.
@@ -339,7 +339,11 @@ class ContentV1 extends ApiBase {
     hits: Array<ttninjs>
   }> {
     let path = `/content/v1/${mediaType}/stream`
-    return super.call('get', path, parameters, undefined)
+    return super.call('get', path, parameters, undefined, {
+      timeout: parameters.wait
+        ? parameters.wait * 1000 + 1000
+        : 60 * 1000 + 1000
+    })
   }
   /**
    * List all notifications
@@ -363,7 +367,7 @@ class ContentV1 extends ApiBase {
       | 'calendar'
   ): Promise<Array<notification>> {
     let path = `/content/v1/${mediaType}/notification`
-    return super.call('get', path, undefined, undefined)
+    return super.call('get', path, undefined, undefined, {})
   }
   /**
    * Create a new mobile notification
@@ -397,7 +401,7 @@ class ContentV1 extends ApiBase {
     }
   ): Promise<notification> {
     let path = `/content/v1/${mediaType}/notification/mobile`
-    return super.call('post', path, parameters, undefined)
+    return super.call('post', path, parameters, undefined, {})
   }
   /**
    * Create a new email notification
@@ -433,7 +437,7 @@ class ContentV1 extends ApiBase {
     }
   ): Promise<notification> {
     let path = `/content/v1/${mediaType}/notification/email`
-    return super.call('post', path, parameters, undefined)
+    return super.call('post', path, parameters, undefined, {})
   }
   /**
    * Create a new scheduled email notification
@@ -473,7 +477,7 @@ class ContentV1 extends ApiBase {
     }
   ): Promise<notification> {
     let path = `/content/v1/${mediaType}/notification/scheduled-email`
-    return super.call('post', path, parameters, undefined)
+    return super.call('post', path, parameters, undefined, {})
   }
   /**
    * Remove an existing notification
@@ -499,7 +503,7 @@ class ContentV1 extends ApiBase {
     id: string
   ): Promise<string> {
     let path = `/content/v1/${mediaType}/notification/${id}`
-    return super.call('delete', path, undefined, undefined)
+    return super.call('delete', path, undefined, undefined, {})
   }
 }
 class UserV1 extends ApiBase {
@@ -513,7 +517,7 @@ class UserV1 extends ApiBase {
    */
   getAgreements(): Promise<Array<agreement>> {
     let path = `/user/v1/agreement`
-    return super.call('get', path, undefined, undefined)
+    return super.call('get', path, undefined, undefined, {})
   }
   /**
    * Get the profile for the current user.
@@ -525,7 +529,7 @@ class UserV1 extends ApiBase {
    */
   getProfile(): Promise<{}> {
     let path = `/user/v1/profile`
-    return super.call('get', path, undefined, undefined)
+    return super.call('get', path, undefined, undefined, {})
   }
   /**
     * Update the profile for the current user.
@@ -540,7 +544,7 @@ For more controlled updates of the user profile, use the `PUT /user/v1/profile/{
     */
   updateProfile(profile?: {}): Promise<string> {
     let path = `/user/v1/profile`
-    return super.call('put', path, undefined, profile)
+    return super.call('put', path, undefined, profile, {})
   }
   /**
     * Get selected properties of the profile for the current user.
@@ -554,7 +558,7 @@ Often, applications are not interested in the whole user profile. This endpoint 
     */
   getProfileByProperty(property: Array<string>): Promise<{}> {
     let path = `/user/v1/profile/${property}`
-    return super.call('get', path, undefined, undefined)
+    return super.call('get', path, undefined, undefined, {})
   }
   /**
     * Update selected properties of the profile for the current user.
@@ -582,7 +586,7 @@ Properties present in `profile` but not listed in `property` will not be written
     profile?: {}
   ): Promise<string> {
     let path = `/user/v1/profile/${property}`
-    return super.call('put', path, undefined, profile)
+    return super.call('put', path, undefined, profile, {})
   }
   /**
    * Register a new mobile device.
@@ -608,7 +612,7 @@ Properties present in `profile` but not listed in `property` will not be written
     }
   ): Promise<string> {
     let path = `/user/v1/device/${token}`
-    return super.call('put', path, parameters, undefined)
+    return super.call('put', path, parameters, undefined, {})
   }
   /**
    * Unregister a mobile device.
@@ -621,7 +625,7 @@ Properties present in `profile` but not listed in `property` will not be written
    */
   removeDevice(token: string): Promise<string> {
     let path = `/user/v1/device/${token}`
-    return super.call('delete', path, undefined, undefined)
+    return super.call('delete', path, undefined, undefined, {})
   }
 }
 class CollectionV1 extends ApiBase {
@@ -635,7 +639,7 @@ class CollectionV1 extends ApiBase {
    */
   getCollections(): Promise<Array<collection>> {
     let path = `/collection/v1/collection`
-    return super.call('get', path, undefined, undefined)
+    return super.call('get', path, undefined, undefined, {})
   }
   /**
    * Create a new collection.
@@ -648,7 +652,7 @@ class CollectionV1 extends ApiBase {
    */
   addCollection(collection: { name: string }): Promise<collection> {
     let path = `/collection/v1/collection`
-    return super.call('post', path, undefined, collection)
+    return super.call('post', path, undefined, collection, {})
   }
   /**
    * Get collection properties and contents
@@ -661,7 +665,7 @@ class CollectionV1 extends ApiBase {
    */
   getCollection(id: string): Promise<collectionItem> {
     let path = `/collection/v1/collection/${id}`
-    return super.call('get', path, undefined, undefined)
+    return super.call('get', path, undefined, undefined, {})
   }
   /**
    * Update collection properties
@@ -680,7 +684,7 @@ class CollectionV1 extends ApiBase {
     }
   ): Promise<collection> {
     let path = `/collection/v1/collection/${id}`
-    return super.call('put', path, undefined, collection)
+    return super.call('put', path, undefined, collection, {})
   }
   /**
    * Remove an existing collection
@@ -693,7 +697,7 @@ class CollectionV1 extends ApiBase {
    */
   removeCollection(id: string): Promise<string> {
     let path = `/collection/v1/collection/${id}`
-    return super.call('delete', path, undefined, undefined)
+    return super.call('delete', path, undefined, undefined, {})
   }
   /**
     * Add items to collection
@@ -713,7 +717,7 @@ This operation is asynchronous, and there may be a delay before changes are visi
     }>
   ): Promise<string> {
     let path = `/collection/v1/collection/${id}/items`
-    return super.call('post', path, undefined, items)
+    return super.call('post', path, undefined, items, {})
   }
   /**
     * Remove items from collection
@@ -733,7 +737,7 @@ This operation is asynchronous, and there may be a delay before changes are visi
     }>
   ): Promise<string> {
     let path = `/collection/v1/collection/${id}/items`
-    return super.call('delete', path, undefined, items)
+    return super.call('delete', path, undefined, items, {})
   }
 }
 
@@ -742,11 +746,26 @@ export class Api {
   user: UserV1
   collection: CollectionV1
 
-  constructor(options: { token: string; host?: string }) {
-    this.content = new ContentV1({ host: 'https://api.tt.se', ...options })
-    this.user = new UserV1({ host: 'https://api.tt.se', ...options })
+  /**
+   * @param {object} options
+   * + token - OAuth2 token
+   * + host - API endpoint to connect to. The default is https://api.tt.se
+   * + timeout - HTTP timeout in ms. The default is 1000ms. Note that the `content.stream()` method will ignore this and always use timeout based on the `wait` parameter.
+   */
+  constructor(options: { token: string; host?: string; timeout?: number }) {
+    this.content = new ContentV1({
+      host: 'https://api.tt.se',
+      timeout: 1000,
+      ...options
+    })
+    this.user = new UserV1({
+      host: 'https://api.tt.se',
+      timeout: 1000,
+      ...options
+    })
     this.collection = new CollectionV1({
       host: 'https://api.tt.se',
+      timeout: 1000,
       ...options
     })
   }
