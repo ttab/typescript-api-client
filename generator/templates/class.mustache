@@ -60,7 +60,11 @@ import { ApiBase } from './runtime'
     {{^hasBodyParameters}}
       undefined
     {{/hasBodyParameters}}
-    )
+    , {
+    {{#options}}
+      {{name}}: {{value}}
+    {{/options}}
+    })
     }
   {{/methods}}
   }
@@ -72,9 +76,15 @@ export class Api {
   {{api}}: {{className}}
 {{/apis}}
 
-constructor(options: { token:string, host? :string }) {
+/**
+* @param {object} options
+* + token - OAuth2 token
+* + host - API endpoint to connect to. The default is {{&host}}
+* + timeout - HTTP timeout in ms. The default is 1000ms. Note that the `content.stream()` method will ignore this and always use timeout based on the `wait` parameter.
+*/
+constructor(options: { token:string, host? :string, timeout?: number }) {
 {{#apis}}
-  this.{{api}} = new {{className}}({ host: '{{&host}}', ...options })
+  this.{{api}} = new {{className}}({ host: '{{&host}}', timeout: 1000, ...options })
 {{/apis}}
 }
 

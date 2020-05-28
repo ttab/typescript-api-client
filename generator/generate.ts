@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { readFileSync, writeFileSync } from 'fs';
-import { camelCase, capitalize, filter, map } from 'lodash';
+import { camelCase, capitalize, filter, map, find } from 'lodash';
 import * as mustache from 'mustache';
 import { Swagger, SwaggerType } from 'swagger-typescript-codegen/lib/swagger/Swagger';
 import { convertType } from 'swagger-typescript-codegen/lib/typescript';
@@ -127,7 +127,8 @@ interface Method {
   description: string
   parameterNames: string
   anchor: () => string
-  examples: string
+  examples: string,
+  options: {[key: string]: any}
 }
 
 interface Parameter {
@@ -136,6 +137,7 @@ interface Parameter {
   typeName: string
   cardinality: string
   example: any
+  default: any
 }
 
 function parsePath(path: string): Endpoint {
@@ -181,13 +183,13 @@ function buildParameters(parameters: any = [], spec: Swagger): { [type: string]:
     } else if (a.schema && a.schema.example) {
       example = JSON.stringify(a.schema.example)
     }
-
     p[o.in].push({
       name: o.name,
       type: o.tsType,
       typeName: o.type,
       cardinality: o.cardinality,
-      example: example
+      example: example,
+      default: (o as any).default
     })
   }
   return p
@@ -240,6 +242,15 @@ function buildView(spec: Swagger): View {
           ...parameters.body.map(p => p.example)
         ].filter(n => n)
 
+        let options = []
+        let wait = find(parameters.query, { name: 'wait' })
+        if (wait) {
+          options.push({
+            name: 'timeout',
+            value: `parameters.wait ? parameters.wait * 1000 + 1000 : ${wait.default} * 1000 + 1000`
+          })
+        }
+
         api.methods.push({
           name: function() {
             return this.isSingleton ? this.shortName : this.fullName
@@ -261,7 +272,8 @@ function buildView(spec: Swagger): View {
           anchor: function() {
             return `${this.name()}${parameterNames.join('-')}`.toLowerCase()
           },
-          examples: examples.join(', ')
+          examples: examples.join(', '),
+          options
         })
       }
     }

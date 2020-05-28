@@ -10,6 +10,11 @@ let log = debug('tt:api')
 export interface ApiOptions {
   token: string
   host: string
+  timeout: number
+}
+
+export interface CallOptions {
+  timeout?: number
 }
 
 export class ApiError extends Error {
@@ -17,31 +22,32 @@ export class ApiError extends Error {
 }
 
 export class ApiBase {
-  token: string
-  host: string
+  options: ApiOptions
 
   constructor(options: ApiOptions) {
-    this.token = options.token
-    this.host = options.host
+    this.options = options
   }
 
   async call(
     httpMethod: string,
     path: string,
     query?: {},
-    body?: {}
+    body?: {},
+    opts?: CallOptions
   ) {
-    let url = this.host + path
-    log(httpMethod, url, query, body)
+    let url = this.options.host + path
+    let timeout = opts ? opts.timeout ? opts.timeout : this.options.timeout : this.options.timeout
+    log(httpMethod, url, query, body, {timeout})
     return axios({
       method: httpMethod,
       url: url,
       params: query,
       data: body,
       headers: {
-        'Authorization': `Bearer ${this.token}`,
+        'Authorization': `Bearer ${this.options.token}`,
         'Content-Type': 'application/json'
-      }
+      },
+      timeout
     }).then((res: any) => {
       return res.data
     }).catch((err: any) => {
