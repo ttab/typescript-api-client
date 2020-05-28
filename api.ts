@@ -274,7 +274,13 @@ class ContentV1 extends ApiBase {
         | 'versionstored:desc'
         | 'versionstored:asc'
         | 'relevance'
-      facets?: Array<'subject.code' | 'product.code'>
+      facets?: Array<
+        | 'copyrightholder'
+        | 'person.name'
+        | 'place.name'
+        | 'product.code'
+        | 'subject.code'
+      >
     }
   ): Promise<{
     hits: Array<ttninjs>
@@ -282,6 +288,9 @@ class ContentV1 extends ApiBase {
     facets?: {
       'subject.code'?: Array<facet>
       'product.code'?: Array<facet>
+      'place.name'?: Array<facet>
+      'person.name'?: Array<facet>
+      copyrightholder?: Array<facet>
     }
   }> {
     let path = `/content/v1/${mediaType}/search`

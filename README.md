@@ -272,17 +272,20 @@ Searching the TT archives.
     - versionstored:desc / versionstored:asc - Sort on the field 'versionstored'
       in descending or ascending order respectively.
     - relevance - Sort on relevance. The most relevant matches first.
-  - `facets?: Array<"subject.code" | "product.code">` - Enable search facets; in
-    addition to the regular search result the API will also return one or more
-    additional facets which contain information about how many search results
-    can be expected if the current query is narrowed down using popular subject
-    codes, product codes, etc.
+  - `facets?: Array<"copyrightholder" | "person.name" | "place.name" | "product.code" | "subject.code">` -
+    Enable search facets; in addition to the regular search result the API will
+    also return one or more additional facets which contain information about
+    how many search results can be expected if the current query is narrowed
+    down using popular subject codes, product codes, etc.
 
 #### Returns
 
 - Promise&lt;{ 'hits': Array<[ttninjs](#interface-ttninjs)>; 'total': number;
   'facets'?: { 'subject.code'?: Array<[facet](#interface-facet)>;
-  'product.code'?: Array<[facet](#interface-facet)>;};}&gt;
+  'product.code'?: Array<[facet](#interface-facet)>; 'place.name'?:
+  Array<[facet](#interface-facet)>; 'person.name'?:
+  Array<[facet](#interface-facet)>; 'copyrightholder'?:
+  Array<[facet](#interface-facet)>;};}&gt;
 
 #### Example
 
