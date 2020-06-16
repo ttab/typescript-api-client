@@ -277,6 +277,16 @@ Searching the TT archives.
     also return one or more additional facets which contain information about
     how many search results can be expected if the current query is narrowed
     down using popular subject codes, product codes, etc.
+  - `layout?: "bare" | "full"` - By default the full TTNinjs document is
+    returned for each search hit. This may be too cumbersome for some use cases;
+    for example when the client requests a large search result to be displayed
+    in a list form. This parameter allows the client to control the layout of
+    the items in the search result:
+    - full - (default) return the full TTNinjs document
+    - bare - return only `headline`, `date`, `uri`, `renditions`,
+      `associations`, `pubstatus`, `originaltransmissionreference`,
+      `copyrightholder`. In addition, all `associations` except the first are
+      stripped away, and `renditions` will only contain the thumbnail rendition.
 
 #### Returns
 
@@ -337,6 +347,16 @@ sense in this context (we will always return the most recent item).
     - versionstored:desc / versionstored:asc - Sort on the field 'versionstored'
       in descending or ascending order respectively.
     - relevance - Sort on relevance. The most relevant matches first.
+  - `layout?: "bare" | "full"` - By default the full TTNinjs document is
+    returned for each search hit. This may be too cumbersome for some use cases;
+    for example when the client requests a large search result to be displayed
+    in a list form. This parameter allows the client to control the layout of
+    the items in the search result:
+    - full - (default) return the full TTNinjs document
+    - bare - return only `headline`, `date`, `uri`, `renditions`,
+      `associations`, `pubstatus`, `originaltransmissionreference`,
+      `copyrightholder`. In addition, all `associations` except the first are
+      stripped away, and `renditions` will only contain the thumbnail rendition.
   - `last?: string` - The uri of the last item received.
   - `wait?: number` - The time (in seconds) to wait for updates before returning
     an empty result.

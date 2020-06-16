@@ -220,29 +220,33 @@ export interface facet {
 
 class ContentV1 extends ApiBase {
   /**
-   * Searching the TT archives.
-   *
-   *
-   *
-   * @method
-   * @name ContentV1#search
-   * @param {string} mediaType - Only return items of this media type.
-   * @param {string} q - A query string used for free text searching.
-   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
-   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-   * @param {string} tr - Time range: last hour, day, week, month, or year.
-   * @param {string} trs - Start date
-   * @param {string} tre - End date
-   * @param {integer} s - Size of search result.
-   * @param {integer} fr - Index into the search result. Used for pagination. It is recommended to make this value a multiple of the search result size (`s`), as some media types do not support arbitrary values here.
-   * @param {string} sort - Sort order for the result. Documentation on various date fields can be found [here](http://spec.tt.se/dates).
-   * default:desc / default:asc - Sort on the internal field '_tstamp' in descending or ascending order respectively.
-   * date:desc / date:asc - Sort on the field 'date' in descending or ascending order respectively.
-   * versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated' in descending or ascending order respectively.
-   * versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in descending or ascending order respectively.
-   * relevance - Sort on relevance. The most relevant matches first.
-   * @param {array} facets - Enable search facets; in addition to the regular search result the API will also return one or more additional facets which contain information about how many search results can be expected if the current query is narrowed down using popular subject codes, product codes, etc.
-   */
+    * Searching the TT archives.
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#search
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} tr - Time range: last hour, day, week, month, or year.
+    * @param {string} trs - Start date
+    * @param {string} tre - End date
+    * @param {integer} s - Size of search result.
+    * @param {integer} fr - Index into the search result. Used for pagination. It is recommended to make this value a multiple of the search result size (`s`), as some media types do not support arbitrary values here.
+    * @param {string} sort - Sort order for the result. Documentation on various date fields can be found [here](http://spec.tt.se/dates).
+  * default:desc / default:asc - Sort on the internal field '_tstamp' in descending or ascending order respectively.
+  * date:desc / date:asc - Sort on the field 'date' in descending or ascending order respectively.
+  * versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated' in descending or ascending order respectively.
+  * versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in descending or ascending order respectively.
+  * relevance - Sort on relevance. The most relevant matches first.
+    * @param {array} facets - Enable search facets; in addition to the regular search result the API will also return one or more additional facets which contain information about how many search results can be expected if the current query is narrowed down using popular subject codes, product codes, etc.
+    * @param {string} layout - By default the full TTNinjs document is returned for each search hit. This may be too cumbersome for some use cases; for example when the client requests a large search result to be displayed in a list form.
+This parameter allows the client to control the layout of the items in the search result:
+* full - (default) return the full TTNinjs document
+* bare - return only `headline`, `date`, `uri`, `renditions`, `associations`, `pubstatus`, `originaltransmissionreference`, `copyrightholder`. In addition, all `associations` except the first are stripped away, and `renditions` will only contain the thumbnail rendition.
+    */
   search(
     mediaType:
       | '_all'
@@ -281,6 +285,7 @@ class ContentV1 extends ApiBase {
         | 'product.code'
         | 'subject.code'
       >
+      layout?: 'bare' | 'full'
     }
   ): Promise<{
     hits: Array<ttninjs>
@@ -297,25 +302,29 @@ class ContentV1 extends ApiBase {
     return super.call('get', path, parameters, undefined, {})
   }
   /**
-   * Realtime delivery of content.
-   *
-   * Long poll call that will wait for a specified time period (default: 60s, max 300s) until a matching item is published. The parameters are similar to those for `search`, with the exception that time ranges and pagination doesn't make sense in this context (we will always return the most recent item).
-   *
-   * @method
-   * @name ContentV1#stream
-   * @param {string} mediaType - Only return items of this media type.
-   * @param {string} q - A query string used for free text searching.
-   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
-   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-   * @param {string} sort - Sort order for the result. Documentation on various date fields can be found [here](http://spec.tt.se/dates).
-   * default:desc / default:asc - Sort on the internal field '_tstamp' in descending or ascending order respectively.
-   * date:desc / date:asc - Sort on the field 'date' in descending or ascending order respectively.
-   * versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated' in descending or ascending order respectively.
-   * versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in descending or ascending order respectively.
-   * relevance - Sort on relevance. The most relevant matches first.
-   * @param {string} last - The uri of the last item received.
-   * @param {integer} wait - The time (in seconds) to wait for updates before returning an empty result.
-   */
+    * Realtime delivery of content.
+    *
+    * Long poll call that will wait for a specified time period (default: 60s, max 300s) until a matching item is published. The parameters are similar to those for `search`, with the exception that time ranges and pagination doesn't make sense in this context (we will always return the most recent item).
+    *
+    * @method
+    * @name ContentV1#stream
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} sort - Sort order for the result. Documentation on various date fields can be found [here](http://spec.tt.se/dates).
+  * default:desc / default:asc - Sort on the internal field '_tstamp' in descending or ascending order respectively.
+  * date:desc / date:asc - Sort on the field 'date' in descending or ascending order respectively.
+  * versioncreated:desc / versioncreated:asc - Sort on the field 'versioncreated' in descending or ascending order respectively.
+  * versionstored:desc / versionstored:asc - Sort on the field 'versionstored' in descending or ascending order respectively.
+  * relevance - Sort on relevance. The most relevant matches first.
+    * @param {string} layout - By default the full TTNinjs document is returned for each search hit. This may be too cumbersome for some use cases; for example when the client requests a large search result to be displayed in a list form.
+This parameter allows the client to control the layout of the items in the search result:
+* full - (default) return the full TTNinjs document
+* bare - return only `headline`, `date`, `uri`, `renditions`, `associations`, `pubstatus`, `originaltransmissionreference`, `copyrightholder`. In addition, all `associations` except the first are stripped away, and `renditions` will only contain the thumbnail rendition.
+    * @param {string} last - The uri of the last item received.
+    * @param {integer} wait - The time (in seconds) to wait for updates before returning an empty result.
+    */
   stream(
     mediaType:
       | '_all'
@@ -341,6 +350,7 @@ class ContentV1 extends ApiBase {
         | 'versionstored:desc'
         | 'versionstored:asc'
         | 'relevance'
+      layout?: 'bare' | 'full'
       last?: string
       wait?: number
     }
