@@ -24,6 +24,9 @@ Instructions for building the client are [here](/BUILDING.md).
     - [addNotificationMobile](#addnotificationmobilemediatype-parameters)
     - [addNotificationEmail](#addnotificationemailmediatype-parameters)
     - [addNotificationScheduledEmail](#addnotificationscheduledemailmediatype-parameters)
+    - [updateNotificationMobile](#updatenotificationmobilemediatype-id-parameters)
+    - [updateNotificationEmail](#updatenotificationemailmediatype-id-parameters)
+    - [updateNotificationScheduledEmail](#updatenotificationscheduledemailmediatype-id-parameters)
     - [removeNotification](#removenotificationmediatype-id)
   - UserV1
     - [getAgreements](#getagreements)
@@ -525,6 +528,132 @@ api.content
   })
 ```
 
+### updateNotificationMobile(mediaType, id, parameters)
+
+Update an existing mobile notification
+
+#### Arguments
+
+- mediaType:
+  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
+  Only return items of this media type.
+- id: `string` - An notification UUID string.
+- parameters:
+  - `q?: string` - A query string used for free text searching.
+  - `p?: Array<string>` - A list of product codes. Only items matching at least
+    one of these codes will be returned. The list of current product codes is
+    [here](https://tt.se/spec/product/1.0).
+  - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
+    current user. Only items covered by at least one of there agreements will be
+    returned.
+  - `title: string` -
+
+#### Returns
+
+- Promise&lt;[notification](#interface-notification)&gt;
+
+#### Example
+
+```typescript
+api.content
+  .updateNotificationMobile('image', '123', {
+    q: 'panda',
+    p: ['FOGNRE', 'FOGNREEJ'],
+    agr: [20031, 20035],
+    title: 'my mobile notification'
+  })
+  .then(result => {
+    // do something with result
+  })
+```
+
+### updateNotificationEmail(mediaType, id, parameters)
+
+Update an existing email notification
+
+#### Arguments
+
+- mediaType:
+  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
+  Only return items of this media type.
+- id: `string` - An notification UUID string.
+- parameters:
+  - `q?: string` - A query string used for free text searching.
+  - `p?: Array<string>` - A list of product codes. Only items matching at least
+    one of these codes will be returned. The list of current product codes is
+    [here](https://tt.se/spec/product/1.0).
+  - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
+    current user. Only items covered by at least one of there agreements will be
+    returned.
+  - `title: string` -
+  - `email: string` - The email address to send emails to.
+
+#### Returns
+
+- Promise&lt;[notification](#interface-notification)&gt;
+
+#### Example
+
+```typescript
+api.content
+  .updateNotificationEmail('image', '123', {
+    q: 'panda',
+    p: ['FOGNRE', 'FOGNREEJ'],
+    agr: [20031, 20035],
+    title: 'my email notification',
+    email: 'my.email@address.com'
+  })
+  .then(result => {
+    // do something with result
+  })
+```
+
+### updateNotificationScheduledEmail(mediaType, id, parameters)
+
+Update an existing scheduled email notification
+
+#### Arguments
+
+- mediaType:
+  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
+  Only return items of this media type.
+- id: `string` - An notification UUID string.
+- parameters:
+  - `q?: string` - A query string used for free text searching.
+  - `p?: Array<string>` - A list of product codes. Only items matching at least
+    one of these codes will be returned. The list of current product codes is
+    [here](https://tt.se/spec/product/1.0).
+  - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
+    current user. Only items covered by at least one of there agreements will be
+    returned.
+  - `tr?: "h" | "d" | "w" | "m" | "y"` - Time range: last hour, day, week,
+    month, or year.
+  - `title: string` -
+  - `email: string` - The email address to send emails to.
+  - `schedule: string` - A cron expression.
+
+#### Returns
+
+- Promise&lt;[notification](#interface-notification)&gt;
+
+#### Example
+
+```typescript
+api.content
+  .updateNotificationScheduledEmail('image', '123', {
+    q: 'panda',
+    p: ['FOGNRE', 'FOGNREEJ'],
+    agr: [20031, 20035],
+    tr: 'w',
+    title: 'my scheduled email notification',
+    email: 'my.email@address.com',
+    schedule: '0 0 12 * * MON-FRI'
+  })
+  .then(result => {
+    // do something with result
+  })
+```
+
 ### removeNotification(mediaType, id)
 
 Remove an existing notification
@@ -534,7 +663,7 @@ Remove an existing notification
 - mediaType:
   `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
   Only return items of this media type.
-- id: `string` - An UUID string.
+- id: `string` - An notification UUID string.
 
 #### Returns
 

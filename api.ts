@@ -499,6 +499,122 @@ This parameter allows the client to control the layout of the items in the searc
     return super.call('post', path, parameters, undefined, {})
   }
   /**
+   * Update an existing mobile notification
+   *
+   *
+   *
+   * @method
+   * @name ContentV1#updateNotificationMobile
+   * @param {string} mediaType - Only return items of this media type.
+   * @param {string} id - An notification UUID string.
+   * @param {string} q - A query string used for free text searching.
+   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+   * @param {string} title -
+   */
+  updateNotificationMobile(
+    mediaType:
+      | '_all'
+      | 'image'
+      | 'video'
+      | 'graphic'
+      | 'text'
+      | 'feature'
+      | 'page'
+      | 'planning'
+      | 'calendar',
+    id: string,
+    parameters: {
+      q?: string
+      p?: Array<string>
+      agr?: Array<number>
+      title: string
+    }
+  ): Promise<notification> {
+    let path = `/content/v1/${mediaType}/notification/${id}/mobile`
+    return super.call('put', path, parameters, undefined, {})
+  }
+  /**
+   * Update an existing email notification
+   *
+   *
+   *
+   * @method
+   * @name ContentV1#updateNotificationEmail
+   * @param {string} mediaType - Only return items of this media type.
+   * @param {string} id - An notification UUID string.
+   * @param {string} q - A query string used for free text searching.
+   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+   * @param {string} title -
+   * @param {string} email - The email address to send emails to.
+   */
+  updateNotificationEmail(
+    mediaType:
+      | '_all'
+      | 'image'
+      | 'video'
+      | 'graphic'
+      | 'text'
+      | 'feature'
+      | 'page'
+      | 'planning'
+      | 'calendar',
+    id: string,
+    parameters: {
+      q?: string
+      p?: Array<string>
+      agr?: Array<number>
+      title: string
+      email: string
+    }
+  ): Promise<notification> {
+    let path = `/content/v1/${mediaType}/notification/${id}/email`
+    return super.call('put', path, parameters, undefined, {})
+  }
+  /**
+   * Update an existing scheduled email notification
+   *
+   *
+   *
+   * @method
+   * @name ContentV1#updateNotificationScheduledEmail
+   * @param {string} mediaType - Only return items of this media type.
+   * @param {string} id - An notification UUID string.
+   * @param {string} q - A query string used for free text searching.
+   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+   * @param {string} tr - Time range: last hour, day, week, month, or year.
+   * @param {string} title -
+   * @param {string} email - The email address to send emails to.
+   * @param {string} schedule - A cron expression.
+   */
+  updateNotificationScheduledEmail(
+    mediaType:
+      | '_all'
+      | 'image'
+      | 'video'
+      | 'graphic'
+      | 'text'
+      | 'feature'
+      | 'page'
+      | 'planning'
+      | 'calendar',
+    id: string,
+    parameters: {
+      q?: string
+      p?: Array<string>
+      agr?: Array<number>
+      tr?: 'h' | 'd' | 'w' | 'm' | 'y'
+      title: string
+      email: string
+      schedule: string
+    }
+  ): Promise<notification> {
+    let path = `/content/v1/${mediaType}/notification/${id}/scheduled-email`
+    return super.call('put', path, parameters, undefined, {})
+  }
+  /**
    * Remove an existing notification
    *
    *
@@ -506,7 +622,7 @@ This parameter allows the client to control the layout of the items in the searc
    * @method
    * @name ContentV1#removeNotification
    * @param {string} mediaType - Only return items of this media type.
-   * @param {string} id - An UUID string.
+   * @param {string} id - An notification UUID string.
    */
   removeNotification(
     mediaType:
