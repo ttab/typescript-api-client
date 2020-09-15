@@ -505,6 +505,7 @@ Create a new scheduled email notification
   - `title: string` -
   - `email: string` - The email address to send emails to.
   - `schedule: string` - A cron expression.
+  - `timezone?: string` - A valid time zone name
 
 #### Returns
 
@@ -521,7 +522,8 @@ api.content
     tr: 'w',
     title: 'my scheduled email notification',
     email: 'my.email@address.com',
-    schedule: '0 0 12 * * MON-FRI'
+    schedule: '0 0 12 * * MON-FRI',
+    timezone: 'Europe/Stockholm'
   })
   .then(result => {
     // do something with result
@@ -556,7 +558,7 @@ Update an existing mobile notification
 
 ```typescript
 api.content
-  .updateNotificationMobile('image', '123', {
+  .updateNotificationMobile('image', '4a37869c-808f-496f-b549-3da0821ce187', {
     q: 'panda',
     p: ['FOGNRE', 'FOGNREEJ'],
     agr: [20031, 20035],
@@ -596,7 +598,7 @@ Update an existing email notification
 
 ```typescript
 api.content
-  .updateNotificationEmail('image', '123', {
+  .updateNotificationEmail('image', '4a37869c-808f-496f-b549-3da0821ce187', {
     q: 'panda',
     p: ['FOGNRE', 'FOGNREEJ'],
     agr: [20031, 20035],
@@ -631,6 +633,7 @@ Update an existing scheduled email notification
   - `title: string` -
   - `email: string` - The email address to send emails to.
   - `schedule: string` - A cron expression.
+  - `timezone?: string` - A valid time zone name
 
 #### Returns
 
@@ -640,15 +643,20 @@ Update an existing scheduled email notification
 
 ```typescript
 api.content
-  .updateNotificationScheduledEmail('image', '123', {
-    q: 'panda',
-    p: ['FOGNRE', 'FOGNREEJ'],
-    agr: [20031, 20035],
-    tr: 'w',
-    title: 'my scheduled email notification',
-    email: 'my.email@address.com',
-    schedule: '0 0 12 * * MON-FRI'
-  })
+  .updateNotificationScheduledEmail(
+    'image',
+    '4a37869c-808f-496f-b549-3da0821ce187',
+    {
+      q: 'panda',
+      p: ['FOGNRE', 'FOGNREEJ'],
+      agr: [20031, 20035],
+      tr: 'w',
+      title: 'my scheduled email notification',
+      email: 'my.email@address.com',
+      schedule: '0 0 12 * * MON-FRI',
+      timezone: 'Europe/Stockholm'
+    }
+  )
   .then(result => {
     // do something with result
   })
@@ -672,9 +680,11 @@ Remove an existing notification
 #### Example
 
 ```typescript
-api.content.removeNotification('image', '123').then(result => {
-  // do something with result
-})
+api.content
+  .removeNotification('image', '4a37869c-808f-496f-b549-3da0821ce187')
+  .then(result => {
+    // do something with result
+  })
 ```
 
 ## UserV1
@@ -1289,6 +1299,7 @@ interface notification {
   p?: Array<string>
   agr?: Array<number>
   schedule?: string
+  timezone?: string
   email?: string
 }
 ```

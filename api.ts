@@ -211,6 +211,7 @@ export interface notification {
   p?: Array<string>
   agr?: Array<number>
   schedule?: string
+  timezone?: string
   email?: string
 }
 export interface facet {
@@ -473,6 +474,7 @@ This parameter allows the client to control the layout of the items in the searc
    * @param {string} title -
    * @param {string} email - The email address to send emails to.
    * @param {string} schedule - A cron expression.
+   * @param {string} timezone - A valid time zone name
    */
   addNotificationScheduledEmail(
     mediaType:
@@ -493,6 +495,7 @@ This parameter allows the client to control the layout of the items in the searc
       title: string
       email: string
       schedule: string
+      timezone?: string
     }
   ): Promise<notification> {
     let path = `/content/v1/${mediaType}/notification/scheduled-email`
@@ -588,6 +591,7 @@ This parameter allows the client to control the layout of the items in the searc
    * @param {string} title -
    * @param {string} email - The email address to send emails to.
    * @param {string} schedule - A cron expression.
+   * @param {string} timezone - A valid time zone name
    */
   updateNotificationScheduledEmail(
     mediaType:
@@ -609,6 +613,7 @@ This parameter allows the client to control the layout of the items in the searc
       title: string
       email: string
       schedule: string
+      timezone?: string
     }
   ): Promise<notification> {
     let path = `/content/v1/${mediaType}/notification/${id}/scheduled-email`
