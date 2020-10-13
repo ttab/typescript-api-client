@@ -1079,6 +1079,7 @@ interface ttninjs {
   representationtype?: 'complete' | 'incomplete' | 'associated'
   profile?: 'PUBL' | 'DATA' | 'INFO' | 'RAW'
   version?: string
+  firstcreated?: string
   versioncreated?: string
   versionstored?: string
   embargoed?: string
@@ -1089,17 +1090,18 @@ interface ttninjs {
   enddatetime?: string
   job?: string
   pubstatus?: 'usable' | 'withheld' | 'canceled' | 'replaced' | 'commissioned'
+  urgency?: number
   copyrightholder?: string
   copyrightnotice?: string
+  usageterms?: string
+  ednote?: string
   language?: string
   week?: number
-  urgency?: number
   webprio?: number
   source?: string
   commissioncode?: string
   description_text?: string
   description_usage?: string
-  usageterms?: string
   body_text?: string
   body_html5?: string
   body_richhtml5?: string
@@ -1112,6 +1114,9 @@ interface ttninjs {
     eventphone?: string
     eventweb?: string
     organizer?: string
+    organizeraddress?: string
+    organizercity?: string
+    organizercountry?: string
     organizerurl?: string
     organizerphone?: string
     organizermail?: string
@@ -1137,20 +1142,6 @@ interface ttninjs {
   body_sportsml?: string
   body_pages?: {}
   commissionedby?: Array<string>
-  charcount?: number
-  originaltransmissionreference?: string
-  signals?: {
-    pageproduct?: string
-    multipagecount?: number
-    paginae?: Array<string>
-    pagecode?: string
-    pagevariant?: string
-  }
-  product?: Array<{
-    name?: string
-    scheme?: string
-    code?: string
-  }>
   person?: Array<{
     name?: string
     rel?: string
@@ -1172,7 +1163,10 @@ interface ttninjs {
     rel?: string
     scheme?: string
     code?: string
-    geometry_geojson?: {}
+    geometry_geojson?: {
+      type?: 'Point'
+      coordinates?: Array<number>
+    }
   }>
   subject?: Array<{
     name?: string
@@ -1192,6 +1186,13 @@ interface ttninjs {
     scheme?: string
     code?: string
   }>
+  infosource?: Array<{
+    name?: string
+    rel?: string
+    scheme?: string
+    code?: string
+  }>
+  title?: string
   byline?: string
   bylines?: Array<{
     byline?: string
@@ -1207,30 +1208,74 @@ interface ttninjs {
   }>
   headline?: string
   slug?: string
+  slugline?: string
   located?: string
+  charcount?: number
+  wordcount?: number
   renditions?: {}
+  associations?: {}
+  altids?: {
+    originaltransmissionreference?: string
+  }
+  originaltransmissionreference?: string
+  trustindicator?: Array<{
+    scheme?: string
+    code?: string
+    title?: string
+    href?: string
+  }>
+  $standard?: {
+    name?: string
+    version?: string
+    schema?: string
+  }
+  genre?: Array<{
+    name?: string
+    scheme?: string
+    code?: string
+  }>
+  signals?: {
+    pageproduct?: string
+    multipagecount?: number
+    paginae?: Array<string>
+    pagecode?: string
+    pagevariant?: string
+  }
+  product?: Array<{
+    name?: string
+    scheme?: string
+    code?: string
+  }>
   replacing?: Array<string>
   replacedby?: string
-  associations?: {}
   assignments?: {}
   revisions?: Array<{
     uri: string
     slug?: string
     replacing?: Array<string>
   }>
-  sector?: 'INR' | 'UTR' | 'EKO' | 'KLT' | 'SPT' | 'PRM'
+  sector?: 'INR' | 'UTR' | 'EKO' | 'KLT' | 'SPT' | 'FEA' | 'NOJ' | 'PRM'
   fixture?: Array<{
     name?: string
     rel?: string
     scheme?: string
     code?: string
   }>
-  advice?: {
-    lifetime?: {
-      period?: string
-      enddatetime?: string
+  advice?: Array<{
+    role?: 'publish'
+    environment?: Array<{
+      code?: string
+      scheme?: string
+    }>
+    importance?: {
+      code?: string
+      scheme?: string
     }
-  }
+    lifetime?: {
+      code?: string
+      scheme?: string
+    }
+  }>
 }
 ```
 
