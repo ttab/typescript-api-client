@@ -406,8 +406,8 @@ This parameter allows the client to control the layout of the items in the searc
     let path = `/content/v1/${mediaType}/stream`
     return super.call('get', path, parameters, undefined, {
       timeout: parameters.wait
-        ? parameters.wait * 1000 + 1000
-        : 60 * 1000 + 1000
+        ? parameters.wait * 1000 + 5000
+        : 60 * 1000 + 5000
     })
   }
   /**

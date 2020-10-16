@@ -251,7 +251,7 @@ function buildView(spec: Swagger): View {
           if (wait) {
             options.push({
               name: 'timeout',
-              value: `parameters.wait ? parameters.wait * 1000 + 1000 : ${wait.default} * 1000 + 1000`
+              value: `parameters.wait ? parameters.wait * 1000 + 5000 : ${wait.default} * 1000 + 5000`
             })
           }
 
