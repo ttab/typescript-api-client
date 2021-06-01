@@ -1,9 +1,9 @@
-import axios from 'axios'
+import axios, { Method } from 'axios'
 import debug from 'debug'
 import * as EventEmitter from 'eventemitter3'
 import StrictEventEmitter from 'strict-event-emitter-types'
-
 import { Api, ttninjs } from './api'
+
 
 let log = debug('tt:api')
 
@@ -29,7 +29,7 @@ export class ApiBase {
   }
 
   async call(
-    httpMethod: string,
+    httpMethod: Method,
     path: string,
     query?: {},
     body?: {},
