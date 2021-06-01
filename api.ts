@@ -218,6 +218,7 @@ export interface agreement {
   id?: number
   description?: {}
   type?: 'Subscription' | 'Direct' | 'Normal' | 'Sketch'
+  isSuperAgreement?: boolean
   products?: Array<product>
 }
 export interface collection {
@@ -275,6 +276,7 @@ class ContentV1 extends ApiBase {
     * @param {string} mediaType - Only return items of this media type.
     * @param {string} q - A query string used for free text searching.
     * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
     * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
     * @param {string} tr - Time range: last hour, day, week, month, or year.
     * @param {string} trs - Start date
@@ -357,6 +359,7 @@ This parameter allows the client to control the layout of the items in the searc
     * @param {string} mediaType - Only return items of this media type.
     * @param {string} q - A query string used for free text searching.
     * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
     * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
     * @param {string} sort - Sort order for the result. Documentation on various date fields can be found [here](http://spec.tt.se/dates).
   * default:desc / default:asc - Sort on the internal field '_tstamp' in descending or ascending order respectively.
@@ -435,18 +438,19 @@ This parameter allows the client to control the layout of the items in the searc
     return super.call('get', path, undefined, undefined, {})
   }
   /**
-   * Create a new mobile notification
-   *
-   *
-   *
-   * @method
-   * @name ContentV1#addNotificationMobile
-   * @param {string} mediaType - Only return items of this media type.
-   * @param {string} q - A query string used for free text searching.
-   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
-   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-   * @param {string} title -
-   */
+    * Create a new mobile notification
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#addNotificationMobile
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} title - 
+    */
   addNotificationMobile(
     mediaType:
       | '_all'
@@ -469,19 +473,20 @@ This parameter allows the client to control the layout of the items in the searc
     return super.call('post', path, parameters, undefined, {})
   }
   /**
-   * Create a new email notification
-   *
-   *
-   *
-   * @method
-   * @name ContentV1#addNotificationEmail
-   * @param {string} mediaType - Only return items of this media type.
-   * @param {string} q - A query string used for free text searching.
-   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
-   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-   * @param {string} title -
-   * @param {string} email - The email address to send emails to.
-   */
+    * Create a new email notification
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#addNotificationEmail
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} title - 
+    * @param {string} email - The email address to send emails to.
+    */
   addNotificationEmail(
     mediaType:
       | '_all'
@@ -505,22 +510,23 @@ This parameter allows the client to control the layout of the items in the searc
     return super.call('post', path, parameters, undefined, {})
   }
   /**
-   * Create a new scheduled email notification
-   *
-   *
-   *
-   * @method
-   * @name ContentV1#addNotificationScheduledEmail
-   * @param {string} mediaType - Only return items of this media type.
-   * @param {string} q - A query string used for free text searching.
-   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
-   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-   * @param {string} tr - Time range: last hour, day, week, month, or year.
-   * @param {string} title -
-   * @param {string} email - The email address to send emails to.
-   * @param {string} schedule - A cron expression.
-   * @param {string} timezone - A valid time zone name
-   */
+    * Create a new scheduled email notification
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#addNotificationScheduledEmail
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} tr - Time range: last hour, day, week, month, or year.
+    * @param {string} title - 
+    * @param {string} email - The email address to send emails to.
+    * @param {string} schedule - A cron expression.
+    * @param {string} timezone - A valid time zone name
+    */
   addNotificationScheduledEmail(
     mediaType:
       | '_all'
@@ -547,19 +553,20 @@ This parameter allows the client to control the layout of the items in the searc
     return super.call('post', path, parameters, undefined, {})
   }
   /**
-   * Update an existing mobile notification
-   *
-   *
-   *
-   * @method
-   * @name ContentV1#updateNotificationMobile
-   * @param {string} mediaType - Only return items of this media type.
-   * @param {string} id - An notification UUID string.
-   * @param {string} q - A query string used for free text searching.
-   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
-   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-   * @param {string} title -
-   */
+    * Update an existing mobile notification
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#updateNotificationMobile
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} id - An notification UUID string.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} title - 
+    */
   updateNotificationMobile(
     mediaType:
       | '_all'
@@ -583,20 +590,21 @@ This parameter allows the client to control the layout of the items in the searc
     return super.call('put', path, parameters, undefined, {})
   }
   /**
-   * Update an existing email notification
-   *
-   *
-   *
-   * @method
-   * @name ContentV1#updateNotificationEmail
-   * @param {string} mediaType - Only return items of this media type.
-   * @param {string} id - An notification UUID string.
-   * @param {string} q - A query string used for free text searching.
-   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
-   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-   * @param {string} title -
-   * @param {string} email - The email address to send emails to.
-   */
+    * Update an existing email notification
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#updateNotificationEmail
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} id - An notification UUID string.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} title - 
+    * @param {string} email - The email address to send emails to.
+    */
   updateNotificationEmail(
     mediaType:
       | '_all'
@@ -621,23 +629,24 @@ This parameter allows the client to control the layout of the items in the searc
     return super.call('put', path, parameters, undefined, {})
   }
   /**
-   * Update an existing scheduled email notification
-   *
-   *
-   *
-   * @method
-   * @name ContentV1#updateNotificationScheduledEmail
-   * @param {string} mediaType - Only return items of this media type.
-   * @param {string} id - An notification UUID string.
-   * @param {string} q - A query string used for free text searching.
-   * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
-   * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-   * @param {string} tr - Time range: last hour, day, week, month, or year.
-   * @param {string} title -
-   * @param {string} email - The email address to send emails to.
-   * @param {string} schedule - A cron expression.
-   * @param {string} timezone - A valid time zone name
-   */
+    * Update an existing scheduled email notification
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#updateNotificationScheduledEmail
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} id - An notification UUID string.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} tr - Time range: last hour, day, week, month, or year.
+    * @param {string} title - 
+    * @param {string} email - The email address to send emails to.
+    * @param {string} schedule - A cron expression.
+    * @param {string} timezone - A valid time zone name
+    */
   updateNotificationScheduledEmail(
     mediaType:
       | '_all'
@@ -695,7 +704,7 @@ class UserV1 extends ApiBase {
   /**
    * Get the current customer agreements.
    *
-   * Return a list of applicable customer agreements for the current user.
+   * Return a list of applicable customer agreements for the current user. An agreement that has a truthy value of isSuperAgreement will override any agreement of Subscription type.
    *
    * @method
    * @name UserV1#getAgreements

@@ -251,7 +251,9 @@ Searching the TT archives.
   - `q?: string` - A query string used for free text searching.
   - `p?: Array<string>` - A list of product codes. Only items matching at least
     one of these codes will be returned. The list of current product codes is
-    [here](https://tt.se/spec/product/1.0).
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
@@ -306,7 +308,7 @@ Searching the TT archives.
 api.content
   .search('image', {
     q: 'panda',
-    p: ['FOGNRE', 'FOGNREEJ'],
+    p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     tr: 'w',
     sort: 'date:asc'
@@ -334,7 +336,9 @@ sense in this context (we will always return the most recent item).
   - `q?: string` - A query string used for free text searching.
   - `p?: Array<string>` - A list of product codes. Only items matching at least
     one of these codes will be returned. The list of current product codes is
-    [here](https://tt.se/spec/product/1.0).
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
@@ -374,7 +378,7 @@ sense in this context (we will always return the most recent item).
 api.content
   .stream('image', {
     q: 'panda',
-    p: ['FOGNRE', 'FOGNREEJ'],
+    p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     sort: 'date:asc'
   })
@@ -418,7 +422,9 @@ Create a new mobile notification
   - `q?: string` - A query string used for free text searching.
   - `p?: Array<string>` - A list of product codes. Only items matching at least
     one of these codes will be returned. The list of current product codes is
-    [here](https://tt.se/spec/product/1.0).
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
@@ -434,7 +440,7 @@ Create a new mobile notification
 api.content
   .addNotificationMobile('image', {
     q: 'panda',
-    p: ['FOGNRE', 'FOGNREEJ'],
+    p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     title: 'my mobile notification'
   })
@@ -456,7 +462,9 @@ Create a new email notification
   - `q?: string` - A query string used for free text searching.
   - `p?: Array<string>` - A list of product codes. Only items matching at least
     one of these codes will be returned. The list of current product codes is
-    [here](https://tt.se/spec/product/1.0).
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
@@ -473,7 +481,7 @@ Create a new email notification
 api.content
   .addNotificationEmail('image', {
     q: 'panda',
-    p: ['FOGNRE', 'FOGNREEJ'],
+    p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     title: 'my email notification',
     email: 'my.email@address.com'
@@ -496,7 +504,9 @@ Create a new scheduled email notification
   - `q?: string` - A query string used for free text searching.
   - `p?: Array<string>` - A list of product codes. Only items matching at least
     one of these codes will be returned. The list of current product codes is
-    [here](https://tt.se/spec/product/1.0).
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
@@ -517,7 +527,7 @@ Create a new scheduled email notification
 api.content
   .addNotificationScheduledEmail('image', {
     q: 'panda',
-    p: ['FOGNRE', 'FOGNREEJ'],
+    p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     tr: 'w',
     title: 'my scheduled email notification',
@@ -544,7 +554,9 @@ Update an existing mobile notification
   - `q?: string` - A query string used for free text searching.
   - `p?: Array<string>` - A list of product codes. Only items matching at least
     one of these codes will be returned. The list of current product codes is
-    [here](https://tt.se/spec/product/1.0).
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
@@ -560,7 +572,7 @@ Update an existing mobile notification
 api.content
   .updateNotificationMobile('image', '4a37869c-808f-496f-b549-3da0821ce187', {
     q: 'panda',
-    p: ['FOGNRE', 'FOGNREEJ'],
+    p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     title: 'my mobile notification'
   })
@@ -583,7 +595,9 @@ Update an existing email notification
   - `q?: string` - A query string used for free text searching.
   - `p?: Array<string>` - A list of product codes. Only items matching at least
     one of these codes will be returned. The list of current product codes is
-    [here](https://tt.se/spec/product/1.0).
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
@@ -600,7 +614,7 @@ Update an existing email notification
 api.content
   .updateNotificationEmail('image', '4a37869c-808f-496f-b549-3da0821ce187', {
     q: 'panda',
-    p: ['FOGNRE', 'FOGNREEJ'],
+    p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     title: 'my email notification',
     email: 'my.email@address.com'
@@ -624,7 +638,9 @@ Update an existing scheduled email notification
   - `q?: string` - A query string used for free text searching.
   - `p?: Array<string>` - A list of product codes. Only items matching at least
     one of these codes will be returned. The list of current product codes is
-    [here](https://tt.se/spec/product/1.0).
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
@@ -648,7 +664,7 @@ api.content
     '4a37869c-808f-496f-b549-3da0821ce187',
     {
       q: 'panda',
-      p: ['FOGNRE', 'FOGNREEJ'],
+      p: ['FOGNRE', '-FOGNREEJ'],
       agr: [20031, 20035],
       tr: 'w',
       title: 'my scheduled email notification',
@@ -693,7 +709,9 @@ api.content
 
 Get the current customer agreements.
 
-Return a list of applicable customer agreements for the current user.
+Return a list of applicable customer agreements for the current user. An
+agreement that has a truthy value of isSuperAgreement will override any
+agreement of Subscription type.
 
 #### Arguments
 
@@ -1286,6 +1304,7 @@ interface agreement {
   id?: number
   description?: {}
   type?: 'Subscription' | 'Direct' | 'Normal' | 'Sketch'
+  isSuperAgreement?: boolean
   products?: Array<product>
 }
 ```
