@@ -8,7 +8,7 @@ import { Api, ttninjs } from './api'
 let log = debug('tt:api')
 
 export interface ApiOptions {
-  token: string
+  token?: string
   host: string
   timeout: number
 }
@@ -37,16 +37,19 @@ export class ApiBase {
   ) {
     let url = this.options.host + path
     let timeout = opts ? opts.timeout ? opts.timeout : this.options.timeout : this.options.timeout
+    let headers: Record<string, string> = {
+      'Content-Type': 'application/json'
+    }
+    if (this.options.token) {
+      headers['Authorization'] = `Bearer ${this.options.token}`
+    }
     log(httpMethod, url, query, body, {timeout})
     return axios({
       method: httpMethod,
       url: url,
       params: query,
       data: body,
-      headers: {
-        'Authorization': `Bearer ${this.options.token}`,
-        'Content-Type': 'application/json'
-      },
+      headers,
       timeout
     }).then((res: any) => {
       return res.data

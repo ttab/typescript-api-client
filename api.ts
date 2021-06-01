@@ -946,7 +946,7 @@ export class Api {
    * + host - API endpoint to connect to. The default is https://api.tt.se
    * + timeout - HTTP timeout in ms. The default is 1000ms. Note that the `content.stream()` method will ignore this and always use timeout based on the `wait` parameter.
    */
-  constructor(options: { token: string; host?: string; timeout?: number }) {
+  constructor(options: { token?: string; host?: string; timeout?: number }) {
     this.content = new ContentV1({
       host: 'https://api.tt.se',
       timeout: 1000,

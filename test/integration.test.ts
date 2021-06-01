@@ -1,6 +1,6 @@
 import { Api } from '../dist/index'
 
-let api = new Api({ token: process.env.TOKEN || '' })
+const api = new Api({ token: process.env.TOKEN || '', timeout: 4000 })
 
 describe('content', () => {
 
@@ -68,12 +68,12 @@ describe('user', () => {
   describe('profile', () => {
     it('can get the user profile', async () => {
       let profile = await api.user.getProfile()
-      expect(profile).toHaveProperty('user')
+      expect(profile).toHaveProperty('boards')
     })
 
     it('can get selected properties of the user profile', async () => {
-      let profile = await api.user.getProfileByProperty(['user'])
-      expect(profile).toHaveProperty('user')
+      let profile = await api.user.getProfileByProperty(['boards'])
+      expect(profile).toHaveProperty('boards')
     })
 
     it('can update the user profile', async () => {
@@ -94,6 +94,28 @@ describe('collection', () => {
   it('can get a list of collections', async () => {
     let colls = await api.collection.getCollections()
     expect(colls).toBeInstanceOf(Array)
+  })
+
+})
+
+describe(`anonymous access`, () => {
+  const api = new Api({ token: undefined, timeout: 4000 })
+
+  it(`can search the image archive`, async () => {
+    const result = await api.content.search('image', { q: 'panda' })
+    expect(result.total).toBeGreaterThan(0)
+  })
+
+  it(`cannot get user agreement information`, async () => {
+    expect(async () => await api.user.getAgreements()).rejects.toThrow('Unauthorized')
+  })
+
+  it(`cannot get user profile information`, async () => {
+    expect(async () => await api.user.getProfile()).rejects.toThrow('Unauthorized')
+  })
+
+  it(`cannot get user collection information`, async () => {
+    expect(async () => await api.collection.getCollections()).rejects.toThrow('Unauthorized')
   })
 
 })
