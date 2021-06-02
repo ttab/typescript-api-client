@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.3] - 2021-07-02
+### Changed
+- Various dependency upgrades.
+- The `agreement` definition now includes the `isSuperAgreement` property.
+- The `token` argument is no longer required when creating the Api
+  client. Without a token clients can still use the `content.stream()`
+  and `content.search()` methods to access image metadata, but nothing
+  else.
+
 ## [2.3.1] - 2020-10-16
 ### Changed
 - Increased the default timeout for ContentStream.
