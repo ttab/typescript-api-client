@@ -844,7 +844,10 @@ class CollectionV1 extends ApiBase {
    * @name CollectionV1#addCollection
    * @param {} collection -
    */
-  addCollection(collection: { name: string }): Promise<collection> {
+  addCollection(collection: {
+    name: string
+    public?: boolean
+  }): Promise<collection> {
     let path = `/collection/v1/collection`
     return super.call('post', path, undefined, collection, {})
   }
@@ -875,6 +878,7 @@ class CollectionV1 extends ApiBase {
     id: string,
     collection: {
       name: string
+      public?: boolean
     }
   ): Promise<collection> {
     let path = `/collection/v1/collection/${id}`

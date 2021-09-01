@@ -929,7 +929,7 @@ asynchronous, and there may be a delay before the change is visible using the
 
 #### Arguments
 
-- collection: `{ 'name': string;}`
+- collection: `{ 'name': string; 'public'?: boolean;}`
 
 #### Returns
 
@@ -976,7 +976,7 @@ asynchronous, and there may be a delay before the change is visible using the
 #### Arguments
 
 - id: `string` - ID of a collection.
-- collection: `{ 'name': string;}`
+- collection: `{ 'name': string; 'public'?: boolean;}`
 
 #### Returns
 
