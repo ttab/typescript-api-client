@@ -1317,6 +1317,7 @@ interface collection {
   owner: string
   name: string
   collDate: string
+  public?: boolean
 }
 ```
 
@@ -1328,6 +1329,7 @@ interface collectionItem {
   owner: string
   name: string
   collDate: string
+  public?: boolean
   items: Array<ttninjs>
 }
 ```

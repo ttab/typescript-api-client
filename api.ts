@@ -226,12 +226,14 @@ export interface collection {
   owner: string
   name: string
   collDate: string
+  public?: boolean
 }
 export interface collectionItem {
   id: string
   owner: string
   name: string
   collDate: string
+  public?: boolean
   items: Array<ttninjs>
 }
 export interface product {

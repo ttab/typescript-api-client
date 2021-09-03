@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2021-09-03
+### Added
+- The `public` property was missing on the collection response object.
+
 ## [2.5.0] - 2021-09-01
+### Added
 - Support the `public` property on collections.
 
 ## [2.4.0] - 2021-06-02
