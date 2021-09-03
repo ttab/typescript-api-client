@@ -202,6 +202,17 @@ class to make content streaming easier.
 - `close` - emitted when the content stream is closed. No more `data` events
   will be emitted.
 
+#### Error handling
+
+On errors which the client is unlikely to recover from by itself (i.e. HTTP
+4XX), the stream will automatically emit a `close` event and stop.
+
+When encountering other errors (HTTP 5xx, connections errors, etc.) the stream
+uses an exponential backoff algorithm to determine an appropriate delay before
+retrying the request. The initial delay is 50ms and doubles after each
+consecutive error, up to 60s. The delay is reset to zero when a request
+completes successfully.
+
 #### Example
 
 The following code is equivalent to the loop in the previous section. It prints

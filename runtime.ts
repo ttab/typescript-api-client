@@ -4,8 +4,10 @@ import * as EventEmitter from 'eventemitter3'
 import StrictEventEmitter from 'strict-event-emitter-types'
 import { Api, ttninjs } from './api'
 
-
 let log = debug('tt:api')
+
+const BACKOFF_INITIAL_DELAY = 50
+const BACKOFF_MAX_DELAY     = 1000 * 60
 
 export interface ApiOptions {
   token?: string
@@ -78,6 +80,7 @@ interface ContentStreamEvents {
 export class ContentStream extends (EventEmitter as { new(): StrictEventEmitter<EventEmitter, ContentStreamEvents> })
 {
   running: boolean = true
+  backoff: number = 0
 
   constructor(
     api: Api,
@@ -107,11 +110,25 @@ export class ContentStream extends (EventEmitter as { new(): StrictEventEmitter<
           this.emit('data', hit)
           last = hit.uri
         })
+      }).then(() => {
+        // reset backoff, since this operation succeeded
+        this.backoff = 0
       }).catch(err => {
         this.emit('error', err)
+        if (err instanceof ApiError) {
+          if (err.statusCode.toString().startsWith('4')) {
+            this.running = false
+          }
+        }
+        // calculate new backoff delay
+        if (this.backoff === 0) {
+          this.backoff = BACKOFF_INITIAL_DELAY
+        } else {
+          this.backoff = Math.min(this.backoff * 2, BACKOFF_MAX_DELAY)
+        }
       }).then(() => {
         if (this.running) {
-          this.run()
+          setTimeout(this.run, this.backoff)
         } else {
           this.emit('close')
         }
