@@ -201,7 +201,10 @@ function buildDefinitions(spec: Swagger): Definition[] {
     return {
       name: def.name,
       description: def.description,
-      tsType: def.tsType
+      tsType: {
+        ...def.tsType,
+        typeName: def.name
+      }
     }
   })
 }

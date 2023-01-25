@@ -214,6 +214,13 @@ export interface ttninjs {
     }
   }>
 }
+export interface address {
+  street?: string
+  box?: string
+  zipCode?: string
+  city?: string
+  country?: string
+}
 export interface agreement {
   id?: number
   description?: {}
@@ -221,6 +228,17 @@ export interface agreement {
   isSuperAgreement?: boolean
   products?: Array<product>
 }
+export interface agreement2 {
+  id: number
+  name?: string
+  type: agreementType
+  description?: string
+  expires?: string
+  superAgreement: boolean
+  products: Array<product2>
+}
+export type agreementType = 'Subscription' | 'Direct' | 'Normal'
+
 export interface collection {
   id: string
   owner: string
@@ -236,10 +254,9 @@ export interface collectionItem {
   public?: boolean
   items: Array<ttninjs>
 }
-export interface product {
-  name?: string
-  description?: {}
-  code?: string
+export interface facet {
+  key?: string
+  count?: number
 }
 export interface notification {
   id: string
@@ -262,11 +279,47 @@ export interface notification {
   timezone?: string
   email?: string
 }
-export interface facet {
-  key?: string
-  count?: number
+export interface organization {
+  id: number
+  name?: string
+  currency?: string
+  country?: string
+  address: {
+    visit?: address
+    postal?: address
+    billing?: address
+  }
+  phoneNumber: phoneNumberDirect
 }
-
+export interface phoneNumber {
+  direct?: string
+  mobile?: string
+}
+export interface phoneNumberDirect {
+  direct?: string
+}
+export interface product {
+  name?: string
+  description?: {}
+  code?: string
+}
+export interface product2 {
+  id: number
+  name?: string
+  description?: string
+  code: string
+}
+export interface user {
+  id: number
+  customerId: number
+  userName: string
+  firstName?: string
+  lastName?: string
+  emailAddress?: string
+  department?: string
+  phoneNumber: phoneNumber
+  agreements: Array<agreement2>
+}
 class ContentV1 extends ApiBase {
   /**
     * Searching the TT archives.
@@ -283,6 +336,7 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
     * @param {string} tr - Time range: last hour, day, week, month, or year.
     * @param {string} trs - Start date
     * @param {string} tre - End date
+    * @param {array} pubstatus - 
     * @param {integer} s - Size of search result.
     * @param {integer} fr - Index into the search result. Used for pagination. It is recommended to make this value a multiple of the search result size (`s`), as some media types do not support arbitrary values here.
     * @param {string} sort - Sort order for the result. Documentation on various date fields can be found [here](http://spec.tt.se/dates).
@@ -316,6 +370,7 @@ This parameter allows the client to control the layout of the items in the searc
       tr?: 'h' | 'd' | 'w' | 'm' | 'y'
       trs?: string
       tre?: string
+      pubstatus?: Array<'usable' | 'replaced'>
       s?: number
       fr?: number
       sort?:
@@ -704,13 +759,15 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
 }
 class UserV1 extends ApiBase {
   /**
-   * Get the current customer agreements.
-   *
-   * Return a list of applicable customer agreements for the current user. An agreement that has a truthy value of isSuperAgreement will override any agreement of Subscription type.
-   *
-   * @method
-   * @name UserV1#getAgreements
-   */
+    * Get the current customer agreements.
+    *
+    * Return a list of applicable customer agreements for the current user. An agreement that has a truthy value of isSuperAgreement will override any agreement of Subscription type.
+
+*DEPRECATED*: This endpoint has been deprecated in favor of `/user/v1/user`
+    *
+    * @method
+    * @name UserV1#getAgreements
+    */
   getAgreements(): Promise<Array<agreement>> {
     let path = `/user/v1/agreement`
     return super.call('get', path, undefined, undefined, {})
@@ -822,6 +879,31 @@ Properties present in `profile` but not listed in `property` will not be written
   removeDevice(token: string): Promise<string> {
     let path = `/user/v1/device/${token}`
     return super.call('delete', path, undefined, undefined, {})
+  }
+  /**
+    * Get information about the organization that the current user belongs to.
+
+    *
+    * 
+    *
+    * @method
+    * @name UserV1#getOrganization
+    */
+  getOrganization(): Promise<organization> {
+    let path = `/user/v1/organization`
+    return super.call('get', path, undefined, undefined, {})
+  }
+  /**
+   * Get information about the current user.
+   *
+   *
+   *
+   * @method
+   * @name UserV1#getUser
+   */
+  getUser(): Promise<user> {
+    let path = `/user/v1/user`
+    return super.call('get', path, undefined, undefined, {})
   }
 }
 class CollectionV1 extends ApiBase {

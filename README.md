@@ -36,6 +36,8 @@ Instructions for building the client are [here](/BUILDING.md).
     - [updateProfileByProperty](#updateprofilebypropertyproperty-profile)
     - [updateDevice](#updatedevicetoken-parameters)
     - [removeDevice](#removedevicetoken)
+    - [getOrganization](#getorganization)
+    - [getUser](#getuser)
   - CollectionV1
     - [getCollections](#getcollections)
     - [addCollection](#addcollectioncollection)
@@ -46,12 +48,20 @@ Instructions for building the client are [here](/BUILDING.md).
     - [removeCollectionItems](#removecollectionitemsid-items)
   - [Exported types](#exported-types)
     - [ttninjs](#interface-ttninjs)
+    - [address](#interface-address)
     - [agreement](#interface-agreement)
+    - [agreement2](#interface-agreement2)
+    - [agreementType](#interface-agreementType)
     - [collection](#interface-collection)
     - [collectionItem](#interface-collectionItem)
-    - [product](#interface-product)
-    - [notification](#interface-notification)
     - [facet](#interface-facet)
+    - [notification](#interface-notification)
+    - [organization](#interface-organization)
+    - [phoneNumber](#interface-phoneNumber)
+    - [phoneNumberDirect](#interface-phoneNumberDirect)
+    - [product](#interface-product)
+    - [product2](#interface-product2)
+    - [user](#interface-user)
 
 # Getting started
 
@@ -272,6 +282,7 @@ Searching the TT archives.
     month, or year.
   - `trs?: string` - Start date
   - `tre?: string` - End date
+  - `pubstatus?: Array<"usable" | "replaced">` -
   - `s?: number` - Size of search result.
   - `fr?: number` - Index into the search result. Used for pagination. It is
     recommended to make this value a multiple of the search result size (`s`),
@@ -724,6 +735,8 @@ Return a list of applicable customer agreements for the current user. An
 agreement that has a truthy value of isSuperAgreement will override any
 agreement of Subscription type.
 
+_DEPRECATED_: This endpoint has been deprecated in favor of `/user/v1/user`
+
 #### Arguments
 
 #### Returns
@@ -906,6 +919,42 @@ api.user
   .then(result => {
     // do something with result
   })
+```
+
+### getOrganization()
+
+Get information about the organization that the current user belongs to.
+
+#### Arguments
+
+#### Returns
+
+- Promise&lt;[organization](#interface-organization)&gt;
+
+#### Example
+
+```typescript
+api.user.getOrganization().then(result => {
+  // do something with result
+})
+```
+
+### getUser()
+
+Get information about the current user.
+
+#### Arguments
+
+#### Returns
+
+- Promise&lt;[user](#interface-user)&gt;
+
+#### Example
+
+```typescript
+api.user.getUser().then(result => {
+  // do something with result
+})
 ```
 
 ## CollectionV1
@@ -1308,6 +1357,18 @@ interface ttninjs {
 }
 ```
 
+### Interface address
+
+```typescript
+interface address {
+  street?: string
+  box?: string
+  zipCode?: string
+  city?: string
+  country?: string
+}
+```
+
 ### Interface agreement
 
 ```typescript
@@ -1318,6 +1379,26 @@ interface agreement {
   isSuperAgreement?: boolean
   products?: Array<product>
 }
+```
+
+### Interface agreement2
+
+```typescript
+interface agreement2 {
+  id: number
+  name?: string
+  type: agreementType
+  description?: string
+  expires?: string
+  superAgreement: boolean
+  products: Array<product2>
+}
+```
+
+### Interface agreementType
+
+```typescript
+interface agreementType "Subscription" | "Direct" | "Normal";
 ```
 
 ### Interface collection
@@ -1345,13 +1426,12 @@ interface collectionItem {
 }
 ```
 
-### Interface product
+### Interface facet
 
 ```typescript
-interface product {
-  name?: string
-  description?: {}
-  code?: string
+interface facet {
+  key?: string
+  count?: number
 }
 ```
 
@@ -1381,11 +1461,73 @@ interface notification {
 }
 ```
 
-### Interface facet
+### Interface organization
 
 ```typescript
-interface facet {
-  key?: string
-  count?: number
+interface organization {
+  id: number
+  name?: string
+  currency?: string
+  country?: string
+  address: {
+    visit?: address
+    postal?: address
+    billing?: address
+  }
+  phoneNumber: phoneNumberDirect
+}
+```
+
+### Interface phoneNumber
+
+```typescript
+interface phoneNumber {
+  direct?: string
+  mobile?: string
+}
+```
+
+### Interface phoneNumberDirect
+
+```typescript
+interface phoneNumberDirect {
+  direct?: string
+}
+```
+
+### Interface product
+
+```typescript
+interface product {
+  name?: string
+  description?: {}
+  code?: string
+}
+```
+
+### Interface product2
+
+```typescript
+interface product2 {
+  id: number
+  name?: string
+  description?: string
+  code: string
+}
+```
+
+### Interface user
+
+```typescript
+interface user {
+  id: number
+  customerId: number
+  userName: string
+  firstName?: string
+  lastName?: string
+  emailAddress?: string
+  department?: string
+  phoneNumber: phoneNumber
+  agreements: Array<agreement2>
 }
 ```
