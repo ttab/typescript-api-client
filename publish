@@ -1,0 +1,51 @@
+#!/bin/bash
+
+cmd="$1";
+shift;
+args="$@"
+
+if [[ `git status --porcelain` ]]; then
+  echo "Git repo must not have uncommitted changes."
+  exit 1
+fi
+
+publish_private () {
+  cp private.npmrc .npmrc
+  npm publish $args
+}
+
+publish_public () {
+  cp public.npmrc .npmrc
+  npm publish $args
+}
+
+case $cmd in
+  "prerelease" )
+    API_HOST=https://api.stage.tt.se PRERELEASE=true npm run dist
+    git add api.ts README.md
+    git commit -m "Generated prerelease"
+    npm version prerelease
+    publish_private
+    ;;
+  "patch" )
+    API_HOST=https://api.stage.tt.se PRERELEASE=true npm run dist
+    git add api.ts README.md
+    git commit -m "Generated patch release"
+    npm version patch
+    publish_private
+    publish_public
+    ;;
+  "minor" )
+    API_HOST=https://api.stage.tt.se PRERELEASE=true npm run dist
+    git add api.ts README.md
+    git commit -m "Generated minor release"
+    npm version minor
+    publish_private
+    publish_public
+    ;;
+  *)
+    echo "Usage: publish (prerelease|patch|minor) [--dry-run]"
+    ;;
+esac
+
+rm .npmrc
