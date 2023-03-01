@@ -1405,11 +1405,14 @@ interface agreementType "Subscription" | "Direct" | "Normal";
 
 ```typescript
 interface collection {
+  accessed: string
+  content: Array<string>
+  created: string
   id: string
-  owner: string
+  modified?: string
   name: string
-  collDate: string
-  public?: boolean
+  owner: string
+  public: boolean
 }
 ```
 
@@ -1417,11 +1420,14 @@ interface collection {
 
 ```typescript
 interface collectionItem {
+  accessed: string
+  content: Array<string>
+  created: string
   id: string
-  owner: string
+  modified?: string
   name: string
-  collDate: string
-  public?: boolean
+  owner: string
+  public: boolean
   items: Array<ttninjs>
 }
 ```

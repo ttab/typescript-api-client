@@ -240,18 +240,24 @@ export interface agreement2 {
 export type agreementType = 'Subscription' | 'Direct' | 'Normal'
 
 export interface collection {
+  accessed: string
+  content: Array<string>
+  created: string
   id: string
-  owner: string
+  modified?: string
   name: string
-  collDate: string
-  public?: boolean
+  owner: string
+  public: boolean
 }
 export interface collectionItem {
+  accessed: string
+  content: Array<string>
+  created: string
   id: string
-  owner: string
+  modified?: string
   name: string
-  collDate: string
-  public?: boolean
+  owner: string
+  public: boolean
   items: Array<ttninjs>
 }
 export interface facet {
