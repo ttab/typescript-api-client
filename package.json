@@ -22,7 +22,6 @@
   "scripts": {
     "generate": "ts-node generator/generate.ts && prettier --write api.ts --prose-wrap always README.md",
     "dist": "npm run generate && tsc -p tsconfig-dist.json",
-    "prepublishOnly": "npm run dist",
     "test": "jest"
   },
   "main": "./dist/index.js",
