@@ -2,3 +2,4 @@ api.ts
 node_modules
 dist/
 /.log/
+.npmrc
