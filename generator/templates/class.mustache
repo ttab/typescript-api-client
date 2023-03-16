@@ -2,8 +2,8 @@ import { ApiBase } from './runtime'
 
 {{#definitions}}
   {{#tsType}}
-  {{#isEnum}}export type {{&typeName}} = {{> type}}{{/isEnum}}
-  {{^isEnum}}export interface {{&typeName}} {{> type}}{{/isEnum}}
+  {{^isObject}}export type {{&typeName}} = {{> type}}{{/isObject}}
+  {{#isObject}}export interface {{&typeName}} {{> type}}{{/isObject}}
   {{/tsType}};
 {{/definitions}}
 
