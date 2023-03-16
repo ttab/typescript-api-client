@@ -30,6 +30,7 @@ Instructions for building the client are [here](/BUILDING.md).
     - [removeNotification](#removenotificationmediatype-id)
   - UserV1
     - [getAgreements](#getagreements)
+    - [getOrder](#getorderparameters)
     - [getProfile](#getprofile)
     - [updateProfile](#updateprofileprofile)
     - [getProfileByProperty](#getprofilebypropertyproperty)
@@ -55,6 +56,9 @@ Instructions for building the client are [here](/BUILDING.md).
     - [collection](#interface-collection)
     - [collectionItem](#interface-collectionItem)
     - [facet](#interface-facet)
+    - [license](#interface-license)
+    - [monetaryAmount](#interface-monetaryAmount)
+    - [order](#interface-order)
     - [notification](#interface-notification)
     - [organization](#interface-organization)
     - [phoneNumber](#interface-phoneNumber)
@@ -751,6 +755,29 @@ api.user.getAgreements().then(result => {
 })
 ```
 
+### getOrder(parameters)
+
+Get the order/license history for the current user. If the user has customer
+admin privileges, include all orders for the whole organization.
+
+#### Arguments
+
+- parameters:
+  - `size?: number` -
+  - `start?: number` -
+
+#### Returns
+
+- Promise&lt;{ 'orders'?: Array<[order](#interface-order)>;}&gt;
+
+#### Example
+
+```typescript
+api.user.getOrder({}).then(result => {
+  // do something with result
+})
+```
+
 ### getProfile()
 
 Get the profile for the current user.
@@ -1407,6 +1434,12 @@ interface agreementType "Subscription" | "Direct" | "Normal";
 interface collection {
   accessed: string
   content: Array<string>
+  removedContent?: Array<{
+    uri?: string
+    headline?: string
+    description_text?: string
+    timestamp?: string
+  }>
   created: string
   id: string
   modified?: string
@@ -1422,6 +1455,12 @@ interface collection {
 interface collectionItem {
   accessed: string
   content: Array<string>
+  removedContent?: Array<{
+    uri?: string
+    headline?: string
+    description_text?: string
+    timestamp?: string
+  }>
   created: string
   id: string
   modified?: string
@@ -1438,6 +1477,52 @@ interface collectionItem {
 interface facet {
   key?: string
   count?: number
+}
+```
+
+### Interface license
+
+```typescript
+interface license {
+  uuid?: string
+  period?: 'Year' | 'Month' | 'Single'
+  volume?: string
+  price?: monetaryAmount
+  description?: string
+  product: product
+}
+```
+
+### Interface monetaryAmount
+
+```typescript
+interface monetaryAmount string;
+```
+
+### Interface order
+
+```typescript
+interface order {
+  item: {
+    uri?: string
+    headline?: string
+    byline?: string
+    source?: string
+  }
+  price: {
+    name: string
+    description?: string
+    license: license
+    agreement: {
+      id: number
+      name?: string
+      type: agreementType
+    }
+  }
+  invoiceText?: string
+  created: string
+  downloadableUntil: string
+  reportingDeadline?: string
 }
 ```
 
@@ -1527,7 +1612,7 @@ interface product2 {
 ```typescript
 interface user {
   id: number
-  customerId: number
+  customerId?: number
   userName: string
   firstName?: string
   lastName?: string
