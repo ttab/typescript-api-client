@@ -1,6 +1,6 @@
 {
   "name": "@ttab/api-client",
-  "version": "2.6.1-5",
+  "version": "2.6.1-6",
   "description": "Browser-friendly TypeScript/JavaScript client for TT Nyhetsbyrån public APIs.",
   "homepage": "https://github.com/ttab/typescript-api-client/",
   "bugs": {
