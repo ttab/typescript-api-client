@@ -214,6 +214,10 @@ export interface ttninjs {
     }
   }>
 }
+export interface access {
+  admin?: boolean
+  mediebank?: boolean
+}
 export interface address {
   street?: string
   box?: string
@@ -271,6 +275,15 @@ export interface collectionItem {
   owner: string
   public: boolean
   items: Array<ttninjs>
+}
+export interface error {
+  errorCode?: string
+  location?: string
+  message?: string
+  path?: string
+}
+export interface errors {
+  errors?: Array<error>
 }
 export interface facet {
   key?: string
@@ -369,6 +382,7 @@ export interface user {
   department?: string
   phoneNumber: phoneNumber
   agreements: Array<agreement2>
+  access: access
 }
 class ContentV1 extends ApiBase {
   /**
@@ -443,8 +457,8 @@ This parameter allows the client to control the layout of the items in the searc
       layout?: 'bare' | 'full'
     }
   ): Promise<{
-    hits: Array<ttninjs>
-    total: number
+    hits?: Array<ttninjs>
+    total?: number
     facets?: {
       'subject.code'?: Array<facet>
       'product.code'?: Array<facet>
@@ -958,6 +972,70 @@ Properties present in `profile` but not listed in `property` will not be written
   getOrganization(): Promise<organization> {
     let path = `/user/v1/organization`
     return super.call('get', path, undefined, undefined, {})
+  }
+  /**
+    * Create a new user for the same organzation as the current user.
+Requires the user to have the `admin` access level.
+
+    *
+    * 
+    *
+    * @method
+    * @name UserV1#addOrganizationUser
+    * @param {} user - 
+    */
+  addOrganizationUser(user?: {
+    userName: string
+    firstName: string
+    lastName: string
+    emailAddress: string
+    phoneNumber?: phoneNumber
+    department?: string
+    access?: access
+  }): Promise<user> {
+    let path = `/user/v1/organization/user`
+    return super.call('post', path, undefined, user, {})
+  }
+  /**
+    * Get information about a user belonging to the same organization as the current user.
+Requires the user to have the `admin` access level.
+
+    *
+    * 
+    *
+    * @method
+    * @name UserV1#getOrganizationUser
+    * @param {integer} id - A user ID
+    */
+  getOrganizationUser(id: number): Promise<user> {
+    let path = `/user/v1/organization/user/${id}`
+    return super.call('get', path, undefined, undefined, {})
+  }
+  /**
+    * Update a user belonging to the same organzation as the current user.
+Requires the user to have the `admin` access level.
+
+    *
+    * 
+    *
+    * @method
+    * @name UserV1#updateOrganizationUser
+    * @param {integer} id - A user ID
+    * @param {} user - 
+    */
+  updateOrganizationUser(
+    id: number,
+    user?: {
+      firstName?: string
+      lastName?: string
+      emailAddress?: string
+      phoneNumber?: phoneNumber
+      department?: string
+      access?: access
+    }
+  ): Promise<user> {
+    let path = `/user/v1/organization/user/${id}`
+    return super.call('put', path, undefined, user, {})
   }
   /**
    * Get information about the current user.

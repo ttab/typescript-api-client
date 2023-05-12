@@ -38,6 +38,9 @@ Instructions for building the client are [here](/BUILDING.md).
     - [updateDevice](#updatedevicetoken-parameters)
     - [removeDevice](#removedevicetoken)
     - [getOrganization](#getorganization)
+    - [addOrganizationUser](#addorganizationuseruser)
+    - [getOrganizationUser](#getorganizationuserid)
+    - [updateOrganizationUser](#updateorganizationuserid-user)
     - [getUser](#getuser)
   - CollectionV1
     - [getCollections](#getcollections)
@@ -49,12 +52,15 @@ Instructions for building the client are [here](/BUILDING.md).
     - [removeCollectionItems](#removecollectionitemsid-items)
   - [Exported types](#exported-types)
     - [ttninjs](#interface-ttninjs)
+    - [access](#interface-access)
     - [address](#interface-address)
     - [agreement](#interface-agreement)
     - [agreement2](#interface-agreement2)
     - [agreementType](#interface-agreementType)
     - [collection](#interface-collection)
     - [collectionItem](#interface-collectionItem)
+    - [error](#interface-error)
+    - [errors](#interface-errors)
     - [facet](#interface-facet)
     - [license](#interface-license)
     - [monetaryAmount](#interface-monetaryAmount)
@@ -321,7 +327,7 @@ Searching the TT archives.
 
 #### Returns
 
-- Promise&lt;{ 'hits': Array<[ttninjs](#interface-ttninjs)>; 'total': number;
+- Promise&lt;{ 'hits'?: Array<[ttninjs](#interface-ttninjs)>; 'total'?: number;
   'facets'?: { 'subject.code'?: Array<[facet](#interface-facet)>;
   'product.code'?: Array<[facet](#interface-facet)>; 'place.name'?:
   Array<[facet](#interface-facet)>; 'person.name'?:
@@ -966,6 +972,72 @@ api.user.getOrganization().then((result) => {
 })
 ```
 
+### addOrganizationUser(user)
+
+Create a new user for the same organzation as the current user. Requires the
+user to have the `admin` access level.
+
+#### Arguments
+
+- user?:
+  `{ 'userName': string; 'firstName': string; 'lastName': string; 'emailAddress': string; 'phoneNumber'?: phoneNumber; 'department'?: string; 'access'?: access;}`
+
+#### Returns
+
+- Promise&lt;[user](#interface-user)&gt;
+
+#### Example
+
+```typescript
+api.user.addOrganizationUser().then((result) => {
+  // do something with result
+})
+```
+
+### getOrganizationUser(id)
+
+Get information about a user belonging to the same organization as the current
+user. Requires the user to have the `admin` access level.
+
+#### Arguments
+
+- id: `number` - A user ID
+
+#### Returns
+
+- Promise&lt;[user](#interface-user)&gt;
+
+#### Example
+
+```typescript
+api.user.getOrganizationUser(123).then((result) => {
+  // do something with result
+})
+```
+
+### updateOrganizationUser(id, user)
+
+Update a user belonging to the same organzation as the current user. Requires
+the user to have the `admin` access level.
+
+#### Arguments
+
+- id: `number` - A user ID
+- user?:
+  `{ 'firstName'?: string; 'lastName'?: string; 'emailAddress'?: string; 'phoneNumber'?: phoneNumber; 'department'?: string; 'access'?: access;}`
+
+#### Returns
+
+- Promise&lt;[user](#interface-user)&gt;
+
+#### Example
+
+```typescript
+api.user.updateOrganizationUser(123).then((result) => {
+  // do something with result
+})
+```
+
 ### getUser()
 
 Get information about the current user.
@@ -1384,6 +1456,15 @@ interface ttninjs {
 }
 ```
 
+### Interface access
+
+```typescript
+interface access {
+  admin?: boolean
+  mediebank?: boolean
+}
+```
+
 ### Interface address
 
 ```typescript
@@ -1468,6 +1549,25 @@ interface collectionItem {
   owner: string
   public: boolean
   items: Array<ttninjs>
+}
+```
+
+### Interface error
+
+```typescript
+interface error {
+  errorCode?: string
+  location?: string
+  message?: string
+  path?: string
+}
+```
+
+### Interface errors
+
+```typescript
+interface errors {
+  errors?: Array<error>
 }
 ```
 
@@ -1620,5 +1720,6 @@ interface user {
   department?: string
   phoneNumber: phoneNumber
   agreements: Array<agreement2>
+  access: access
 }
 ```
