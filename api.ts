@@ -517,7 +517,7 @@ This parameter allows the client to control the layout of the items in the searc
     return super.call('get', path, parameters, undefined, {
       timeout: parameters.wait
         ? parameters.wait * 1000 + 5000
-        : 60 * 1000 + 5000
+        : 60 * 1000 + 5000,
     })
   }
   /**
@@ -832,10 +832,7 @@ class UserV1 extends ApiBase {
    * @param {number} size -
    * @param {number} start -
    */
-  getOrder(parameters: {
-    size?: number
-    start?: number
-  }): Promise<{
+  getOrder(parameters: { size?: number; start?: number }): Promise<{
     orders?: Array<order>
   }> {
     let path = `/user/v1/order`
@@ -1107,17 +1104,17 @@ export class Api {
     this.content = new ContentV1({
       host: 'https://api.tt.se',
       timeout: 1000,
-      ...options
+      ...options,
     })
     this.user = new UserV1({
       host: 'https://api.tt.se',
       timeout: 1000,
-      ...options
+      ...options,
     })
     this.collection = new CollectionV1({
       host: 'https://api.tt.se',
       timeout: 1000,
-      ...options
+      ...options,
     })
   }
 }

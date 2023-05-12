@@ -116,8 +116,8 @@ import { Api } from '@ttab/api-client'
 
 let api = new Api({ token: process.env.TOKEN || '' })
 
-api.content.search('image', { q: 'panda' }).then(res => {
-  res.hits.forEach(hit => {
+api.content.search('image', { q: 'panda' }).then((res) => {
+  res.hits.forEach((hit) => {
     console.log(hit.uri, hit.product)
   })
 })
@@ -128,8 +128,8 @@ agreements linked to your user account. If you wish to further restrict the
 search result to match a given agreement you can use the `agr` parameter:
 
 ```typescript
-api.content.search('image', { q: 'panda', agr: [20031] }).then(res => {
-  res.hits.forEach(hit => {
+api.content.search('image', { q: 'panda', agr: [20031] }).then((res) => {
+  res.hits.forEach((hit) => {
     console.log(hit.uri, hit.product)
   })
 })
@@ -141,8 +141,8 @@ more [product codes](https://tt.se/spec/product/1.0):
 ```typescript
 api.content
   .search('image', { q: 'panda', p: ['FOGNRE', 'FOGNREEJ'] })
-  .then(res => {
-    res.hits.forEach(hit => {
+  .then((res) => {
+    res.hits.forEach((hit) => {
       console.log(hit.uri, hit.product)
     })
   })
@@ -178,9 +178,9 @@ import { Api } from '@ttab/api-client'
 let api = new Api({ token: process.env.TOKEN || '' })
 
 function loop(last?: string) {
-  return api.content.stream('image', { last: last }).then(result => {
+  return api.content.stream('image', { last: last }).then((result) => {
     let _last = null
-    result.hits.forEach(hit => {
+    result.hits.forEach((hit) => {
       console.log(hit.uri, hit.source, hit.headline)
       _last = hit.uri
     })
@@ -188,7 +188,7 @@ function loop(last?: string) {
   })
 }
 
-loop().catch(err => {
+loop().catch((err) => {
   console.error(err)
 })
 ```
@@ -240,11 +240,11 @@ import { Api, ContentStream } from '@ttab/api-client'
 let api = new Api({ token: process.env.TOKEN || '' })
 let stream = new ContentStream(api, 'image', {})
 
-stream.on('data', hit => {
+stream.on('data', (hit) => {
   console.log(hit.uri, hit.source, hit.headline)
 })
 
-stream.on('error', err => {
+stream.on('error', (err) => {
   console.log('err', err)
   stream.close()
 })
@@ -337,9 +337,9 @@ api.content
     p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     tr: 'w',
-    sort: 'date:asc'
+    sort: 'date:asc',
   })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -406,9 +406,9 @@ api.content
     q: 'panda',
     p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
-    sort: 'date:asc'
+    sort: 'date:asc',
   })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -430,7 +430,7 @@ List all notifications
 #### Example
 
 ```typescript
-api.content.getNotifications('image').then(result => {
+api.content.getNotifications('image').then((result) => {
   // do something with result
 })
 ```
@@ -468,9 +468,9 @@ api.content
     q: 'panda',
     p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
-    title: 'my mobile notification'
+    title: 'my mobile notification',
   })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -510,9 +510,9 @@ api.content
     p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     title: 'my email notification',
-    email: 'my.email@address.com'
+    email: 'my.email@address.com',
   })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -559,9 +559,9 @@ api.content
     title: 'my scheduled email notification',
     email: 'my.email@address.com',
     schedule: '0 0 12 * * MON-FRI',
-    timezone: 'Europe/Stockholm'
+    timezone: 'Europe/Stockholm',
   })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -600,9 +600,9 @@ api.content
     q: 'panda',
     p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
-    title: 'my mobile notification'
+    title: 'my mobile notification',
   })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -643,9 +643,9 @@ api.content
     p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
     title: 'my email notification',
-    email: 'my.email@address.com'
+    email: 'my.email@address.com',
   })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -696,10 +696,10 @@ api.content
       title: 'my scheduled email notification',
       email: 'my.email@address.com',
       schedule: '0 0 12 * * MON-FRI',
-      timezone: 'Europe/Stockholm'
+      timezone: 'Europe/Stockholm',
     }
   )
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -724,7 +724,7 @@ Remove an existing notification
 ```typescript
 api.content
   .removeNotification('image', '4a37869c-808f-496f-b549-3da0821ce187')
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -750,7 +750,7 @@ _DEPRECATED_: This endpoint has been deprecated in favor of `/user/v1/user`
 #### Example
 
 ```typescript
-api.user.getAgreements().then(result => {
+api.user.getAgreements().then((result) => {
   // do something with result
 })
 ```
@@ -773,7 +773,7 @@ admin privileges, include all orders for the whole organization.
 #### Example
 
 ```typescript
-api.user.getOrder({}).then(result => {
+api.user.getOrder({}).then((result) => {
   // do something with result
 })
 ```
@@ -795,7 +795,7 @@ information as they see fit.
 #### Example
 
 ```typescript
-api.user.getProfile().then(result => {
+api.user.getProfile().then((result) => {
   // do something with result
 })
 ```
@@ -820,7 +820,7 @@ For more controlled updates of the user profile, use the
 #### Example
 
 ```typescript
-api.user.updateProfile({ property1: 'customValue' }).then(result => {
+api.user.updateProfile({ property1: 'customValue' }).then((result) => {
   // do something with result
 })
 ```
@@ -845,7 +845,7 @@ user profile. This endpoint returns only selected properties.
 #### Example
 
 ```typescript
-api.user.getProfileByProperty(['property1', 'property2']).then(result => {
+api.user.getProfileByProperty(['property1', 'property2']).then((result) => {
   // do something with result
 })
 ```
@@ -885,9 +885,9 @@ not be overwritten with `null`.
 ```typescript
 api.user
   .updateProfileByProperty(['property1', 'property2'], {
-    property1: 'customValue'
+    property1: 'customValue',
   })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -919,7 +919,7 @@ api.user
     '5a21a38a24857b344c66aadade0abf2a748fcacf2ddf466e83e4fcd1cefab66a',
     { type: 'ios', name: 'my iPhone', model: 'iPhone 8' }
   )
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -943,7 +943,7 @@ api.user
   .removeDevice(
     '5a21a38a24857b344c66aadade0abf2a748fcacf2ddf466e83e4fcd1cefab66a'
   )
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -961,7 +961,7 @@ Get information about the organization that the current user belongs to.
 #### Example
 
 ```typescript
-api.user.getOrganization().then(result => {
+api.user.getOrganization().then((result) => {
   // do something with result
 })
 ```
@@ -979,7 +979,7 @@ Get information about the current user.
 #### Example
 
 ```typescript
-api.user.getUser().then(result => {
+api.user.getUser().then((result) => {
   // do something with result
 })
 ```
@@ -1001,7 +1001,7 @@ Returns a list of all collections belonging to the current user.
 #### Example
 
 ```typescript
-api.collection.getCollections().then(result => {
+api.collection.getCollections().then((result) => {
   // do something with result
 })
 ```
@@ -1025,7 +1025,7 @@ asynchronous, and there may be a delay before the change is visible using the
 #### Example
 
 ```typescript
-api.collection.addCollection({ name: 'my collection' }).then(result => {
+api.collection.addCollection({ name: 'my collection' }).then((result) => {
   // do something with result
 })
 ```
@@ -1047,7 +1047,7 @@ Returns all properties and contents of a single collection.
 #### Example
 
 ```typescript
-api.collection.getCollection('123').then(result => {
+api.collection.getCollection('123').then((result) => {
   // do something with result
 })
 ```
@@ -1074,7 +1074,7 @@ asynchronous, and there may be a delay before the change is visible using the
 ```typescript
 api.collection
   .updateCollection('123', { name: 'my collection' })
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -1098,7 +1098,7 @@ asynchronous, and there may be a delay before the change is visible using the
 #### Example
 
 ```typescript
-api.collection.removeCollection('123').then(result => {
+api.collection.removeCollection('123').then((result) => {
   // do something with result
 })
 ```
@@ -1127,7 +1127,7 @@ changes are visible using the `GET /collection/v1/collection/{id}` endpoint.
 ```typescript
 api.collection
   .addCollectionItems('123', [{ uri: 'http://tt.se/media/image/sdltd8f4d87' }])
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
@@ -1156,9 +1156,9 @@ is asynchronous, and there may be a delay before changes are visible using the
 ```typescript
 api.collection
   .removeCollectionItems('123', [
-    { uri: 'http://tt.se/media/image/sdltd8f4d87' }
+    { uri: 'http://tt.se/media/image/sdltd8f4d87' },
   ])
-  .then(result => {
+  .then((result) => {
     // do something with result
   })
 ```
