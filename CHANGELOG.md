@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2023-05-31
+### Added
+- Support for new endpoints for user management within the current user's
+  organization. Requires the user to have the `admin` access level, and the
+  OAuth2 token to have the `admin` scope.
+
 ## [2.6.0] - 2023-03-01
 ### Added
 - Support new endpoints for accessing user and organization information.
