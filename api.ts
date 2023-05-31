@@ -383,6 +383,17 @@ export interface user {
   phoneNumber: phoneNumber
   agreements: Array<agreement2>
   access: access
+  active: boolean
+}
+export interface userBase {
+  id: number
+  customerId?: number
+  userName: string
+  firstName?: string
+  lastName?: string
+  emailAddress?: string
+  department?: string
+  active: boolean
 }
 class ContentV1 extends ApiBase {
   /**
@@ -974,8 +985,22 @@ Properties present in `profile` but not listed in `property` will not be written
     return super.call('get', path, undefined, undefined, {})
   }
   /**
+    * List the users belonging to the same organzation as the current user.
+Requires the user to have the `admin` access level, and the token to have the `admin` scope.
+
+    *
+    * 
+    *
+    * @method
+    * @name UserV1#getOrganizationUsers
+    */
+  getOrganizationUsers(): Promise<Array<userBase>> {
+    let path = `/user/v1/organization/user`
+    return super.call('get', path, undefined, undefined, {})
+  }
+  /**
     * Create a new user for the same organzation as the current user.
-Requires the user to have the `admin` access level.
+Requires the user to have the `admin` access level, and the token to have the `admin` scope.
 
     *
     * 
@@ -998,7 +1023,7 @@ Requires the user to have the `admin` access level.
   }
   /**
     * Get information about a user belonging to the same organization as the current user.
-Requires the user to have the `admin` access level.
+Requires the user to have the `admin` access level, and the token to have the `admin` scope.
 
     *
     * 
@@ -1013,7 +1038,7 @@ Requires the user to have the `admin` access level.
   }
   /**
     * Update a user belonging to the same organzation as the current user.
-Requires the user to have the `admin` access level.
+Requires the user to have the `admin` access level, and the token to have the `admin` scope.
 
     *
     * 

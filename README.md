@@ -38,6 +38,7 @@ Instructions for building the client are [here](/BUILDING.md).
     - [updateDevice](#updatedevicetoken-parameters)
     - [removeDevice](#removedevicetoken)
     - [getOrganization](#getorganization)
+    - [getOrganizationUsers](#getorganizationusers)
     - [addOrganizationUser](#addorganizationuseruser)
     - [getOrganizationUser](#getorganizationuserid)
     - [updateOrganizationUser](#updateorganizationuserid-user)
@@ -72,6 +73,7 @@ Instructions for building the client are [here](/BUILDING.md).
     - [product](#interface-product)
     - [product2](#interface-product2)
     - [user](#interface-user)
+    - [userBase](#interface-userBase)
 
 # Getting started
 
@@ -972,10 +974,30 @@ api.user.getOrganization().then((result) => {
 })
 ```
 
+### getOrganizationUsers()
+
+List the users belonging to the same organzation as the current user. Requires
+the user to have the `admin` access level, and the token to have the `admin`
+scope.
+
+#### Arguments
+
+#### Returns
+
+- Promise&lt;Array<[userBase](#interface-userBase)>&gt;
+
+#### Example
+
+```typescript
+api.user.getOrganizationUsers().then((result) => {
+  // do something with result
+})
+```
+
 ### addOrganizationUser(user)
 
 Create a new user for the same organzation as the current user. Requires the
-user to have the `admin` access level.
+user to have the `admin` access level, and the token to have the `admin` scope.
 
 #### Arguments
 
@@ -997,7 +1019,8 @@ api.user.addOrganizationUser().then((result) => {
 ### getOrganizationUser(id)
 
 Get information about a user belonging to the same organization as the current
-user. Requires the user to have the `admin` access level.
+user. Requires the user to have the `admin` access level, and the token to have
+the `admin` scope.
 
 #### Arguments
 
@@ -1018,7 +1041,8 @@ api.user.getOrganizationUser(123).then((result) => {
 ### updateOrganizationUser(id, user)
 
 Update a user belonging to the same organzation as the current user. Requires
-the user to have the `admin` access level.
+the user to have the `admin` access level, and the token to have the `admin`
+scope.
 
 #### Arguments
 
@@ -1721,5 +1745,21 @@ interface user {
   phoneNumber: phoneNumber
   agreements: Array<agreement2>
   access: access
+  active: boolean
+}
+```
+
+### Interface userBase
+
+```typescript
+interface userBase {
+  id: number
+  customerId?: number
+  userName: string
+  firstName?: string
+  lastName?: string
+  emailAddress?: string
+  department?: string
+  active: boolean
 }
 ```
