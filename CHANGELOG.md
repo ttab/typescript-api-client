@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] - 2023-08-29
+### Added
+- Support for updating orders that were made using the `reportLater` method.
+- Better filtering of the order list.
+
 ## [2.7.0] - 2023-05-31
 ### Added
 - Support for new endpoints for user management within the current user's
