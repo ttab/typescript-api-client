@@ -31,6 +31,7 @@ Instructions for building the client are [here](/BUILDING.md).
   - UserV1
     - [getAgreements](#getagreements)
     - [getOrder](#getorderparameters)
+    - [updateOrder](#updateorderid-order)
     - [getProfile](#getprofile)
     - [updateProfile](#updateprofileprofile)
     - [getProfileByProperty](#getprofilebypropertyproperty)
@@ -773,6 +774,7 @@ admin privileges, include all orders for the whole organization.
 - parameters:
   - `size?: number` -
   - `start?: number` -
+  - `status?: "reported" | "unreported" | "all"` -
 
 #### Returns
 
@@ -782,6 +784,28 @@ admin privileges, include all orders for the whole organization.
 
 ```typescript
 api.user.getOrder({}).then((result) => {
+  // do something with result
+})
+```
+
+### updateOrder(id, order)
+
+Update an unreported order row.
+
+#### Arguments
+
+- id: `number` -
+- order?:
+  `{ 'license'?: { 'uuid': string;}; 'invoiceText'?: string; 'approve': boolean;}`
+
+#### Returns
+
+- Promise&lt;[order](#interface-order)&gt;
+
+#### Example
+
+```typescript
+api.user.updateOrder().then((result) => {
   // do something with result
 })
 ```
@@ -1002,7 +1026,7 @@ user to have the `admin` access level, and the token to have the `admin` scope.
 #### Arguments
 
 - user?:
-  `{ 'userName': string; 'firstName': string; 'lastName': string; 'emailAddress': string; 'phoneNumber'?: phoneNumber; 'department'?: string; 'access'?: access;}`
+  `{ 'firstName': string; 'lastName': string; 'emailAddress': string; 'phoneNumber'?: phoneNumber; 'department'?: string; 'access'?: access;}`
 
 #### Returns
 
@@ -1627,6 +1651,7 @@ interface monetaryAmount string;
 
 ```typescript
 interface order {
+  id: number
   item: {
     uri?: string
     headline?: string
@@ -1647,6 +1672,9 @@ interface order {
   created: string
   downloadableUntil: string
   reportingDeadline?: string
+  reported?: string
+  approved?: boolean
+  manual?: boolean
 }
 ```
 

@@ -300,6 +300,7 @@ export interface license {
 export type monetaryAmount = string
 
 export interface order {
+  id: number
   item: {
     uri?: string
     headline?: string
@@ -320,6 +321,9 @@ export interface order {
   created: string
   downloadableUntil: string
   reportingDeadline?: string
+  reported?: string
+  approved?: boolean
+  manual?: boolean
 }
 export interface notification {
   id: string
@@ -856,12 +860,40 @@ class UserV1 extends ApiBase {
    * @name UserV1#getOrder
    * @param {number} size -
    * @param {number} start -
+   * @param {string} status -
    */
-  getOrder(parameters: { size?: number; start?: number }): Promise<{
+  getOrder(parameters: {
+    size?: number
+    start?: number
+    status?: 'reported' | 'unreported' | 'all'
+  }): Promise<{
     orders?: Array<order>
   }> {
     let path = `/user/v1/order`
     return super.call('get', path, parameters, undefined, {})
+  }
+  /**
+   * Update an unreported order row.
+   *
+   *
+   *
+   * @method
+   * @name UserV1#updateOrder
+   * @param {number} id -
+   * @param {} order -
+   */
+  updateOrder(
+    id: number,
+    order?: {
+      license?: {
+        uuid: string
+      }
+      invoiceText?: string
+      approve: boolean
+    }
+  ): Promise<order> {
+    let path = `/user/v1/order/${id}`
+    return super.call('put', path, undefined, order, {})
   }
   /**
    * Get the profile for the current user.
@@ -1010,7 +1042,6 @@ Requires the user to have the `admin` access level, and the token to have the `a
     * @param {} user - 
     */
   addOrganizationUser(user?: {
-    userName: string
     firstName: string
     lastName: string
     emailAddress: string
