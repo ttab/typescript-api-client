@@ -1548,13 +1548,17 @@ interface agreement2 {
   expires?: string
   superAgreement: boolean
   products: Array<product2>
+  prepaids?: {
+    total: number
+    remaining: number
+  }
 }
 ```
 
 ### Interface agreementType
 
 ```typescript
-interface agreementType "Subscription" | "Direct" | "Normal";
+interface agreementType "Subscription" | "Direct" | "Normal" | "Prepaid";
 ```
 
 ### Interface collection

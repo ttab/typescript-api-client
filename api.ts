@@ -240,8 +240,12 @@ export interface agreement2 {
   expires?: string
   superAgreement: boolean
   products: Array<product2>
+  prepaids?: {
+    total: number
+    remaining: number
+  }
 }
-export type agreementType = 'Subscription' | 'Direct' | 'Normal'
+export type agreementType = 'Subscription' | 'Direct' | 'Normal' | 'Prepaid'
 
 export interface collection {
   accessed: string
