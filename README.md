@@ -24,9 +24,12 @@ Instructions for building the client are [here](/BUILDING.md).
     - [addNotificationMobile](#addnotificationmobilemediatype-parameters)
     - [addNotificationEmail](#addnotificationemailmediatype-parameters)
     - [addNotificationScheduledEmail](#addnotificationscheduledemailmediatype-parameters)
+    - [addNotificationStream](#addnotificationstreammediatype-parameters)
     - [updateNotificationMobile](#updatenotificationmobilemediatype-id-parameters)
     - [updateNotificationEmail](#updatenotificationemailmediatype-id-parameters)
     - [updateNotificationScheduledEmail](#updatenotificationscheduledemailmediatype-id-parameters)
+    - [updateNotificationStream](#updatenotificationstreammediatype-id-parameters)
+    - [getNotificationStream](#getnotificationstreammediatype-id-parameters)
     - [removeNotification](#removenotificationmediatype-id)
   - UserV1
     - [getAgreements](#getagreements)
@@ -330,7 +333,7 @@ Searching the TT archives.
 
 #### Returns
 
-- Promise&lt;{ 'hits'?: Array<[ttninjs](#interface-ttninjs)>; 'total'?: number;
+- Promise&lt;{ 'hits': Array<[ttninjs](#interface-ttninjs)>; 'total': number;
   'facets'?: { 'subject.code'?: Array<[facet](#interface-facet)>;
   'product.code'?: Array<[facet](#interface-facet)>; 'place.name'?:
   Array<[facet](#interface-facet)>; 'person.name'?:
@@ -575,6 +578,49 @@ api.content
   })
 ```
 
+### addNotificationStream(mediaType, parameters)
+
+Create a new content stream
+
+#### Arguments
+
+- mediaType:
+  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
+  Only return items of this media type.
+- parameters:
+  - `q?: string` - A query string used for free text searching.
+  - `p?: Array<string>` - A list of product codes. Only items matching at least
+    one of these codes will be returned. The list of current product codes is
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
+  - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
+    current user. Only items covered by at least one of there agreements will be
+    returned.
+  - `tr?: "h" | "d" | "w" | "m" | "y"` - Time range: last hour, day, week,
+    month, or year.
+  - `title?: string` -
+
+#### Returns
+
+- Promise&lt;[notification](#interface-notification)&gt;
+
+#### Example
+
+```typescript
+api.content
+  .addNotificationStream('image', {
+    q: 'panda',
+    p: ['FOGNRE', '-FOGNREEJ'],
+    agr: [20031, 20035],
+    tr: 'w',
+    title: 'my stream notification',
+  })
+  .then((result) => {
+    // do something with result
+  })
+```
+
 ### updateNotificationMobile(mediaType, id, parameters)
 
 Update an existing mobile notification
@@ -708,6 +754,89 @@ api.content
       timezone: 'Europe/Stockholm',
     }
   )
+  .then((result) => {
+    // do something with result
+  })
+```
+
+### updateNotificationStream(mediaType, id, parameters)
+
+Update an existing content stream
+
+#### Arguments
+
+- mediaType:
+  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
+  Only return items of this media type.
+- id: `string` - An notification UUID string.
+- parameters:
+  - `q?: string` - A query string used for free text searching.
+  - `p?: Array<string>` - A list of product codes. Only items matching at least
+    one of these codes will be returned. The list of current product codes is
+    [here](https://tt.se/spec/product/1.0). Individual product codes may be
+    prefixed with a '-' sign, indicating that the code should instead be
+    excluded from the search result.
+  - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
+    current user. Only items covered by at least one of there agreements will be
+    returned.
+  - `tr?: "h" | "d" | "w" | "m" | "y"` - Time range: last hour, day, week,
+    month, or year.
+  - `title: string` -
+
+#### Returns
+
+- Promise&lt;[notification](#interface-notification)&gt;
+
+#### Example
+
+```typescript
+api.content
+  .updateNotificationStream('image', '4a37869c-808f-496f-b549-3da0821ce187', {
+    q: 'panda',
+    p: ['FOGNRE', '-FOGNREEJ'],
+    agr: [20031, 20035],
+    tr: 'w',
+    title: 'my stream notification',
+  })
+  .then((result) => {
+    // do something with result
+  })
+```
+
+### getNotificationStream(mediaType, id, parameters)
+
+Read new items from a content stream
+
+#### Arguments
+
+- mediaType:
+  `"_all" | "image" | "video" | "graphic" | "text" | "feature" | "page" | "planning" | "calendar"` -
+  Only return items of this media type.
+- id: `string` - An notification UUID string.
+- parameters:
+  - `s?: number` - Size of search result.
+  - `layout?: "bare" | "full"` - By default the full TTNinjs document is
+    returned for each search hit. This may be too cumbersome for some use cases;
+    for example when the client requests a large search result to be displayed
+    in a list form. This parameter allows the client to control the layout of
+    the items in the search result:
+    - full - (default) return the full TTNinjs document
+    - bare - return only `headline`, `date`, `uri`, `renditions`,
+      `associations`, `pubstatus`, `originaltransmissionreference`,
+      `copyrightholder`. In addition, all `associations` except the first are
+      stripped away, and `renditions` will only contain the thumbnail rendition.
+  - `wait?: number` - The time (in seconds) to wait for updates before returning
+    an empty result.
+
+#### Returns
+
+- Promise&lt;{ 'hits': Array<[ttninjs](#interface-ttninjs)>;}&gt;
+
+#### Example
+
+```typescript
+api.content
+  .getNotificationStream('image', '4a37869c-808f-496f-b549-3da0821ce187', {})
   .then((result) => {
     // do something with result
   })
@@ -1000,7 +1129,7 @@ api.user.getOrganization().then((result) => {
 
 ### getOrganizationUsers()
 
-List the users belonging to the same organzation as the current user. Requires
+List the users belonging to the same organization as the current user. Requires
 the user to have the `admin` access level, and the token to have the `admin`
 scope.
 
@@ -1020,7 +1149,7 @@ api.user.getOrganizationUsers().then((result) => {
 
 ### addOrganizationUser(user)
 
-Create a new user for the same organzation as the current user. Requires the
+Create a new user for the same organization as the current user. Requires the
 user to have the `admin` access level, and the token to have the `admin` scope.
 
 #### Arguments
@@ -1064,7 +1193,7 @@ api.user.getOrganizationUser(123).then((result) => {
 
 ### updateOrganizationUser(id, user)
 
-Update a user belonging to the same organzation as the current user. Requires
+Update a user belonging to the same organization as the current user. Requires
 the user to have the `admin` access level, and the token to have the `admin`
 scope.
 
@@ -1687,8 +1816,8 @@ interface order {
 ```typescript
 interface notification {
   id: string
-  title: string
-  type: 'mobile' | 'email' | 'scheduled-email'
+  title?: string
+  type: 'mobile' | 'email' | 'scheduled-email' | 'stream'
   mediaType:
     | '_all'
     | 'image'

@@ -331,8 +331,8 @@ export interface order {
 }
 export interface notification {
   id: string
-  title: string
-  type: 'mobile' | 'email' | 'scheduled-email'
+  title?: string
+  type: 'mobile' | 'email' | 'scheduled-email' | 'stream'
   mediaType:
     | '_all'
     | 'image'
@@ -476,8 +476,8 @@ This parameter allows the client to control the layout of the items in the searc
       layout?: 'bare' | 'full'
     }
   ): Promise<{
-    hits?: Array<ttninjs>
-    total?: number
+    hits: Array<ttninjs>
+    total: number
     facets?: {
       'subject.code'?: Array<facet>
       'product.code'?: Array<facet>
@@ -693,6 +693,43 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
     return super.call('post', path, parameters, undefined, {})
   }
   /**
+    * Create a new content stream
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#addNotificationStream
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} tr - Time range: last hour, day, week, month, or year.
+    * @param {string} title - 
+    */
+  addNotificationStream(
+    mediaType:
+      | '_all'
+      | 'image'
+      | 'video'
+      | 'graphic'
+      | 'text'
+      | 'feature'
+      | 'page'
+      | 'planning'
+      | 'calendar',
+    parameters: {
+      q?: string
+      p?: Array<string>
+      agr?: Array<number>
+      tr?: 'h' | 'd' | 'w' | 'm' | 'y'
+      title?: string
+    }
+  ): Promise<notification> {
+    let path = `/content/v1/${mediaType}/notification/stream`
+    return super.call('post', path, parameters, undefined, {})
+  }
+  /**
     * Update an existing mobile notification
     *
     * 
@@ -812,6 +849,88 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
   ): Promise<notification> {
     let path = `/content/v1/${mediaType}/notification/${id}/scheduled-email`
     return super.call('put', path, parameters, undefined, {})
+  }
+  /**
+    * Update an existing content stream
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#updateNotificationStream
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} id - An notification UUID string.
+    * @param {string} q - A query string used for free text searching.
+    * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
+Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
+    * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
+    * @param {string} tr - Time range: last hour, day, week, month, or year.
+    * @param {string} title - 
+    */
+  updateNotificationStream(
+    mediaType:
+      | '_all'
+      | 'image'
+      | 'video'
+      | 'graphic'
+      | 'text'
+      | 'feature'
+      | 'page'
+      | 'planning'
+      | 'calendar',
+    id: string,
+    parameters: {
+      q?: string
+      p?: Array<string>
+      agr?: Array<number>
+      tr?: 'h' | 'd' | 'w' | 'm' | 'y'
+      title: string
+    }
+  ): Promise<notification> {
+    let path = `/content/v1/${mediaType}/notification/${id}/stream`
+    return super.call('put', path, parameters, undefined, {})
+  }
+  /**
+    * Read new items from a content stream
+    *
+    * 
+    *
+    * @method
+    * @name ContentV1#getNotificationStream
+    * @param {string} mediaType - Only return items of this media type.
+    * @param {string} id - An notification UUID string.
+    * @param {integer} s - Size of search result.
+    * @param {string} layout - By default the full TTNinjs document is returned for each search hit. This may be too cumbersome for some use cases; for example when the client requests a large search result to be displayed in a list form.
+This parameter allows the client to control the layout of the items in the search result:
+* full - (default) return the full TTNinjs document
+* bare - return only `headline`, `date`, `uri`, `renditions`, `associations`, `pubstatus`, `originaltransmissionreference`, `copyrightholder`. In addition, all `associations` except the first are stripped away, and `renditions` will only contain the thumbnail rendition.
+    * @param {integer} wait - The time (in seconds) to wait for updates before returning an empty result.
+    */
+  getNotificationStream(
+    mediaType:
+      | '_all'
+      | 'image'
+      | 'video'
+      | 'graphic'
+      | 'text'
+      | 'feature'
+      | 'page'
+      | 'planning'
+      | 'calendar',
+    id: string,
+    parameters: {
+      s?: number
+      layout?: 'bare' | 'full'
+      wait?: number
+    }
+  ): Promise<{
+    hits: Array<ttninjs>
+  }> {
+    let path = `/content/v1/${mediaType}/notification/${id}/stream`
+    return super.call('get', path, parameters, undefined, {
+      timeout: parameters.wait
+        ? parameters.wait * 1000 + 5000
+        : 60 * 1000 + 5000,
+    })
   }
   /**
    * Remove an existing notification
@@ -1021,7 +1140,7 @@ Properties present in `profile` but not listed in `property` will not be written
     return super.call('get', path, undefined, undefined, {})
   }
   /**
-    * List the users belonging to the same organzation as the current user.
+    * List the users belonging to the same organization as the current user.
 Requires the user to have the `admin` access level, and the token to have the `admin` scope.
 
     *
@@ -1035,7 +1154,7 @@ Requires the user to have the `admin` access level, and the token to have the `a
     return super.call('get', path, undefined, undefined, {})
   }
   /**
-    * Create a new user for the same organzation as the current user.
+    * Create a new user for the same organization as the current user.
 Requires the user to have the `admin` access level, and the token to have the `admin` scope.
 
     *
@@ -1072,7 +1191,7 @@ Requires the user to have the `admin` access level, and the token to have the `a
     return super.call('get', path, undefined, undefined, {})
   }
   /**
-    * Update a user belonging to the same organzation as the current user.
+    * Update a user belonging to the same organization as the current user.
 Requires the user to have the `admin` access level, and the token to have the `admin` scope.
 
     *
