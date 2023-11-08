@@ -28,7 +28,7 @@ case $cmd in
     publish_private
     ;;
   "patch" )
-    API_HOST=https://api.stage.tt.se PRERELEASE=true npm run dist
+    API_HOST=https://api.tt.se PRERELEASE=true npm run dist
     git add api.ts README.md
     git commit -m "Generated patch release"
     npm version patch
@@ -36,7 +36,7 @@ case $cmd in
     publish_public
     ;;
   "minor" )
-    API_HOST=https://api.stage.tt.se PRERELEASE=true npm run dist
+    API_HOST=https://api.tt.se PRERELEASE=true npm run dist
     git add api.ts README.md
     git commit -m "Generated minor release"
     npm version minor
