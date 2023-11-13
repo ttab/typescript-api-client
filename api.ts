@@ -1355,22 +1355,22 @@ export class Api {
    * @param {object} options
    * + token - OAuth2 token
    * + host - API endpoint to connect to. The default is https://api.tt.se
-   * + timeout - HTTP timeout in ms. The default is 1000ms. Note that the `content.stream()` method will ignore this and always use timeout based on the `wait` parameter.
+   * + timeout - HTTP timeout in ms. The default is 2000ms. Note that the `content.stream()` method will ignore this and always use timeout based on the `wait` parameter.
    */
   constructor(options: { token?: string; host?: string; timeout?: number }) {
     this.content = new ContentV1({
       host: 'https://api.tt.se',
-      timeout: 1000,
+      timeout: 2000,
       ...options,
     })
     this.user = new UserV1({
       host: 'https://api.tt.se',
-      timeout: 1000,
+      timeout: 2000,
       ...options,
     })
     this.collection = new CollectionV1({
       host: 'https://api.tt.se',
-      timeout: 1000,
+      timeout: 2000,
       ...options,
     })
   }
