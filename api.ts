@@ -493,9 +493,11 @@ This parameter allows the client to control the layout of the items in the searc
     * Realtime delivery of content.
     *
     * Long poll call that will wait for a specified time period (default: 60s, max 300s) until a matching item is published. The parameters are similar to those for `search`, with the exception that time ranges and pagination doesn't make sense in this context (we will always return the most recent item).
+*DEPRECATED:* This endpoint cannot guarantee delivery in the event that two items are published at the exact same time. Consider using `/content/v1/{mediaType}/notification/stream` instead.
     *
     * @method
     * @name ContentV1#stream
+    * @deprecated
     * @param {string} mediaType - Only return items of this media type.
     * @param {string} q - A query string used for free text searching.
     * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
@@ -695,7 +697,10 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
   /**
     * Create a new content stream
     *
-    * 
+    * Creates a new notification of type `stream` and returns the details.
+Items of the given `mediaType` matching the parameters `q`, `p` and  `agr` will be added to the stream in near real-time as they are indexed into the content database.
+The contents of the stream can be consumed by calling the  `GET /content/v1/{mediaType}/notification/{id}/stream` endpoint.
+
     *
     * @method
     * @name ContentV1#addNotificationStream
@@ -704,7 +709,6 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
     * @param {array} p - A list of product codes. Only items matching at least one of these codes will be returned. The list of current product codes is [here](https://tt.se/spec/product/1.0).
 Individual product codes may be prefixed with a '-' sign, indicating that the code should instead be excluded from the search result.
     * @param {array} agr - A list of customer agreement IDs belonging to the current user. Only items covered by at least one of there agreements will be returned.
-    * @param {string} tr - Time range: last hour, day, week, month, or year.
     * @param {string} title - 
     */
   addNotificationStream(
@@ -722,7 +726,6 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
       q?: string
       p?: Array<string>
       agr?: Array<number>
-      tr?: 'h' | 'd' | 'w' | 'm' | 'y'
       title?: string
     }
   ): Promise<notification> {
@@ -892,7 +895,10 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
   /**
     * Read new items from a content stream
     *
-    * 
+    * This is a HTTP long-poll request that consumes items from a previously created notification stream. It will hang until content is available, or a pre-determined number of seconds (given by the `wait` parameter)  has passed, whichever comes first. In the latter case, the response  code will still be HTTP 200, but the `hits`  property of the result body will be an empty array.
+Note that this endpoint is not idempotent; calling it repeatedly will yield different results depending on the current contents of the stream. 
+Notification streams expire after 5 minutes of client inactivity.
+
     *
     * @method
     * @name ContentV1#getNotificationStream
@@ -969,6 +975,7 @@ class UserV1 extends ApiBase {
     *
     * @method
     * @name UserV1#getAgreements
+    * @deprecated
     */
   getAgreements(): Promise<Array<agreement>> {
     let path = `/user/v1/agreement`

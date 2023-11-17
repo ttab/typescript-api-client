@@ -380,8 +380,9 @@ Long poll call that will wait for a specified time period (default: 60s, max
 300s) until a matching item is published. The parameters are similar to those
 for `search`, with the exception that time ranges and pagination doesn't make
 sense in this context (we will always return the most recent item).
-_DEPRECATED:_ Consider using `/content/v1/{mediaType}/notification/stream`
-instead.
+_DEPRECATED:_ This endpoint cannot guarantee delivery in the event that two
+items are published at the exact same time. Consider using
+`/content/v1/{mediaType}/notification/stream` instead.
 
 #### Arguments
 
@@ -600,6 +601,12 @@ api.content
 
 Create a new content stream
 
+Creates a new notification of type `stream` and returns the details. Items of
+the given `mediaType` matching the parameters `q`, `p` and `agr` will be added
+to the stream in near real-time as they are indexed into the content database.
+The contents of the stream can be consumed by calling the
+`GET /content/v1/{mediaType}/notification/{id}/stream` endpoint.
+
 #### Arguments
 
 - mediaType:
@@ -615,8 +622,6 @@ Create a new content stream
   - `agr?: Array<number>` - A list of customer agreement IDs belonging to the
     current user. Only items covered by at least one of there agreements will be
     returned.
-  - `tr?: "h" | "d" | "w" | "m" | "y"` - Time range: last hour, day, week,
-    month, or year.
   - `title?: string` -
 
 #### Returns
@@ -631,7 +636,6 @@ api.content
     q: 'panda',
     p: ['FOGNRE', '-FOGNREEJ'],
     agr: [20031, 20035],
-    tr: 'w',
     title: 'my stream notification',
   })
   .then((result) => {
@@ -824,6 +828,15 @@ api.content
 ### getNotificationStream(mediaType, id, parameters)
 
 Read new items from a content stream
+
+This is a HTTP long-poll request that consumes items from a previously created
+notification stream. It will hang until content is available, or a
+pre-determined number of seconds (given by the `wait` parameter) has passed,
+whichever comes first. In the latter case, the response code will still be HTTP
+200, but the `hits` property of the result body will be an empty array. Note
+that this endpoint is not idempotent; calling it repeatedly will yield different
+results depending on the current contents of the stream. Notification streams
+expire after 5 minutes of client inactivity.
 
 #### Arguments
 
