@@ -125,6 +125,7 @@ interface Method {
   responseType: TypeSpec
   summary: string
   description: string
+  deprecated: boolean
   parameterNames: string
   anchor: () => string
   examples: string,
@@ -264,6 +265,7 @@ function buildView(spec: Swagger): View {
             },
             shortName: name,
             summary: method.summary,
+            deprecated: method.deprecated,
             isSingleton: lookalikes.length === 0,
             description: method.description,
             fullName: fullName(name, parameters.path),

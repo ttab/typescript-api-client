@@ -163,46 +163,62 @@ api.content
 ## Streaming data
 
 While the [api.content.search()](#searchmediatype-parameters) method only
-returns items that are already present in the database,
-[api.content.stream()](#streammediatype-parameters) provides a way to get a near
-real-time stream of new items as they are being indexed.
+returns items that are already present in the database, the notification stream
+endpoint provides a way to get a near real-time stream of new items as they are
+being indexed.
 
-The [api.content.stream()](#streammediatype-parameters) method accepts roughly
-the same arguments as [api.content.search()](#searchmediatype-parameters), with
-the exception of arguments that affect time ranges and result pagination. They
-don't make any sense while streaming data, as we will always return the latest
-items added.
+You first need to create a notification stream by calling
+[api.content.addNotificationStream()](#addnotificationstreammediatype-parameters),
+which accepts roughly the same arguments as
+[api.content.search()](#searchmediatype-parameters) with the exception of
+arguments that affect time ranges and result pagination. They don't make any
+sense while streaming data, as we will always return the latest items added.
 
-[api.content.stream()](#streammediatype-parameters) also accepts two additional
-parameters. `wait` is the maximum time (in seconds) to wait for new items before
-the call returns with an empty result. `last` is the `uri` of the last item that
-the client received. The idea is that if items has been added to the database
-since the client received the last result, the call will return immediately with
-those new items.
+Notification streams support streaming content using the `_all` media type,
+somethihg that the now-deprecated streaming method
+[api.content.stream](#streammediatype-parameters) had problems with.
 
-Utilizing the `last` parameter you can write a simple loop like this, that
-prints the uri, source and headline for each new image as it is added to the
-database:
+By calling
+[api.content.getNotificationStream()](#getnotificationstreammediatype-id-parameters),
+with the ID of the newly created stream you will receive new items matching the
+search criteria as they are being indexed into the database. This is a HTTP
+long-poll call, which will hang until one or more items are available or the
+timeout (specified with the `wait` paramter; default 60s) is reached, whichever
+comes first.
+
+Note that the state of the stream is kept server-side, so repeated calls to
+fetch items from the stream will yield different results.
+
+Notification streams expire after 5 minutes of client inactivity. Calling
+[api.content.getNotificationStream](#getnotificationstreammediatype-id-parameters)
+on an expired stream will yield HTTP 404.
+
+This is a an simplified example streaming all `text` items. For production use
+you would probably want some better error handling logic.
 
 ```typescript
 import { Api } from '@ttab/api-client'
 
 let api = new Api({ token: process.env.TOKEN || '' })
 
-function loop(last?: string) {
-  return api.content.stream('image', { last: last }).then((result) => {
-    let _last = null
-    result.hits.forEach((hit) => {
-      console.log(hit.uri, hit.source, hit.headline)
-      _last = hit.uri
-    })
-    return loop(_last)
+api.content
+  .addNotificationStream('text', {})
+  .then((stream) => {
+    function loop() {
+      return api.content
+        .getNotificationStream('text', stream.id, {})
+        .then((result) => {
+          result.hits.forEach((hit) => {
+            console.log(hit.uri, hit.source, hit.headline)
+          })
+          return loop()
+        })
+    }
+    loop()
   })
-}
-
-loop().catch((err) => {
-  console.error(err)
-})
+  .catch((err) => {
+    console.error(err)
+  })
 ```
 
 ### The ContentStream class
@@ -236,7 +252,7 @@ On errors which the client is unlikely to recover from by itself (i.e. HTTP
 When encountering other errors (HTTP 5xx, connections errors, etc.) the stream
 uses an exponential backoff algorithm to determine an appropriate delay before
 retrying the request. The initial delay is 50ms and doubles after each
-consecutive error, up to 60s. The delay is reset to zero when a request
+consecutive error, up to 30s. The delay is reset to zero when a request
 completes successfully.
 
 #### Example
@@ -364,6 +380,8 @@ Long poll call that will wait for a specified time period (default: 60s, max
 300s) until a matching item is published. The parameters are similar to those
 for `search`, with the exception that time ranges and pagination doesn't make
 sense in this context (we will always return the most recent item).
+_DEPRECATED:_ Consider using `/content/v1/{mediaType}/notification/stream`
+instead.
 
 #### Arguments
 

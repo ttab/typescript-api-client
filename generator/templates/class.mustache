@@ -18,6 +18,9 @@ import { ApiBase } from './runtime'
     *
     * @method
     * @name {{&className}}#{{&name}}
+    {{#deprecated}}
+    * @deprecated
+    {{/deprecated}}
     {{#pathParameters}}
     * @param {{=<% %>=}}{<%&typeName%>}<%={{ }}=%> {{&name}} - {{&type.description}}
     {{/pathParameters}}
