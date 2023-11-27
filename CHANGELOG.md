@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0] - 2023-11-27
+### Added
+- Support for Stream Notification endpoints.
+### Changed
+- The legacy stream endpoint is now deprecated.
+- The `ContentStream` utility class now uses notification streams.
+
 ## [2.8.0] - 2023-08-29
 ### Added
 - Support for updating orders that were made using the `reportLater` method.
