@@ -138,9 +138,12 @@ export class ContentStream extends (EventEmitter as { new(): StrictEventEmitter<
       // create stream, then start looping
       api.content.addNotificationStream(mediaType, parameters)
         .then(_run)
-        .catch(err => { this.emit('error', err) })
+        .catch(err => { 
+          this.emit('error', err)
+          this.emit('close')
+        })
     }
-    this.run()
+    setImmediate(this.run)
   }
 
   run: () => void
