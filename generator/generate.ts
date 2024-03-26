@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { readFileSync, writeFileSync } from 'fs';
-import { camelCase, capitalize, filter, find, map } from 'lodash';
+import { camelCase, capitalize, filter, find, flatMap, map } from 'lodash';
 import * as mustache from 'mustache';
 import { Swagger, SwaggerType } from 'swagger-typescript-codegen/lib/swagger/Swagger';
 import { convertType } from 'swagger-typescript-codegen/lib/typescript';
@@ -197,7 +197,15 @@ function buildParameters(parameters: any = [], spec: Swagger): { [type: string]:
 }
 
 function buildDefinitions(spec: Swagger): Definition[] {
-  let defs = makeDefinitionsFromSwaggerDefinitions(spec.definitions, spec)
+  // extract nested definitions
+  const nested = Object.assign.call(null, {}, ... Object.values(spec.definitions).map(d => {
+    // @ts-ignore
+    return d.definitions
+  }).filter(i => i))
+  let defs = makeDefinitionsFromSwaggerDefinitions({
+    ...spec.definitions,
+    ...nested
+  }, spec)
   return defs.map((def) => {
     return {
       name: def.name,
