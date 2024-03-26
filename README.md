@@ -78,6 +78,7 @@ Instructions for building the client are [here](/BUILDING.md).
     - [product2](#interface-product2)
     - [user](#interface-user)
     - [userBase](#interface-userBase)
+    - [contactinfoType](#interface-contactinfoType)
 
 # Getting started
 
@@ -269,16 +270,15 @@ let api = new Api({ token: process.env.TOKEN || '' })
 let stream = new ContentStream(api, 'image', {})
 
 stream.on('data', (hit) => {
-  console.log(hit.uri, hit.source, hit.headline)
+  console.info(hit.uri, hit.source, hit.headline)
 })
 
 stream.on('error', (err) => {
-  console.log('err', err)
-  stream.close()
+  console.error('err', err)
 })
 
 stream.on('close', () => {
-  console.log('closed')
+  console.info('closed')
 })
 ```
 
@@ -1466,6 +1466,7 @@ interface ttninjs {
   version?: string
   firstcreated?: string
   versioncreated?: string
+  contentcreated?: string
   versionstored?: string
   embargoed?: string
   embargoedreason?: string
@@ -1532,6 +1533,7 @@ interface ttninjs {
     rel?: string
     scheme?: string
     code?: string
+    contactinfo?: Array<contactinfoType>
   }>
   organisation?: Array<{
     name?: string
@@ -1541,7 +1543,10 @@ interface ttninjs {
     symbols?: Array<{
       ticker?: string
       exchange?: string
+      symboltype?: string
+      symbol?: string
     }>
+    contactinfo?: Array<contactinfoType>
   }>
   place?: Array<{
     name?: string
@@ -1552,12 +1557,16 @@ interface ttninjs {
       type?: 'Point'
       coordinates?: Array<number>
     }
+    contactinfo?: Array<contactinfoType>
   }>
   subject?: Array<{
     name?: string
     rel?: string
     scheme?: string
     code?: string
+    creator?: string
+    relevance?: number
+    confidence?: number
   }>
   event?: Array<{
     name?: string
@@ -1576,6 +1585,7 @@ interface ttninjs {
     rel?: string
     scheme?: string
     code?: string
+    contactinfo?: Array<contactinfoType>
   }>
   title?: string
   byline?: string
@@ -1619,12 +1629,20 @@ interface ttninjs {
     scheme?: string
     code?: string
   }>
+  expires?: string
+  rightsinfo?: {
+    langid?: string
+    linkedrights?: string
+    encodedrights?: string
+  }
   signals?: {
     pageproduct?: string
     multipagecount?: number
     paginae?: Array<string>
     pagecode?: string
     pagevariant?: string
+    updatetype?: 'KORR' | 'RÄ' | 'UV'
+    retransmission?: boolean
   }
   product?: Array<{
     name?: string
@@ -1638,6 +1656,7 @@ interface ttninjs {
     uri: string
     slug?: string
     replacing?: Array<string>
+    versioncreated?: string
   }>
   sector?: 'INR' | 'UTR' | 'EKO' | 'KLT' | 'SPT' | 'FEA' | 'NOJ' | 'PRM'
   fixture?: Array<{
@@ -1953,5 +1972,24 @@ interface userBase {
   emailAddress?: string
   department?: string
   active: boolean
+}
+```
+
+### Interface contactinfoType
+
+```typescript
+interface contactinfoType {
+  type?: string
+  role?: string
+  lang?: string
+  name?: string
+  value?: string
+  address?: {
+    lines?: Array<string>
+    locality?: string
+    area?: string
+    postalcode?: string
+    country?: string
+  }
 }
 ```

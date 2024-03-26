@@ -18,6 +18,7 @@ export interface ttninjs {
   version?: string
   firstcreated?: string
   versioncreated?: string
+  contentcreated?: string
   versionstored?: string
   embargoed?: string
   embargoedreason?: string
@@ -84,6 +85,7 @@ export interface ttninjs {
     rel?: string
     scheme?: string
     code?: string
+    contactinfo?: Array<contactinfoType>
   }>
   organisation?: Array<{
     name?: string
@@ -93,7 +95,10 @@ export interface ttninjs {
     symbols?: Array<{
       ticker?: string
       exchange?: string
+      symboltype?: string
+      symbol?: string
     }>
+    contactinfo?: Array<contactinfoType>
   }>
   place?: Array<{
     name?: string
@@ -104,12 +109,16 @@ export interface ttninjs {
       type?: 'Point'
       coordinates?: Array<number>
     }
+    contactinfo?: Array<contactinfoType>
   }>
   subject?: Array<{
     name?: string
     rel?: string
     scheme?: string
     code?: string
+    creator?: string
+    relevance?: number
+    confidence?: number
   }>
   event?: Array<{
     name?: string
@@ -128,6 +137,7 @@ export interface ttninjs {
     rel?: string
     scheme?: string
     code?: string
+    contactinfo?: Array<contactinfoType>
   }>
   title?: string
   byline?: string
@@ -171,12 +181,20 @@ export interface ttninjs {
     scheme?: string
     code?: string
   }>
+  expires?: string
+  rightsinfo?: {
+    langid?: string
+    linkedrights?: string
+    encodedrights?: string
+  }
   signals?: {
     pageproduct?: string
     multipagecount?: number
     paginae?: Array<string>
     pagecode?: string
     pagevariant?: string
+    updatetype?: 'KORR' | 'RÄ' | 'UV'
+    retransmission?: boolean
   }
   product?: Array<{
     name?: string
@@ -190,6 +208,7 @@ export interface ttninjs {
     uri: string
     slug?: string
     replacing?: Array<string>
+    versioncreated?: string
   }>
   sector?: 'INR' | 'UTR' | 'EKO' | 'KLT' | 'SPT' | 'FEA' | 'NOJ' | 'PRM'
   fixture?: Array<{
@@ -402,6 +421,20 @@ export interface userBase {
   emailAddress?: string
   department?: string
   active: boolean
+}
+export interface contactinfoType {
+  type?: string
+  role?: string
+  lang?: string
+  name?: string
+  value?: string
+  address?: {
+    lines?: Array<string>
+    locality?: string
+    area?: string
+    postalcode?: string
+    country?: string
+  }
 }
 class ContentV1 extends ApiBase {
   /**
