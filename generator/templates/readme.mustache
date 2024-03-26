@@ -220,16 +220,15 @@ let api = new Api({ token: process.env.TOKEN || '' })
 let stream = new ContentStream(api, 'image', {})
 
 stream.on('data', (hit) => {
-  console.log(hit.uri, hit.source, hit.headline)
+  console.info(hit.uri, hit.source, hit.headline)
 })
 
 stream.on('error', (err) => {
-  console.log('err', err)
-  stream.close()
+  console.error('err', err)
 })
 
 stream.on('close', () => {
-  console.log('closed')
+  console.info('closed')
 })
 ```
 
