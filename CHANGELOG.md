@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.1] - 2024-03-26
+### Added
+- Types upgraded to TTNinjs 1.5
+### Changed
+- `ContentStream` will now emit `closed` if there was an error creating the 
+  notification stream.
+
 ## [2.9.0] - 2023-11-27
 ### Added
 - Support for Stream Notification endpoints.
