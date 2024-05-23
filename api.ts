@@ -36,6 +36,7 @@ export interface ttninjs {
   language?: string
   week?: number
   webprio?: number
+  newsvalue?: 1 | 2 | 3 | 4 | 5 | 6
   source?: string
   commissioncode?: string
   description_text?: string
@@ -731,8 +732,8 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
     * Create a new content stream
     *
     * Creates a new notification of type `stream` and returns the details.
-Items of the given `mediaType` matching the parameters `q`, `p` and  `agr` will be added to the stream in near real-time as they are indexed into the content database.
-The contents of the stream can be consumed by calling the  `GET /content/v1/{mediaType}/notification/{id}/stream` endpoint.
+Items of the given `mediaType` matching the parameters `q`, `p` and `agr` will be added to the stream in near real-time as they are indexed into the content database.
+The contents of the stream can be consumed by calling the `GET /content/v1/{mediaType}/notification/{id}/stream` endpoint.
 
     *
     * @method
@@ -928,8 +929,8 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
   /**
     * Read new items from a content stream
     *
-    * This is a HTTP long-poll request that consumes items from a previously created notification stream. It will hang until content is available, or a pre-determined number of seconds (given by the `wait` parameter)  has passed, whichever comes first. In the latter case, the response  code will still be HTTP 200, but the `hits`  property of the result body will be an empty array.
-Note that this endpoint is not idempotent; calling it repeatedly will yield different results depending on the current contents of the stream. 
+    * This is a HTTP long-poll request that consumes items from a previously created notification stream. It will hang until content is available, or a pre-determined number of seconds (given by the `wait` parameter) has passed, whichever comes first. In the latter case, the response code will still be HTTP 200, but the `hits` property of the result body will be an empty array.
+Note that this endpoint is not idempotent; calling it repeatedly will yield different results depending on the current contents of the stream.
 Notification streams expire after 5 minutes of client inactivity.
 
     *

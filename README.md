@@ -1484,6 +1484,7 @@ interface ttninjs {
   language?: string
   week?: number
   webprio?: number
+  newsvalue?: 1 | 2 | 3 | 4 | 5 | 6
   source?: string
   commissioncode?: string
   description_text?: string
