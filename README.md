@@ -314,7 +314,8 @@ Searching the TT archives.
     month, or year.
   - `trs?: string` - Start date
   - `tre?: string` - End date
-  - `pubstatus?: Array<"usable" | "replaced">` -
+  - `pubstatus?: Array<"usable" | "replaced" | "commissioned">` - Searching for
+    `commissioned` items requires admin privileges.
   - `s?: number` - Size of search result.
   - `fr?: number` - Index into the search result. Used for pagination. It is
     recommended to make this value a multiple of the search result size (`s`),

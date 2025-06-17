@@ -453,7 +453,7 @@ Individual product codes may be prefixed with a '-' sign, indicating that the co
     * @param {string} tr - Time range: last hour, day, week, month, or year.
     * @param {string} trs - Start date
     * @param {string} tre - End date
-    * @param {array} pubstatus - 
+    * @param {array} pubstatus - Searching for `commissioned` items requires admin privileges.
     * @param {integer} s - Size of search result.
     * @param {integer} fr - Index into the search result. Used for pagination. It is recommended to make this value a multiple of the search result size (`s`), as some media types do not support arbitrary values here.
     * @param {string} sort - Sort order for the result. Documentation on various date fields can be found [here](http://spec.tt.se/dates).
@@ -487,7 +487,7 @@ This parameter allows the client to control the layout of the items in the searc
       tr?: 'h' | 'd' | 'w' | 'm' | 'y'
       trs?: string
       tre?: string
-      pubstatus?: Array<'usable' | 'replaced'>
+      pubstatus?: Array<'usable' | 'replaced' | 'commissioned'>
       s?: number
       fr?: number
       sort?:
